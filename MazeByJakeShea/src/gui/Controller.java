@@ -154,10 +154,10 @@ public class Controller {
         currentState.setBuilder(builder); 
         currentState.setPerfect(perfect);
         if (!deterministic) {
-        	System.out.println("Assignment: implement code such that a repeated generation creates different mazes! Program stops!");
-			System.exit(0) ;
         	// TODO: implement code that makes sure we generate different random mazes
         	// HINT: check http://download.oracle.com/javase/6/docs/api/java/util/Random.html
+        	Random gen = new Random();
+        	seed = gen.nextInt(1000);
         }
         currentState.setSeed(seed);
         currentState.start(this, panel);

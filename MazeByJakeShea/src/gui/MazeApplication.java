@@ -32,7 +32,7 @@ public class MazeApplication extends JFrame {
 	// for production version it is desirable that we never play the same maze 
 	// so even if the algorithm and skill level are the same, the generated maze should look different
 	// which is achieved with some random initialization
-	private static final boolean DEVELOPMENT_VERSION_WITH_DETERMINISTIC_MAZE_GENERATION = true;
+	private static final boolean DEVELOPMENT_VERSION_WITH_DETERMINISTIC_MAZE_GENERATION = false;
 
 	/**
 	 * Constructor
@@ -93,7 +93,7 @@ public class MazeApplication extends JFrame {
 	    else if ("Boruvka".equalsIgnoreCase(parameter))
 	    {
 	    	// TODO: for P2 assignment, please add code to set the builder accordingly
-	        throw new RuntimeException("Don't know anybody named Eller ...");
+	        throw new RuntimeException("Don't know anybody named Boruvka ...");
 	    }
 	    // Case 4: a file
 	    else {
@@ -109,7 +109,7 @@ public class MazeApplication extends JFrame {
 	            msg = "MazeApplication: unknown parameter value: " + parameter + " ignored, operating in default mode.";
 	        }
 	    }
-	    // controller instanted and attributes set according to given input parameter
+	    // controller instantiated and attributes set according to given input parameter
 	    // output message and return controller
 	    System.out.println(msg);
 	    return result;
