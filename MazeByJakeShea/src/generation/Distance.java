@@ -57,7 +57,7 @@ public class Distance {
 	/**
 	 * The start position has a maximum distance
 	 * from the exit position, which is also
-	 * the maximum of all vaues in dists.
+	 * the maximum of all values in dists.
 	 * Array of length 2, with coordinates (x,y) of starting position.
 	 * The field is initially null.
 	 * Can be calculated only after distance values 
@@ -194,7 +194,7 @@ public class Distance {
 	 * and is located at the exit position
 	 */
 	public int getMinDistance() {
-		// the maximum distance is at the exit position
+		// the minimum distance is at the exit position
 		int[] exit = getExitPosition();
 		return getDistanceValue(exit[0], exit[1]);
 	}
