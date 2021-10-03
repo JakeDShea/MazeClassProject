@@ -132,7 +132,7 @@ public class MazeFactoryTest
 	 * whichever maze is wanted by the tests.
 	 * @return: Returns the correct maze of specified skill level.
 	 */
-	private Maze chooseMazeVariable(int choice)
+	private Maze getMazeVariable(int choice)
 	{
 		//Figures which maze is wanted by the test.
 		switch(choice)
@@ -321,14 +321,21 @@ public class MazeFactoryTest
     public final void testHasExitAttribute()
     {
     	//Create a Distance object to check exit position
+    	Distance mazeDist;
     	//Create a Maze object to hold the currently tested maze
+    	Maze testMaze;
     	//Loop through all created mazes
+    	for(int i = 0; i < 10; i++)
+    	{
+    		testMaze = getMazeVariable(i);
     		
-    	//Set Distance object from each maze
+    		//Set Distance object from each maze
+    		mazeDist = testMaze.getMazedists();
     		
-    	//Assert that getExitPosition in dist attribute in MazeBuilder is not none
-        //for each maze.
-    	
+    		//Assert that getExitPosition in dist attribute in MazeBuilder is not none
+        	//for each maze.
+    		assertNotNull(mazeDist.getExitPosition());
+    	}
     }
     
     /**
@@ -346,11 +353,17 @@ public class MazeFactoryTest
     	//Create a Maze object to hold the currently tested maze
     	Maze testMaze;
     	//Loop through all created mazes
+    	for(int i = 0; i < 10; i++)
+    	{
+    		testMaze = getMazeVariable(i);
     		
-    	//Set Distance object from each maze
+    		//Set Distance object from each maze
+    		mazeDist = testMaze.getMazedists();
     		
-    	//Assert that getStartPosition in dist attribute in MazeBuilder is not none
-        //for each maze.
+    		//Assert that getStartPosition in dist attribute in MazeBuilder is not none
+        	//for each maze.
+    		assertNotNull(mazeDist.getStartPosition());
+    	}
     }
     
     /**
@@ -367,31 +380,94 @@ public class MazeFactoryTest
     @Test
     public final void testHasExit()
     {
+    	//Create a floorplan object to hold layout of each maze
+    	Floorplan testFloor;
     	//Create a Maze object to hold the currently tested maze
+    	Maze testMaze;
     	//Create a boolean flag set to false to see if an exit has been found
+    	boolean isFound = false;
 
     	//Loop through all created mazes
+    	for(int i = 0; i < 10 && !isFound; i++)
+    	{
+    		testMaze = getMazeVariable(i);
+    		
+    		//Iterate through all external cells like so and stop looping when
+    		//the flag has been made true.
+    		testFloor = testMaze.getFloorplan();
     	
-    	//Iterate through all external cells like so and stop looping when
-    	//the flag has been made true.
+    		//Iterate through cells on top and check if they have no wallboard
+    		//facing north
+    		//If there is one cell like that, set the flag to true
+    		for(int x = 0; x < testMaze.getWidth(); x++)
+    		{
+    			if(!testFloor.hasWall(x, 0, CardinalDirection.North))
+    			{
+    				isFound = true;
+    				break;
+    			}
+    		}
+    		
+    		//Check an exit hasn't been found yet or end already
+    		if(isFound)
+    		{
+    			break;
+    		}
     	
-    	//Iterate through cells on top and check if they have no wallboard
-    	//facing north
-    	//If there is one cell like that, set the flag to true
+    		//Iterate through cells on left and check if they have no wallboard
+    		//facing west
+    		//If there is one cell like that, set the flag to true
+    		for(int y = 0; y < testMaze.getHeight(); y++)
+    		{
+    			if(!testFloor.hasWall(0, y, CardinalDirection.West))
+    			{
+    				isFound = true;
+    				break;
+    			}
+    		}
+    		
+    		//Check an exit hasn't been found yet or end already
+    		if(isFound)
+    		{
+    			break;
+    		}
+    		
+    		//Iterate through cells on right and check if they have no wallboard
+    		//facing east
+    		//If there is one cell like that, set the flag to true
+    		for(int y = 0; y < testMaze.getHeight(); y++)
+    		{
+    			if(!testFloor.hasWall(testMaze.getWidth(), y, CardinalDirection.East))
+    			{
+    				isFound = true;
+    				break;
+    			}
+    		}
     	
-    	//Iterate through cells on left and check if they have no wallboard
-    	//facing west
-    	//If there is one cell like that, set the flag to true
+    		//Check an exit hasn't been found yet or end already
+    		if(isFound)
+    		{
+    			break;
+    		}
+    		
+    		//Iterate through cells on bottom and check if they have no wallboard
+    		//facing south
+    		//If there is one cell like that, set the flag to true
     	
-    	//Iterate through cells on right and check if they have no wallboard
-    	//facing east
-    	//If there is one cell like that, set the flag to true
+    		for(int x = 0; x < testMaze.getWidth(); x++)
+    		{
+    			if(!testFloor.hasWall(x, testMaze.getHeight(), CardinalDirection.South))
+    			{
+    				isFound = true;
+    				break;
+    			}
+    		}
+    		
+    		//Assert that the flag is true.
+    		assertTrue(isFound);
+    	}
     	
-    	//Iterate through cells on bottom and check if they have no wallboard
-    	//facing south
-    	//If there is one cell like that, set the flag to true
     	
-    	//Assert that the flag is true.
     }
     
     /**
@@ -408,30 +484,66 @@ public class MazeFactoryTest
     @Test
     public final void testHasOnlyOneExit()
     {
+    	//Create a floorplan object to hold layout of each maze
+    	Floorplan testFloor;
     	//Create a Maze object to hold the currently tested maze
+    	Maze testMaze;
     	//Create an integer counter set to 0 to see how many exits are found
+    	int exits = 0;
 
     	//Loop through all created mazes
+    	for(int i = 0; i < 10; i++)
+    	{
+    		testMaze = getMazeVariable(i);
+    		
+    		//Iterate through all external cells like so and stop looping when
+    		//the flag has been made true.
+    		testFloor = testMaze.getFloorplan();
     	
-    	//Iterate through all external cells like so
+    		//Iterate through all external cells like so
+        	
+        	//Iterate through cells on top and check if they have no wallboard
+        	//facing north
+        	//If there is a cell like that, increment the counter
+    		for(int x = 0; x < testMaze.getWidth(); x++)
+    		{
+    			if(!testFloor.hasWall(x, 0, CardinalDirection.North))
+    				exits++;
+    		}
+    		
+    		//Iterate through cells on left and check if they have no wallboard
+        	//facing west
+        	//If there is a cell like that, increment the counter
+    		for(int y = 0; y < testMaze.getHeight(); y++)
+    		{
+    			if(!testFloor.hasWall(0, y, CardinalDirection.West))
+    				exits++;
+    		}
     	
-    	//Iterate through cells on top and check if they have no wallboard
-    	//facing north
-    	//If there is a cell like that, increment the counter
+    		//Iterate through cells on right and check if they have no wallboard
+    		//facing east
+    		//If there is a cell like that, increment the counter
+    		for(int y = 0; y < testMaze.getHeight(); y++)
+    		{
+    			if(!testFloor.hasWall(testMaze.getWidth() - 1, y, CardinalDirection.East))
+    				exits++;
+    		}
     	
-    	//Iterate through cells on left and check if they have no wallboard
-    	//facing west
-    	//If there is a cell like that, increment the counter
-    	
-    	//Iterate through cells on right and check if they have no wallboard
-    	//facing east
-    	//If there is a cell like that, increment the counter
-    	
-    	//Iterate through cells on bottom and check if they have no wallboard
-    	//facing south
-    	//If there is a cell like that, increment the counter
-    	
-    	//Assert that the counter is equal to 1.
+    		//Iterate through cells on bottom and check if they have no wallboard
+    		//facing south
+    		//If there is a cell like that, increment the counter
+    		for(int x = 0; x < testMaze.getWidth(); x++)
+    		{
+    			if(!testFloor.hasWall(x, testMaze.getHeight() - 1, CardinalDirection.South))
+    				exits++;
+    		}
+    		
+    		//Assert that the counter is equal to 1.
+    		assertEquals(exits, 1);
+    		
+    		//Reset exits counter for next maze
+    		exits = 0;
+    	}
     }
     
     /**
