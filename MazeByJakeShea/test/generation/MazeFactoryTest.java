@@ -2,12 +2,18 @@ package generation;
 
 import static org.junit.Assert.*;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import generation.MazeBuilder;
+import gui.Controller;
+import generation.Order;
+import generation.Order.Builder;
+import generation.StubOrder;
 
 public class MazeFactoryTest
 {   
+	
     /**
      * Test Case: Check if something gets built by the factory.
      * Routine being tested: order
@@ -21,15 +27,23 @@ public class MazeFactoryTest
     public final void testOrderDFS()
     {
     	//Create a MazeFactory object to interact with
-    	//Create an order variable with default builder for a maze
+    	MazeFactory factory = new MazeFactory();
+    	//Create a StubOrder variable with default builder for a maze
+    	StubOrder order = new StubOrder();
+    	order.setBuilder(Builder.DFS);
+    	
     	//Create a boolean flag to see if order worked or not.
+    	boolean flag = false;
     	
     	//Use order as parameter for factory's order function.
     	//Set boolean flag equal to the function call.
+    	flag = factory.order(order);
     	
     	//Wait until building thread terminates
+    	factory.waitTillDelivered();
     	
     	//Assert that boolean flag is true.
+    	assertTrue(flag);
     }
        
     /**
@@ -45,15 +59,22 @@ public class MazeFactoryTest
     public final void testOrderPrim()
     {
     	//Create a MazeFactory object to interact with
-    	//Create an order variable with Prim builder for a maze
+    	MazeFactory factory = new MazeFactory();
+    	//Create a controller variable with Prim builder for a maze
+    	StubOrder order = new StubOrder();
+    	order.setBuilder(Builder.Prim);
     	//Create a boolean flag to see if order worked or not.
+    	boolean flag = false;
     	
     	//Use order as parameter for factory's order function.
     	//Set boolean flag equal to the function call.
+    	flag = factory.order(order);
     	
     	//Wait until building thread terminates
+    	factory.waitTillDelivered();
     	
     	//Assert that boolean flag is true.
+    	assertTrue(flag);
     }
     
     /**
@@ -70,15 +91,22 @@ public class MazeFactoryTest
     public final void testOrderBoruvka()
     {
     	//Create a MazeFactory object to interact with
-    	//Create an order variable with Boruvka builder for a maze
+    	MazeFactory factory = new MazeFactory();
+    	//Create a StubOrder variable with Boruvka builder for a maze
+    	StubOrder order = new StubOrder();
+    	order.setBuilder(Builder.Boruvka);
     	//Create a boolean flag to see if order worked or not.
+    	boolean flag = false;
     	
     	//Use order as parameter for factory's order function.
     	//Set boolean flag equal to the function call.
+    	flag = factory.order(order);
     	
     	//Wait until building thread terminates
+    	factory.waitTillDelivered();
     	
     	//Assert that boolean flag is true.
+    	assertTrue(flag);
     }
     
     /**
@@ -95,15 +123,22 @@ public class MazeFactoryTest
     public final void testOrderEller()
     {
     	//Create a MazeFactory object to interact with
-    	//Create an order variable with Eller builder for a maze
+    	MazeFactory factory = new MazeFactory();
+    	//Create a StubOrder variable with Eller builder for a maze
+    	StubOrder order = new StubOrder();
+    	order.setBuilder(Builder.Eller);
     	//Create a boolean flag to see if order worked or not.
+    	boolean flag = false;
     	
     	//Use order as parameter for factory's order function.
     	//Set boolean flag equal to the function call.
+    	flag = factory.order(order);
     	
     	//Wait until building thread terminates
+    	factory.waitTillDelivered();
     	
     	//Assert that boolean flag is false.
+    	assertFalse(flag);
     }
     
     /**
@@ -120,15 +155,22 @@ public class MazeFactoryTest
     public final void testOrderKruskal()
     {
     	//Create a MazeFactory object to interact with
-    	//Create an order variable with Kruskal builder for a maze
+    	MazeFactory factory = new MazeFactory();
+    	//Create a controller variable with Kruskal builder for a maze
+    	StubOrder order = new StubOrder();
+    	order.setBuilder(Builder.Kruskal);
     	//Create a boolean flag to see if order worked or not.
+    	boolean flag = false;
     	
     	//Use order as parameter for factory's order function.
     	//Set boolean flag equal to the function call.
+    	flag = factory.order(order);
     	
     	//Wait until building thread terminates
+    	factory.waitTillDelivered();
     	
     	//Assert that boolean flag is false.
+    	assertFalse(flag);
     }
     
     /**
@@ -142,11 +184,14 @@ public class MazeFactoryTest
     public final void testHasExitAttribute()
     {
     	//Create a MazeFactory object to interact with
-    	//Create an order variable with Kruskal builder for a maze
-    	//Create a boolean flag to see if order worked or not.
+    	//Create a StubOrder variable for a maze
+    	//Create Distance object to check exit position
     	
     	//Use order as parameter for factory's order function.
+    	
     	//Wait until building thread terminates
+    	
+    	//Set Distance object from MazeContainer in StubOrder object
     	
     	//Assert that getExitPosition in dist attribute in MazeBuilder is not none.
     }
@@ -186,7 +231,7 @@ public class MazeFactoryTest
     public final void testHasExit()
     {
     	//Create a MazeFactory object to interact with
-    	//Create an order variable with default builder for a maze
+    	//Create a controller variable with default builder for a maze
     	//Create a boolean flag set to false to see if an exit has been found
     	
     	//Use order as parameter for factory's order function.
@@ -229,7 +274,7 @@ public class MazeFactoryTest
     public final void testHasOnlyOneExit()
     {
     	//Create a MazeFactory object to interact with
-    	//Create an order variable with default builder for a maze
+    	//Create a controller variable with default builder for a maze
     	//Create a counter variable to check how many external openings there are
     	
     	//Use order as parameter for factory's order function.
@@ -269,7 +314,7 @@ public class MazeFactoryTest
     public final void testAllHaveDistance()
     {
     	//Create a MazeFactory object to interact with
-    	//Create an order variable with default builder for a maze
+    	//Create a controller variable with default builder for a maze
     	
     	//Use order as parameter for factory's order function.
     	//Wait until building thread terminates
@@ -290,7 +335,7 @@ public class MazeFactoryTest
     public final void testExitIsMinimal()
     {
     	//Create a MazeFactory object to interact with
-    	//Create an order variable with default builder for a maze
+    	//Create a controller variable with default builder for a maze
     	
     	//Use order as parameter for factory's order function.
     	//Wait until building thread terminates
@@ -314,7 +359,7 @@ public class MazeFactoryTest
     public final void testStartIsMaximal()
     {
     	//Create a MazeFactory object to interact with
-    	//Create an order variable with default builder for a maze
+    	//Create a controller variable with default builder for a maze
     	
     	//Use order as parameter for factory's order function.
     	//Wait until building thread terminates
@@ -341,7 +386,7 @@ public class MazeFactoryTest
     public final void testPerfection()
     {
     	//Create a MazeFactory object to interact with
-    	//Create an order variable with default builder for a maze
+    	//Create a controller variable with default builder for a maze
     	
     	//Use order as parameter for factory's order function.
     	//Wait until building thread terminates
@@ -365,7 +410,7 @@ public class MazeFactoryTest
     public final void testPerfectMazeNoRooms()
     {
     	//Create a MazeFactory object to interact with
-    	//Create an order variable with Kruskal builder for a maze
+    	//Create a controller variable with Kruskal builder for a maze
     	//Create a maze-sized matrix for boolean values.
     	//Create boolean flag for existence of rooms set to false.
     	
