@@ -2,7 +2,7 @@ package generation;
 
 import static org.junit.Assert.*;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import generation.MazeBuilder;
@@ -13,6 +13,143 @@ import generation.StubOrder;
 
 public class MazeFactoryTest
 {   
+	//Private variables
+	private static Maze maze0;
+	private static Maze maze1;
+	private static Maze maze2;
+	private static Maze maze3;
+	private static Maze maze4;
+	private static Maze maze5;
+	private static Maze maze6;
+	private static Maze maze7;
+	private static Maze maze8;
+	private static Maze maze9;
+	private static StubOrder setupOrder;
+	private static MazeFactory factorySetup;
+	
+	/**
+	 * Create 10 mazes of varying difficulty for ease of testing.
+	 * This makes it so tests don't have to remake mazes multiple times.
+	 */
+	@BeforeClass
+	public static void setUp()
+	{
+		//Set up order variable and factory object
+		setupOrder = new StubOrder();
+		factorySetup = new MazeFactory();
+		
+		//Give Order variable default builder.
+		//This can get overwritten when making test cases for Boruvka
+		setupOrder.setBuilder(Builder.DFS);
+		
+		//Loop through all ten skill levels
+		for(int skill = 0; skill < 10; skill++)
+		{
+			//Recreate the order with a new skill and build a maze with it
+			setupOrder.setSkill(skill);
+			factorySetup.order(setupOrder);
+			
+			//Wait for order to finish
+			factorySetup.waitTillDelivered();
+			
+			//Choose which maze variable to update based on which skill level
+			//is currently being used.
+			switch(setupOrder.getSkillLevel())
+			{
+				case 0:
+				{
+					maze0 = setupOrder.getMaze();
+					break;
+				}
+				case 1:
+				{
+					maze1 = setupOrder.getMaze();
+					break;
+				}
+				case 2:
+				{
+					maze2 = setupOrder.getMaze();
+					break;
+				}
+				case 3:
+				{
+					maze3 = setupOrder.getMaze();
+					break;
+				}
+				case 4:
+				{
+					maze4 = setupOrder.getMaze();
+					break;
+				}
+				case 5:
+				{
+					maze5 = setupOrder.getMaze();
+					break;
+				}
+				case 6:
+				{
+					maze6 = setupOrder.getMaze();
+					break;
+				}
+				case 7:
+				{
+					maze7 = setupOrder.getMaze();
+					break;
+				}
+				case 8:
+				{
+					maze8 = setupOrder.getMaze();
+					break;
+				}
+				case 9:
+				{
+					maze9 = setupOrder.getMaze();
+					break;
+				}
+				default:
+				{
+					System.out.println("No maze was made.");
+					break;
+				}
+			}
+			
+		}
+	}
+	
+	/**
+	 * Nothing needed to clean up variables after each test
+	 * @throws Exception
+	 */
+	/*
+	@After
+	public void tearDown() throws Exception {
+	}
+	
+	/**
+	 * Figures out which maze to test, as these tests can work with
+	 * multiple different skill levels of mazes.
+	 * @param choice: The choice will map to the skill level of
+	 * whichever maze is wanted by the tests.
+	 * @return: Returns the correct maze of specified skill level.
+	 */
+	private Maze chooseMazeVariable(int choice)
+	{
+		//Figures which maze is wanted by the test.
+		switch(choice)
+		{
+			case 0: return maze0;
+			case 1: return maze1;
+			case 2: return maze2;
+			case 3: return maze3;
+			case 4: return maze4;
+			case 5: return maze5;
+			case 6: return maze6;
+			case 7: return maze7;
+			case 8: return maze8;
+			case 9: return maze9;
+			default: return null;
+		}
+	}
 	
     /**
      * Test Case: Check if something gets built by the factory.
@@ -183,17 +320,15 @@ public class MazeFactoryTest
     @Test
     public final void testHasExitAttribute()
     {
-    	//Create a MazeFactory object to interact with
-    	//Create a StubOrder variable for a maze
-    	//Create Distance object to check exit position
+    	//Create a Distance object to check exit position
+    	//Create a Maze object to hold the currently tested maze
+    	//Loop through all created mazes
+    		
+    	//Set Distance object from each maze
+    		
+    	//Assert that getExitPosition in dist attribute in MazeBuilder is not none
+        //for each maze.
     	
-    	//Use order as parameter for factory's order function.
-    	
-    	//Wait until building thread terminates
-    	
-    	//Set Distance object from MazeContainer in StubOrder object
-    	
-    	//Assert that getExitPosition in dist attribute in MazeBuilder is not none.
     }
     
     /**
@@ -206,14 +341,16 @@ public class MazeFactoryTest
     @Test
     public final void testHasStartAttribute()
     {
-    	//Create a MazeFactory object to interact with
-    	//Create an order variable with Kruskal builder for a maze
-    	//Create a boolean flag to see if order worked or not.
-    	
-    	//Use order as parameter for factory's order function.
-    	//Wait until building thread terminates
-    	
-    	//Assert that getStartPosition in dist attribute in MazeBuilder is not none.
+    	//Create a Distance object to check exit position
+    	Distance mazeDist;
+    	//Create a Maze object to hold the currently tested maze
+    	Maze testMaze;
+    	//Loop through all created mazes
+    		
+    	//Set Distance object from each maze
+    		
+    	//Assert that getStartPosition in dist attribute in MazeBuilder is not none
+        //for each maze.
     }
     
     /**
@@ -230,12 +367,10 @@ public class MazeFactoryTest
     @Test
     public final void testHasExit()
     {
-    	//Create a MazeFactory object to interact with
-    	//Create a controller variable with default builder for a maze
+    	//Create a Maze object to hold the currently tested maze
     	//Create a boolean flag set to false to see if an exit has been found
-    	
-    	//Use order as parameter for factory's order function.
-    	//Wait until building thread terminates
+
+    	//Loop through all created mazes
     	
     	//Iterate through all external cells like so and stop looping when
     	//the flag has been made true.
@@ -273,12 +408,10 @@ public class MazeFactoryTest
     @Test
     public final void testHasOnlyOneExit()
     {
-    	//Create a MazeFactory object to interact with
-    	//Create a controller variable with default builder for a maze
-    	//Create a counter variable to check how many external openings there are
-    	
-    	//Use order as parameter for factory's order function.
-    	//Wait until building thread terminates
+    	//Create a Maze object to hold the currently tested maze
+    	//Create an integer counter set to 0 to see how many exits are found
+
+    	//Loop through all created mazes
     	
     	//Iterate through all external cells like so
     	
@@ -313,11 +446,9 @@ public class MazeFactoryTest
     @Test
     public final void testAllHaveDistance()
     {
-    	//Create a MazeFactory object to interact with
-    	//Create a controller variable with default builder for a maze
-    	
-    	//Use order as parameter for factory's order function.
-    	//Wait until building thread terminates
+    	//Create a Maze object to hold the currently tested maze
+
+    	//Loop through all created mazes
     	
     	//Run through every value in dist attribute in builder attribute in MazeFactory.
     	//Assert that each value is not none.
@@ -334,13 +465,13 @@ public class MazeFactoryTest
     @Test
     public final void testExitIsMinimal()
     {
-    	//Create a MazeFactory object to interact with
-    	//Create a controller variable with default builder for a maze
-    	
-    	//Use order as parameter for factory's order function.
-    	//Wait until building thread terminates
+    	//Create a Maze object to hold the currently tested maze
+    	//Create a boolean flag set to false to see if an exit has been found
     	
     	//Create int array with two values to hold exit position.
+    	
+    	//Loop through all created mazes
+    	
     	//Use dist's getExitPosition() function and put it into int array
     	
     	//Iterate through every value in dist attribute in builder attribute in MazeFactory object.
@@ -358,44 +489,19 @@ public class MazeFactoryTest
     @Test
     public final void testStartIsMaximal()
     {
-    	//Create a MazeFactory object to interact with
-    	//Create a controller variable with default builder for a maze
-    	
-    	//Use order as parameter for factory's order function.
-    	//Wait until building thread terminates
+    	//Create a Maze object to hold the currently tested maze
+    	//Create a boolean flag set to false to see if an exit has been found
     	
     	//Create int array with two values to hold starting position.
+    	
+    	//Loop through all created mazes
+    	
     	//Use dist's getStartPosition() function and put it into int array
     	
     	//Iterate through every value in dist attribute in builder attribute in MazeFactory object.
     	//Assert that value at exit position is greater than or equal to every other value.
     	//Is allowed to be equal because there may be another place that is equally far,
     	//only exit can there be one
-    }
-    
-    /**
-     * Test Case: Check that maze is categorized as perfect when it should be
-     * Routine being tested: generate
-     * 
-     * After a maze has been created, check if it has any rooms.
-     * Then, check whether or not it is perfect. Either it has
-     * rooms and is not perfect, or it has no rooms and therefore
-     * is perfect. Anything else is a bug.
-     */
-    @Test
-    public final void testPerfection()
-    {
-    	//Create a MazeFactory object to interact with
-    	//Create a controller variable with default builder for a maze
-    	
-    	//Use order as parameter for factory's order function.
-    	//Wait until building thread terminates
-    	
-    	//Check if the order is perfect
-    	//If so, assert that the rooms attribute in the MazeBuilder equals 0
-    	
-    	//Else, check if the order is not perfect.
-    	//If so, check that the rooms attribute does not equal 0.
     }
     
     /**
@@ -410,9 +516,11 @@ public class MazeFactoryTest
     public final void testPerfectMazeNoRooms()
     {
     	//Create a MazeFactory object to interact with
-    	//Create a controller variable with Kruskal builder for a maze
+    	//Create an order variable with default builder and perfect set for a maze\
     	//Create a maze-sized matrix for boolean values.
     	//Create boolean flag for existence of rooms set to false.
+    	
+    	//Loop for all skill levels
     	
     	//Use order as parameter for factory's order function.
     	//Wait until building thread terminates
@@ -431,5 +539,29 @@ public class MazeFactoryTest
     	//MazeBuilder.java, set the boolean flag to true and break the loop.
     	
     	//Assert the boolean flag equals false.
+    }
+    
+    /**
+     * Test Case: Check if a perfect maze has correct number of walls
+     * Routine being tested: generate
+     * 
+     * Tests if the maze has the current number of internal walls.
+     */
+    @Test
+    public final void testInternalWallCount()
+    {
+    	//Create a MazeFactory object.
+    	//Set up an order variable with default builder and perfect as true
+    	//Create an integer counter to keep track of all internal walls
+    	
+    	//Use order for MazeFactory's order method
+    	//Wait until building thread terminates
+    	
+    	//Count all internal walls within maze
+    	
+    	//For maze of dimensions x and y
+    	//Assert that counter is equal to (x+1)y [all possible vertical walls]
+    	//+ x(y+1) [all horizontal walls] - 2(x+y) [All external walls]
+    	//- (x + y - 1) [Walls destroyed by making a minimal spanning tree]
     }
 }
