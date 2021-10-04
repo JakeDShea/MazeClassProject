@@ -24,12 +24,14 @@ public class MazeFactoryTest
 	private static Maze maze7;
 	private static Maze maze8;
 	private static Maze maze9;
+	private static Maze perfectMaze ;
 	private static StubOrder setupOrder;
 	private static MazeFactory factorySetup;
 	
 	/**
 	 * Create 10 mazes of varying difficulty for ease of testing.
 	 * This makes it so tests don't have to remake mazes multiple times.
+	 * Do not do skill levels a-f because it would be too expensive to create them.
 	 */
 	@BeforeClass
 	public static void setUp()
@@ -114,6 +116,14 @@ public class MazeFactoryTest
 			}
 			
 		}
+		
+		//Creates perfect maze for use for tests that need one
+		setupOrder.setPerfect(true);
+		factorySetup.order(setupOrder);
+		
+		factorySetup.waitTillDelivered();
+		
+		perfectMaze = setupOrder.getMaze();
 	}
 	
 	/**
@@ -559,11 +569,25 @@ public class MazeFactoryTest
     public final void testAllHaveDistance()
     {
     	//Create a Maze object to hold the currently tested maze
+    	Maze testMaze;
+    	//Create Distance object to hold mazes distance matrix
+    	Distance testDist;
 
     	//Loop through all created mazes
-    	
-    	//Run through every value in dist attribute in builder attribute in MazeFactory.
-    	//Assert that each value is not none.
+    	for(int i = 0; i < 10; i++)
+    	{
+    		testMaze = getMazeVariable(i);
+    		
+    		//Run through every value in dist attribute in testMaze.
+    		testDist = testMaze.getMazedists();
+    		
+    		for(int x = 0; x < testMaze.getWidth(); x++)
+    			for(int y = 0; y < testMaze.getHeight(); y++)
+    			{
+    				//Assert that each value is not none.
+    				assertNotNull(testDist.getDistanceValue(x, y));
+    			}
+    	}
     }
     
     /**
@@ -578,16 +602,41 @@ public class MazeFactoryTest
     public final void testExitIsMinimal()
     {
     	//Create a Maze object to hold the currently tested maze
-    	//Create a boolean flag set to false to see if an exit has been found
-    	
+    	Maze testMaze;
     	//Create int array with two values to hold exit position.
+    	int[] exitPos = new int[2];
+    	//Create a distance object to use distance's methods
+    	Distance testDist;
+    	//Create an integer to check what the minimum distance is.
+    	int min = Integer.MAX_VALUE;
     	
     	//Loop through all created mazes
+    	for(int i = 0; i < 10; i++)
+    	{
+    		testMaze = getMazeVariable(i);
+    		testDist = testMaze.getMazedists();
+    		
+    		//Use dist's getExitPosition() function and put it into int array
+    		exitPos = testDist.getExitPosition();
     	
-    	//Use dist's getExitPosition() function and put it into int array
-    	
-    	//Iterate through every value in dist attribute in builder attribute in MazeFactory object.
-    	//Assert that value at exit position is smaller than every other value besides itself.
+    		//Iterate through every value in dist attribute in builder attribute in MazeFactory object.
+    		for(int x = 0; x < testMaze.getWidth(); x++)
+    			for(int y = 0; y < testMaze.getHeight(); y++)
+    			{
+    				//Find smallest value in maze besides the exit position itself
+    				if(x != exitPos[0] || y != exitPos[1])
+    				{
+    					if(min > testDist.getDistanceValue(x, y))
+    						min = testDist.getDistanceValue(x, y);
+    				}
+    			}
+    		
+    		//Assert that value at exit position is smaller than every other value besides itself.
+    		assertTrue(testDist.getDistanceValue(exitPos[0], exitPos[1]) < min);
+    		
+    		//Fixes min back to large value so tests can stay up to date.
+    		min = Integer.MAX_VALUE;
+    	}
     }
     
     /**
@@ -602,18 +651,43 @@ public class MazeFactoryTest
     public final void testStartIsMaximal()
     {
     	//Create a Maze object to hold the currently tested maze
-    	//Create a boolean flag set to false to see if an exit has been found
-    	
-    	//Create int array with two values to hold starting position.
+    	Maze testMaze;
+    	//Create int array with two values to hold exit position.
+    	int[] startPos = new int[2];
+    	//Create a distance object to use distance's methods
+    	Distance testDist;
+    	//Create an integer to check what the maximum distance is.
+    	int max = Integer.MIN_VALUE;
     	
     	//Loop through all created mazes
-    	
-    	//Use dist's getStartPosition() function and put it into int array
-    	
-    	//Iterate through every value in dist attribute in builder attribute in MazeFactory object.
-    	//Assert that value at exit position is greater than or equal to every other value.
-    	//Is allowed to be equal because there may be another place that is equally far,
-    	//only exit can there be one
+    	for(int i = 0; i < 10; i++)
+    	{
+    		testMaze = getMazeVariable(i);
+    		testDist = testMaze.getMazedists();
+    		
+    		//Use dist's getStartPosition() function and put it into int array
+    		startPos = testDist.getStartPosition();
+    		
+    		//Iterate through every value in dist attribute in builder attribute in MazeFactory object.
+    		for(int x = 0; x < testMaze.getWidth(); x++)
+    			for(int y = 0; y < testMaze.getHeight(); y++)
+    			{
+    				//Find smallest value in maze besides the exit position itself
+    				if(x != startPos[0] || y != startPos[1])
+    				{
+    					if(max < testDist.getDistanceValue(x, y))
+    						max = testDist.getDistanceValue(x, y);
+    				}
+    			}
+    		
+    		//Assert that value at start position is greater than or equal to every other value.
+    		//Is allowed to be equal because there may be another place that is equally far,
+    		//only for minimal values near the exit can there be one.
+    		assertTrue(testDist.getDistanceValue(startPos[0], startPos[1]) >= max);
+    		
+    		//Fixes max back to smallest value to keep test up and running correctly
+    		max = Integer.MIN_VALUE;
+    	}
     }
     
     /**
@@ -627,30 +701,62 @@ public class MazeFactoryTest
     @Test
     public final void testPerfectMazeNoRooms()
     {
-    	//Create a MazeFactory object to interact with
-    	//Create an order variable with default builder and perfect set for a maze\
-    	//Create a maze-sized matrix for boolean values.
     	//Create boolean flag for existence of rooms set to false.
+    	boolean hasRooms = false;
     	
-    	//Loop for all skill levels
-    	
-    	//Use order as parameter for factory's order function.
-    	//Wait until building thread terminates
-    	
-    	//Check if order is perfect, if not then test doesn't matter.
-    	//Assert that order is perfect is true.
+    	//Create a maze-sized matrix for boolean values.
+    	boolean[][] roomMatrix = new boolean[perfectMaze.getWidth()][perfectMaze.getHeight()];
     	
     	//Iterate through every cell.
     	//If a cell has zero wallboards, put true in the corresponding cell
     	//in the boolean 2d array.
     	//Otherwise you put false.
+    	for(int x = 0; x < perfectMaze.getWidth(); x++)
+    		for(int y = 0; y < perfectMaze.getHeight(); y++)
+    		{
+    			if(perfectMaze.getFloorplan().hasNoWall(x, y, CardinalDirection.North) && 
+    				perfectMaze.getFloorplan().hasNoWall(x, y, CardinalDirection.South) &&
+    				perfectMaze.getFloorplan().hasNoWall(x, y, CardinalDirection.West) &&
+    				perfectMaze.getFloorplan().hasNoWall(x, y, CardinalDirection.East))
+    				roomMatrix[x][y] = true; 
+    			else
+					roomMatrix[x][y]= false; 
+    		}
+    	
+    	boolean foundRoom = false;
+    	boolean didntFindRoom = false;
     	
     	//Go through the boolean array.
-    	//Whenever you hit a true, check if the neighboring cells are also true.
-    	//If this makes a square of at least the constant MIN_ROOM_DIMENSION in
-    	//MazeBuilder.java, set the boolean flag to true and break the loop.
+    	for(int x = 0; x < perfectMaze.getWidth(); x++)
+    		for(int y = 0; y < perfectMaze.getHeight(); y++)
+    		{
+    			//Whenever you hit a true, check if the neighboring cells are also true.
+    			if(roomMatrix[x][y])
+    			{
+    				//If this makes a square of at least the constant MIN_ROOM_DIMENSION in
+    				//MazeBuilder.java, set the boolean flag to true and break the loop.
+    				for(int roomX = x; roomX < x + MazeBuilder.MIN_ROOM_DIMENSION; roomX++)
+    					for(int roomY = y; roomY < y + MazeBuilder.MIN_ROOM_DIMENSION; roomY++)
+    					{
+    						//Ends termination
+    						if(!roomMatrix[roomX][roomY])
+    						{
+    							roomX = x + MazeBuilder.MIN_ROOM_DIMENSION;
+    							didntFindRoom = true;
+    							break;
+    						}
+    					}
+    				
+    				//Checks if a room was actually found
+    				if(!didntFindRoom)
+    					foundRoom = true;
+    				else
+						didntFindRoom = false;
+    			}
+    		}
     	
     	//Assert the boolean flag equals false.
+    	assertFalse(foundRoom);
     }
     
     /**
@@ -662,18 +768,41 @@ public class MazeFactoryTest
     @Test
     public final void testInternalWallCount()
     {
-    	//Create a MazeFactory object.
-    	//Set up an order variable with default builder and perfect as true
     	//Create an integer counter to keep track of all internal walls
-    	
-    	//Use order for MazeFactory's order method
-    	//Wait until building thread terminates
+    	int walls = 0;
     	
     	//Count all internal walls within maze
+    	for(int x = 0; x < perfectMaze.getWidth(); x++)
+    		for(int y = 0; y < perfectMaze.getHeight(); y++)
+    		{
+    			//Checks any edge cases for counting wall, specifically the bottom row and the right column
+    			if((x == perfectMaze.getWidth() - 1) && (y == perfectMaze.getHeight() - 1))
+    				walls += 0;
+    			else if (x == perfectMaze.getWidth() - 1)
+    			{
+    				if(perfectMaze.getFloorplan().hasWall(x, y, CardinalDirection.South))
+    					walls++;
+    			}
+    			else if(y == perfectMaze.getHeight() - 1)
+    			{
+    				if(perfectMaze.getFloorplan().hasWall(x, y, CardinalDirection.East))
+    					walls++;
+    			}
+    			else
+    			{
+    				if(perfectMaze.getFloorplan().hasWall(x, y, CardinalDirection.East))
+    					walls++;
+    				
+    				if(perfectMaze.getFloorplan().hasWall(x, y, CardinalDirection.South))
+    					walls++;
+				}
+    		}
     	
     	//For maze of dimensions x and y
     	//Assert that counter is equal to (x+1)y [all possible vertical walls]
     	//+ x(y+1) [all horizontal walls] - 2(x+y) [All external walls]
     	//- (x + y - 1) [Walls destroyed by making a minimal spanning tree]
+    	assertEquals(walls, (((perfectMaze.getWidth() + 1) * perfectMaze.getHeight()) + (perfectMaze.getWidth() * (perfectMaze.getHeight() + 1)) -
+    			(2 * (perfectMaze.getWidth() + perfectMaze.getHeight())) - (perfectMaze.getWidth() * perfectMaze.getHeight() - 1)));
     }
 }

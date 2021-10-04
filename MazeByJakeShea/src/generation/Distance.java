@@ -67,7 +67,7 @@ public class Distance {
 	private int[] startPosition;
 	// Memo: the start position is also stored in the MazeContainer, supports a set method
 	// this could lead to inconsistent settings between MazeContainer and Distance object at runtime.
-	// TODO: avoid redundancy of start position, remove startPosition from Distance, replease with getPositionWithMaxDistance
+	// TODO: avoid redundancy of start position, remove startPosition from Distance, replace with getPositionWithMaxDistance
 	
 	/**
 	 * Constructor
