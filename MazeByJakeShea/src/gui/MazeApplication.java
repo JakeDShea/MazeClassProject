@@ -93,7 +93,8 @@ public class MazeApplication extends JFrame {
 	    else if ("Boruvka".equalsIgnoreCase(parameter))
 	    {
 	    	// TODO: for P2 assignment, please add code to set the builder accordingly
-	        throw new RuntimeException("Don't know anybody named Boruvka ...");
+	    	msg = "MazeApplication: generating random maze with Boruvka's algorithm.";
+	        result.setBuilder(Order.Builder.Boruvka);
 	    }
 	    // Case 4: a file
 	    else {

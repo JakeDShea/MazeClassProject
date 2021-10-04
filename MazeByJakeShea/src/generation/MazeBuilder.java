@@ -2,7 +2,6 @@ package generation;
 
 import gui.Constants;
 
-
 /**
  * This class has the responsibility to create a maze of given dimensions (width, height) 
  * together with a solution based on a distance matrix.
@@ -61,7 +60,8 @@ public class MazeBuilder implements Runnable {
 		height = Constants.SKILL_Y[skill];
 		// only algorithm without rooms guarantees a perfect maze
 		// rooms can result in loops, so for a perfect maze, set room number to 0
-		rooms = order.isPerfect() ? 0 : Constants.SKILL_ROOMS[skill];
+		//rooms = order.isPerfect() ? 0 : Constants.SKILL_ROOMS[skill];
+		rooms = 0;
 		expectedPartiters = Constants.SKILL_PARTCT[skill];
 		// instantiate data structures
 		floorplan = new Floorplan(width,height) ;
