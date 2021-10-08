@@ -29,10 +29,7 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 		int weight = 0;
 		
 		//If wallboard is an external wall, simply return maximum integer.
-		if((w.getX() == 0 && Arrays.equals(w.getDirection().getDirection(), CardinalDirection.West.getDirection()) ||
-			(w.getX() == width - 1 && Arrays.equals(w.getDirection().getDirection(), CardinalDirection.East.getDirection())) ||
-			(w.getY() == 0 && Arrays.equals(w.getDirection().getDirection(), CardinalDirection.North.getDirection())) ||
-			(w.getY() == height - 1 && Arrays.equals(w.getDirection().getDirection(), CardinalDirection.South.getDirection()))))
+		if(floorplan.isPartOfBorder(w))
 			return Integer.MAX_VALUE;
 		
 		//First, check which direction wallboard w contains.
@@ -49,8 +46,12 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 		
 		//Use seed to get value from 1000 size int array, and use it in a function to create
 		//a "random" integer.
-		weight = seedVals[(((wallX * wallY) + wallY) * order.getSeed()) % 1000] + seedVals[(wallX * order.getSeed()) % 1000] +
-				seedVals[(wallY + order.getSeed()) % 1000] + seedVals[order.getSeed() % 1000] * (order.getSeed() % 11);
+		weight = seedVals[(((wallX * wallY) + wallY) * order.getSeed()) % 1000] + seedVals[order.getSeed() % 1000] * (order.getSeed() % 11) +
+				order.getSeed() * wallX + order.getSeed() * wallY + order.getSeed() * (wallY - wallX)
+				+ seedVals[(((wallY * wallX) + wallX) * order.getSeed()) % 1000] + order.getSeed() * (wallX - wallY);
+		
+		if(w.getY() == height - 1)
+			System.out.print("[" + w.getX() + ", " + w.getY() + "] + " + weight + " " + w.getDirection() + "\n");
 		
 		//return said integer.
 		return weight;
@@ -74,6 +75,12 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 		ArrayList<int[]> coor = new ArrayList<int[]>();
 		int[] coordinates = new int[2];
 		
+		//Set up compartmentalized array, which will be useful when creating all the components at the beginning.
+		boolean[][] compartmentalized = new boolean[width][height];
+		for(int i = 0; i < compartmentalized.length; i++)
+			for(int j = 0; j < compartmentalized[i].length; j++)
+				compartmentalized[i][j] = false; 
+		
 		//Sets up mergable array, which will be useful for keep track of where components merge
 		int[][] mergable = new int[width*height][4];
 		for(int i = 0; i < mergable.length; i++)
@@ -87,19 +94,33 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 		//Add these ArrayLists to the large ArrayList.
 		//The smaller ArrayLists are the "components" that one needs in Boruvka's method.
 		for(int x = 0; x < width; x++)
+		{
 			for(int y = 0; y < height; y++)
 			{
+				//Does a subprocedure to create an entire component out of a room if in a room
 				coordinates[0] = x;
 				coordinates[1] = y;
 				
-				coor.add(coordinates);
-				
-				//Adds coordinate into main ArrayList
-				tree.add(deepCopy(coor));
-				
-				//Removes value from coor to keep each pair of coordinates separate.
-				coor.clear();
+				//Checks if in room and not yet created into a component
+				if(floorplan.isInRoom(x, y) && !compartmentalized[x][y])
+					tree.add(deepCopy(roomComponent(tree, compartmentalized, x, y)));
+				else if(!floorplan.isInRoom(x, y) && !compartmentalized[x][y])
+				{
+					coor.add(deepCopy(coordinates));
+					
+					compartmentalized[x][y] = true; 
+					
+					//Adds coordinate into main ArrayList
+					tree.add(deepCopy(coor));
+					
+					//Removes value from coor to keep each pair of coordinates separate.
+					coor.clear();
+				}
 			}
+		}
+		
+		Wallboard test = new Wallboard(0, 0, CardinalDirection.North);
+		String res = "[";
 		
 		int tempX = 0;
 		int tempY = 0;
@@ -246,17 +267,16 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 			
 				if (floorplan.canTearDown(minWallboard))
 					floorplan.deleteWallboard(minWallboard);
-			
 				
 				//Finds the two components that just merged.
 				for(int j = 0; j < tree.size(); j++)
 				{
 					for(int k = 0; k < tree.get(j).size(); k++)
 					{
-					if(Arrays.equals(tree.get(j).get(k), tempCoordinate1))
-						index1 = j;
+						if(Arrays.equals(tree.get(j).get(k), tempCoordinate1))
+							index1 = j;
 						if(Arrays.equals(tree.get(j).get(k), tempCoordinate2))
-						index2 = j;
+							index2 = j;
 					}
 				}
 				
@@ -264,11 +284,34 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 				//Also checks if indices aren't the same, meaning a component that has been combined already
 				if(index1 != index2)
 				{
-					tree.add(index1, mergeComponents(tree.get(index1), tree.get(index2)));
-					tree.remove(index1 + 1);
-					tree.remove(index2);
+					if(index1 < index2)
+					{
+						if(index1 != tree.size())
+						{
+							tree.add(index1, mergeComponents(tree.get(index1), tree.get(index2)));
+							tree.remove(index1 + 1);
+							tree.remove(index2);
+						}
+						else 
+						{
+							tree.add(mergeComponents(tree.get(index1), tree.get(index2)));
+							tree.remove(index1 + 1);
+							tree.remove(index2);
+						}
+					}
+					else
+					{
+						tree.add(index2, mergeComponents(tree.get(index1), tree.get(index2)));
+						tree.remove(index2 + 1);
+						tree.remove(index1);
+					}
+					
 				}
+				
+				index1 = 0;
+				index2 = 0;
 			}
+			
 		}
 		//Repeat this until there is only one ArrayList left in the large ArrayList.
 	}
@@ -279,30 +322,17 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 	private ArrayList<int[]> mergeComponents(ArrayList<int[]> first, ArrayList<int[]> second)
 	{
 		ArrayList<int[]> newComponent = new ArrayList<int[]>();
+		int early = 0;
 		
 		//Uses an ordering system to keep components ordered well.
 		while(!first.isEmpty() && !second.isEmpty())
 		{
-			if(first.get(0)[0] <= second.get(0)[0])
+			early = sortArrayList(first, second);
+			
+			if(early == 1)
 			{
-				if(first.get(0)[0] == second.get(0)[0])
-				{
-					if(first.get(0)[1] <= second.get(0)[1])
-					{
-						newComponent.add(first.get(0));
-						first.remove(0);
-					}
-					else
-					{
-						newComponent.add(second.get(0));
-						second.remove(0);
-					}
-				}
-				else
-				{
-					newComponent.add(first.get(0));
-					first.remove(0);
-				}
+				newComponent.add(first.get(0));
+				first.remove(0);
 			}
 			else
 			{
@@ -349,6 +379,20 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 	}
 	
 	/**
+	 * Creates a deep copy of an array
+	 */
+	private int[] deepCopy(int[] arr)
+	{
+		//Creates copy to return
+		int[] copiedArray = new int[arr.length];
+		
+		copiedArray[0] = arr[0];
+		copiedArray[1] = arr[1];
+		
+		return copiedArray;
+	}
+	
+	/**
 	 * A private helper method to see whether the
 	 * two cells are in the same component or not.
 	 */
@@ -377,5 +421,112 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 		}
 		
 		return foundInComponent;
+	}
+	
+	/**
+	 * Method to create components out of rooms and arbitrarily
+	 * combine it with cells near it not in rooms using the seed
+	 * to allow for Boruvska's algorithm to work
+	 */
+	private ArrayList<int[]> roomComponent(ArrayList<ArrayList<int[]>> mst, boolean[][]compMap, int xCord, int yCord)
+	{
+		//Sets up coordinates
+		int x = xCord;
+		int y = yCord;
+		
+		//Sets up a wallboard for deletion
+		Wallboard deleteWall = new Wallboard(0, 0, CardinalDirection.North);
+		
+		//Sets up return value
+		ArrayList<int[]> component = new ArrayList<int[]>();
+		ArrayList<int[]> compForSorting = new ArrayList<int[]>();
+		int[] coordinates = new int[2];
+		
+		int roomDimX = 0;
+		int roomDimY = 0;
+		
+		while(floorplan.isInRoom(x, y))
+		{
+			coordinates[0] = x;
+			coordinates[1] = y;
+			
+			//Creates an ordered component
+			compForSorting.add(deepCopy(coordinates));
+			component = mergeComponents(deepCopy(component), deepCopy(compForSorting));
+			compForSorting.remove(0);
+			
+			compMap[x][y]= true; 
+			
+			x++;
+			
+			//Checks if iteration has left room through right wall
+			if(!floorplan.isInRoom(x, y))
+			{
+				roomDimX = x - xCord;
+				x = xCord;
+				y++;
+			}
+			
+			//Checks if iteration has fully left room
+			if(!floorplan.isInRoom(x, y))
+			{
+				roomDimY = y - yCord;
+				break;
+			}
+		}
+		return component;
+	}
+	
+	/**
+	 * Pre-condition: Only called when we know the tree contains
+	 * the coordinate array somewhere.
+	 * Method that finds which component contains
+	 * a specified coordinate
+	 */
+	private ArrayList<int[]> whichComponentHas(ArrayList<ArrayList<int[]>> st, int[] coordinate)
+	{
+		//Loops through whole tree
+		for(int index = 0; index < st.size(); index++)
+		{
+			for(int j = 0; j < st.get(index).size(); j++)
+			{
+				if(Arrays.equals(st.get(index).get(j), coordinate))
+				{
+					return st.remove(index);
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Method meant for sorting the components quickly
+	 * returns a 1 for first array, 2 for second
+	 */
+	private int sortArrayList(ArrayList<int[]> first, ArrayList<int[]> second)
+	{
+		if(first.get(0)[0] <= second.get(0)[0])
+		{
+			if(first.get(0)[0] == second.get(0)[0])
+			{
+				if(first.get(0)[1] <= second.get(0)[1])
+				{
+					return 1;
+				}
+				else
+				{
+					return 2;
+				}
+			}
+			else
+			{
+				return 1;
+			}
+		}
+		else
+		{
+			return 2;
+		}
 	}
 }
