@@ -6,13 +6,13 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import generation.Order.Builder;
-import generation.MazeBuilderBoruvka;
 
 public class MazeBuilderBoruvkaTest extends MazeFactoryTest
 {
@@ -855,15 +855,6 @@ public class MazeBuilderBoruvkaTest extends MazeFactoryTest
     			
     			if(weights[i] == weights[i + 1])
     			{
-    				System.out.println(i);
-    				System.out.println(weights[i]);
-    				System.out.println(mazeNum);
-    				System.out.println(counter);
-    				System.out.println(Integer.MAX_VALUE);
-    			}
-    			
-    			if(weights[i] == weights[i + 1])
-    			{
     				assertNotEquals(weights[i], weights[i+1]);
     			}
     			
@@ -1017,5 +1008,27 @@ public class MazeBuilderBoruvkaTest extends MazeFactoryTest
         		}
         	}
     	}
+    }
+    
+    /**
+     * Test Case: Check how builder handles cancelling an order
+     * Routine being tested: order, dbg
+     * 
+     * Tests if maze building handles errors that we expect when we halt
+     * the building process.
+     * Tests no exceptions are thrown, meaning it is handled correctly 
+     */
+    @Test(expected = Test.None.class)
+    public void testInterruption() throws IOException
+    {
+    	//Creates an order for a maze
+    	StubOrder testOrder = new StubOrder();
+    	testOrder.setSeed(9);
+    	testOrder.setBuilder(Builder.Boruvka);
+    	
+    	factorySetup.order(setupOrder0);
+    	
+    	//Cancels order and asserts correct assertion gets thrown.
+    	factorySetup.cancel();
     }
 }
