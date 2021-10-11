@@ -1,15 +1,24 @@
 package generation;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import generation.Order.Builder;
+import generation.MazeBuilderBoruvka;
 
-public class MazeFactoryTest
-{   
-	//Private variables
+public class MazeBuilderBoruvkaTest extends MazeFactoryTest
+{
+	//Setup for testing
+	
+	//Makes all variables of mazes again for ease and optimization of testing
 	private static Maze maze0;
 	private static Maze maze1;
 	private static Maze maze2;
@@ -20,8 +29,20 @@ public class MazeFactoryTest
 	private static Maze maze7;
 	private static Maze maze8;
 	private static Maze maze9;
-	private static Maze perfectMaze ;
-	private static StubOrder setupOrder;
+	private static Maze perfectMaze;
+	
+	//Makes multiple order variables as well to allow test builders to use them
+	private static StubOrder setupOrder0;
+	private static StubOrder setupOrder1;
+	private static StubOrder setupOrder2;
+	private static StubOrder setupOrder3;
+	private static StubOrder setupOrder4;
+	private static StubOrder setupOrder5;
+	private static StubOrder setupOrder6;
+	private static StubOrder setupOrder7;
+	private static StubOrder setupOrder8;
+	private static StubOrder setupOrder9;
+	private static StubOrder setupOrderPerf;
 	private static MazeFactory factorySetup;
 	
 	/**
@@ -32,76 +53,168 @@ public class MazeFactoryTest
 	@BeforeClass
 	public static void setUp()
 	{
-		//Set up order variable and factory object
-		setupOrder = new StubOrder();
+		//Set up factory object
 		factorySetup = new MazeFactory();
 		
 		//Give Order variable default builder.
 		//This can get overwritten when making test cases for Boruvka
-		setupOrder.setBuilder(Builder.DFS);
+		
 		
 		//Loop through all ten skill levels
 		for(int skill = 0; skill < 10; skill++)
 		{
-			//Recreate the order with a new skill and build a maze with it
-			setupOrder.setSkill(skill);
-			factorySetup.order(setupOrder);
-			
-			//Wait for order to finish
-			factorySetup.waitTillDelivered();
-			
 			//Choose which maze variable to update based on which skill level
 			//is currently being used.
-			switch(setupOrder.getSkillLevel())
+			switch(skill)
 			{
 				case 0:
 				{
-					maze0 = setupOrder.getMaze();
+					//Create the order with a new skill and builder and build a maze with it
+					setupOrder0 = new StubOrder();
+					setupOrder0.setBuilder(Builder.Boruvka);
+					setupOrder0.setSkill(skill);
+					
+					factorySetup.order(setupOrder0);
+					
+					//Wait for order to finish
+					factorySetup.waitTillDelivered();
+					
+					maze0 = setupOrder0.getMaze();
 					break;
 				}
 				case 1:
 				{
-					maze1 = setupOrder.getMaze();
+					//Create the order with a new skill and builder and build a maze with it
+					setupOrder1 = new StubOrder();
+					setupOrder1.setBuilder(Builder.Boruvka);
+					setupOrder1.setSkill(skill);
+					
+					factorySetup.order(setupOrder1);
+					
+					//Wait for order to finish
+					factorySetup.waitTillDelivered();
+					
+					maze1 = setupOrder1.getMaze();
 					break;
 				}
 				case 2:
 				{
-					maze2 = setupOrder.getMaze();
+					//Create the order with a new skill and builder and build a maze with it
+					setupOrder2 = new StubOrder();
+					setupOrder2.setBuilder(Builder.Boruvka);
+					setupOrder2.setSkill(skill);
+					
+					factorySetup.order(setupOrder2);
+					
+					//Wait for order to finish
+					factorySetup.waitTillDelivered();
+					
+					maze2 = setupOrder2.getMaze();
 					break;
 				}
 				case 3:
 				{
-					maze3 = setupOrder.getMaze();
+					//Create the order with a new skill and builder and build a maze with it
+					setupOrder3 = new StubOrder();
+					setupOrder3.setBuilder(Builder.Boruvka);
+					setupOrder3.setSkill(skill);
+					
+					factorySetup.order(setupOrder3);
+					
+					//Wait for order to finish
+					factorySetup.waitTillDelivered();
+					
+					maze3 = setupOrder3.getMaze();
 					break;
 				}
 				case 4:
 				{
-					maze4 = setupOrder.getMaze();
+					//Create the order with a new skill and builder and build a maze with it
+					setupOrder4 = new StubOrder();
+					setupOrder4.setBuilder(Builder.Boruvka);
+					setupOrder4.setSkill(skill);
+					
+					factorySetup.order(setupOrder4);
+					
+					//Wait for order to finish
+					factorySetup.waitTillDelivered();
+					
+					maze4 = setupOrder4.getMaze();
 					break;
 				}
 				case 5:
 				{
-					maze5 = setupOrder.getMaze();
+					//Create the order with a new skill and builder and build a maze with it
+					setupOrder5 = new StubOrder();
+					setupOrder5.setBuilder(Builder.Boruvka);
+					setupOrder5.setSkill(skill);
+					
+					factorySetup.order(setupOrder5);
+					
+					//Wait for order to finish
+					factorySetup.waitTillDelivered();
+					
+					maze5 = setupOrder5.getMaze();
 					break;
 				}
 				case 6:
 				{
-					maze6 = setupOrder.getMaze();
+					//Create the order with a new skill and builder and build a maze with it
+					setupOrder6 = new StubOrder();
+					setupOrder6.setBuilder(Builder.Boruvka);
+					setupOrder6.setSkill(skill);
+					
+					factorySetup.order(setupOrder6);
+					
+					//Wait for order to finish
+					factorySetup.waitTillDelivered();
+					
+					maze6 = setupOrder6.getMaze();
 					break;
 				}
 				case 7:
 				{
-					maze7 = setupOrder.getMaze();
+					//Create the order with a new skill and builder and build a maze with it
+					setupOrder7 = new StubOrder();
+					setupOrder7.setBuilder(Builder.Boruvka);
+					setupOrder7.setSkill(skill);
+					
+					factorySetup.order(setupOrder7);
+					
+					//Wait for order to finish
+					factorySetup.waitTillDelivered();
+					
+					maze7 = setupOrder7.getMaze();
 					break;
 				}
 				case 8:
 				{
-					maze8 = setupOrder.getMaze();
+					//Create the order with a new skill and builder and build a maze with it
+					setupOrder8 = new StubOrder();
+					setupOrder8.setBuilder(Builder.Boruvka);
+					setupOrder8.setSkill(skill);
+					
+					factorySetup.order(setupOrder8);
+					
+					//Wait for order to finish
+					factorySetup.waitTillDelivered();
+					
+					maze8 = setupOrder8.getMaze();
 					break;
 				}
 				case 9:
 				{
-					maze9 = setupOrder.getMaze();
+					//Create the order with a new skill and builder and build a maze with it
+					setupOrder9 = new StubOrder();
+					setupOrder9.setBuilder(Builder.Boruvka);
+					setupOrder9.setSkill(skill);
+					
+					factorySetup.order(setupOrder9);
+					
+					//Wait for order to finish
+					factorySetup.waitTillDelivered();
+					
+					maze9 = setupOrder9.getMaze();
 					break;
 				}
 				default:
@@ -114,30 +227,17 @@ public class MazeFactoryTest
 		}
 		
 		//Creates perfect maze for use for tests that need one
-		setupOrder.setPerfect(true);
-		factorySetup.order(setupOrder);
+		setupOrderPerf = new StubOrder();
+		setupOrderPerf.setBuilder(Builder.Boruvka);
+		setupOrderPerf.setSkill(9);
+		setupOrderPerf.setPerfect(true);
+		factorySetup.order(setupOrderPerf);
 		
 		factorySetup.waitTillDelivered();
 		
-		perfectMaze = setupOrder.getMaze();
+		perfectMaze = setupOrderPerf.getMaze();
 	}
 	
-	/**
-	 * Nothing needed to clean up variables after each test
-	 * @throws Exception
-	 */
-	/*
-	@After
-	public void tearDown() throws Exception {
-	}
-	
-	/**
-	 * Figures out which maze to test, as these tests can work with
-	 * multiple different skill levels of mazes.
-	 * @param choice: The choice will map to the skill level of
-	 * whichever maze is wanted by the tests.
-	 * @return: Returns the correct maze of specified skill level.
-	 */
 	private Maze getMazeVariable(int choice)
 	{
 		//Figures which maze is wanted by the test.
@@ -157,166 +257,28 @@ public class MazeFactoryTest
 		}
 	}
 	
-    /**
-     * Test Case: Check if something gets built by the factory.
-     * Routine being tested: order
-     * 
-     * Can test routine by creating an order for a maze, and seeing
-     * if something is outputted. Not checking if it is a true maze
-     * yet, only if the factory builds something.
-     * This method checks if something gets built using default parameters.
-     */
-    @Test
-    public final void testOrderDFS()
-    {
-    	//Create a MazeFactory object to interact with
-    	MazeFactory factory = new MazeFactory();
-    	//Create a StubOrder variable with default builder for a maze
-    	StubOrder order = new StubOrder();
-    	order.setBuilder(Builder.DFS);
-    	
-    	//Create a boolean flag to see if order worked or not.
-    	boolean flag = false;
-    	
-    	//Use order as parameter for factory's order function.
-    	//Set boolean flag equal to the function call.
-    	flag = factory.order(order);
-    	
-    	//Wait until building thread terminates
-    	factory.waitTillDelivered();
-    	
-    	//Assert that boolean flag is true.
-    	assertTrue(flag);
-    }
-       
-    /**
-     * Test Case: Check if something gets built by the factory.
-     * Routine being tested: order
-     * 
-     * Can test routine by creating an order for a maze, and seeing
-     * if something is outputted. Not checking if it is a true maze
-     * yet, only if the factory builds something.
-     * This method checks if something gets built using Prim parameters.
-     */
-    @Test
-    public final void testOrderPrim()
-    {
-    	//Create a MazeFactory object to interact with
-    	MazeFactory factory = new MazeFactory();
-    	//Create a controller variable with Prim builder for a maze
-    	StubOrder order = new StubOrder();
-    	order.setBuilder(Builder.Prim);
-    	//Create a boolean flag to see if order worked or not.
-    	boolean flag = false;
-    	
-    	//Use order as parameter for factory's order function.
-    	//Set boolean flag equal to the function call.
-    	flag = factory.order(order);
-    	
-    	//Wait until building thread terminates
-    	factory.waitTillDelivered();
-    	
-    	//Assert that boolean flag is true.
-    	assertTrue(flag);
-    }
-    
-    /**
-     * Test Case: Check if something gets built by the factory.
-     * Routine being tested: order
-     * 
-     * Can test routine by creating an order for a maze, and seeing
-     * if something is outputted. Not checking if it is a true maze
-     * yet, only if the factory builds something.
-     * This method checks if something gets built using Boruvka
-     * parameters.
-     */
-    @Test
-    public final void testOrderBoruvka()
-    {
-    	//Create a MazeFactory object to interact with
-    	MazeFactory factory = new MazeFactory();
-    	//Create a StubOrder variable with Boruvka builder for a maze
-    	StubOrder order = new StubOrder();
-    	order.setBuilder(Builder.Boruvka);
-    	//Create a boolean flag to see if order worked or not.
-    	boolean flag = false;
-    	
-    	//Use order as parameter for factory's order function.
-    	//Set boolean flag equal to the function call.
-    	flag = factory.order(order);
-    	
-    	//Wait until building thread terminates
-    	factory.waitTillDelivered();
-    	
-    	//Assert that boolean flag is true.
-    	assertTrue(flag);
-    }
-    
-    /**
-     * Test Case: Check if something does not get built by the factory.
-     * Routine being tested: order
-     * 
-     * Can test routine by creating an order for a maze, and seeing
-     * if something is outputted. Not checking if it is a true maze
-     * yet, only making sure the factory does not build something.
-     * This method checks to make sure that Eller's generation
-     * algorithm wasn't accidentally implemented.
-     */
-    @Test
-    public final void testOrderEller()
-    {
-    	//Create a MazeFactory object to interact with
-    	MazeFactory factory = new MazeFactory();
-    	//Create a StubOrder variable with Eller builder for a maze
-    	StubOrder order = new StubOrder();
-    	order.setBuilder(Builder.Eller);
-    	//Create a boolean flag to see if order worked or not.
-    	boolean flag = false;
-    	
-    	//Use order as parameter for factory's order function.
-    	//Set boolean flag equal to the function call.
-    	flag = factory.order(order);
-    	
-    	//Wait until building thread terminates
-    	factory.waitTillDelivered();
-    	
-    	//Assert that boolean flag is false.
-    	assertFalse(flag);
-    }
-    
-    /**
-     * Test Case: Check if something does not get built by the factory.
-     * Routine being tested: order
-     * 
-     * Can test routine by creating an order for a maze, and seeing
-     * if something is outputted. Not checking if it is a true maze
-     * yet, only making sure the factory does not build something.
-     * This method checks to make sure that Kruskal's generation
-     * algorithm wasn't accidentally implemented.
-     */
-    @Test
-    public final void testOrderKruskal()
-    {
-    	//Create a MazeFactory object to interact with
-    	MazeFactory factory = new MazeFactory();
-    	//Create a controller variable with Kruskal builder for a maze
-    	StubOrder order = new StubOrder();
-    	order.setBuilder(Builder.Kruskal);
-    	//Create a boolean flag to see if order worked or not.
-    	boolean flag = false;
-    	
-    	//Use order as parameter for factory's order function.
-    	//Set boolean flag equal to the function call.
-    	flag = factory.order(order);
-    	
-    	//Wait until building thread terminates
-    	factory.waitTillDelivered();
-    	
-    	//Assert that boolean flag is false.
-    	assertFalse(flag);
-    }
-    
-    /**
+	private StubOrder getOrderVariable(int choice)
+	{
+		//Figures which maze is wanted by the test.
+		switch(choice)
+		{
+			case 0: return setupOrder0;
+			case 1: return setupOrder1;
+			case 2: return setupOrder2;
+			case 3: return setupOrder3;
+			case 4: return setupOrder4;
+			case 5: return setupOrder5;
+			case 6: return setupOrder6;
+			case 7: return setupOrder7;
+			case 8: return setupOrder8;
+			case 9: return setupOrder9;
+			default: return null;
+		}
+	}
+	
+	//Overridden methods
+	
+	/**
      * Test Case: Check if exit is saved in maze
      * Routine being tested: order
      * 
@@ -797,5 +759,263 @@ public class MazeFactoryTest
     	//- (x + y - 1) [Walls destroyed by making a minimal spanning tree]
     	assertEquals(walls, (((perfectMaze.getWidth() + 1) * perfectMaze.getHeight()) + (perfectMaze.getWidth() * (perfectMaze.getHeight() + 1)) -
     			(2 * (perfectMaze.getWidth() + perfectMaze.getHeight())) - (perfectMaze.getWidth() * perfectMaze.getHeight() - 1)));
+    }
+    
+    //New Methods for White Box Testing
+    
+    /**
+     * Test Case: Check if wall weights are unique
+     * Routine being tested: getEdgeWeight
+     * 
+     * Tests if the maze wall weighting algorithm produces
+     * unique weights.
+     */
+    @Test
+    public void testInternalWallWeight()
+    {
+    	//Create a Maze object to hold the currently tested maze
+    	Maze testMaze;
+    	StubOrder testOrder;
+    	
+    	//Creates a MazeBuilderBoruvka object to use the getEdgeWeight function.
+    	MazeBuilderBoruvka builder = new MazeBuilderBoruvka();
+    	builder.random = SingleRandom.getRandom();
+    	builder.createList();
+    	//Loops through each maze
+    	for(int mazeNum = 0; mazeNum < 10; mazeNum++)
+    	{
+    		testMaze = getMazeVariable(mazeNum);
+    		testOrder = getOrderVariable(mazeNum);
+    		builder.floorplan = testMaze.getFloorplan();
+    		builder.order = testOrder;
+    		
+    		//Instantiates an array that holds wall weights of every single wall.
+    		int[] weights = new int[testMaze.getWidth() * testMaze.getHeight() * 4];
+    		
+    		//Instantiates variables that will be used through loop
+    		int counter = 0;
+    		Wallboard wall = new Wallboard(0, 0, CardinalDirection.North);
+    		
+    		//Initializes all values to 0
+    		for(int weightIndex = 0; weightIndex < weights.length; weightIndex++)
+    			weights[weightIndex] = 0;
+    		
+    		//Checks the walls of each maze
+    		for(int xIndex = 0; xIndex < testMaze.getWidth(); xIndex++)
+    		{
+    			for(int yIndex = 0; yIndex < testMaze.getHeight(); yIndex++)
+    			{
+    				//Checks if southern wall exists first
+    				if(testMaze.getFloorplan().hasWall(xIndex, yIndex, CardinalDirection.South))
+    				{
+    					//We can add every southern wall of a room with no fear of duplicating a wall.
+        				wall.setLocationDirection(xIndex, yIndex, CardinalDirection.South);
+    					weights[counter] = builder.getEdgeWeight(wall);
+    					counter++;
+    				}
+    				
+    				//Checks if eastern wall exists first
+    				if(testMaze.getFloorplan().hasWall(xIndex, yIndex, CardinalDirection.East))
+    				{
+    					//We can add every eastern wall of a room with no fear of duplicating a wall.
+        				wall.setLocationDirection(xIndex, yIndex, CardinalDirection.East);
+        				weights[counter] = builder.getEdgeWeight(wall);
+        				counter++;
+    				}
+    				
+    				//Corner Cases
+    				//Checks if northern wall exists first and we are at top row, meaning nobody shares this wall
+    				if(testMaze.getFloorplan().hasWall(xIndex, yIndex, CardinalDirection.North) && yIndex == 0)
+    				{
+    					//We can add every eastern wall of a room with no fear of duplicating a wall.
+        				wall.setLocationDirection(xIndex, yIndex, CardinalDirection.North);
+        				weights[counter] = builder.getEdgeWeight(wall);
+        				counter++;
+    				}
+    				
+    				//Checks if western wall exists first and we are at left-most column, meaning nobody shares this wall
+    				if(testMaze.getFloorplan().hasWall(xIndex, yIndex, CardinalDirection.West) && xIndex == 0)
+    				{
+    					//We can add every eastern wall of a room with no fear of duplicating a wall.
+        				wall.setLocationDirection(xIndex, yIndex, CardinalDirection.West);
+        				weights[counter] = builder.getEdgeWeight(wall);
+        				counter++;
+    				}
+    			}
+    		}
+    		//Now that we found all weights, we check whether there are any duplicates.
+    		//Sort array to make finding duplicates easier.
+    		Arrays.sort(weights);
+    		
+    		for(int i = 0; i < weights.length; i++)
+    		{
+    			//Not counted, because there will be many for the destroyed walls
+    			if(weights[i] == 0)
+    				continue;
+    			
+    			if(weights[i] == weights[i + 1])
+    			{
+    				System.out.println(i);
+    				System.out.println(weights[i]);
+    				System.out.println(mazeNum);
+    				System.out.println(counter);
+    				System.out.println(Integer.MAX_VALUE);
+    			}
+    			
+    			if(weights[i] == weights[i + 1])
+    			{
+    				assertNotEquals(weights[i], weights[i+1]);
+    			}
+    			
+    			//We break here, because this is the case of borders, which means there is no longer any weights to check.
+    			if(weights[i+1] == Integer.MAX_VALUE)
+    				i = weights.length;
+    		}
+    		
+    		//Initializes all values to 0 again
+    		for(int weightIndex = 0; weightIndex < weights.length; weightIndex++)
+    			weights[weightIndex] = 0;
+    	}
+    }
+    
+    /**
+     * Test Case: Check if wall weights are equal on both sides
+     * Routine being tested: getEdgeWeight
+     * 
+     * Tests if the maze wall weighting algorithm produces
+     * same weights for walls on other sides
+     */
+    @Test
+    public void testWallWeights()
+    {
+    	//Create a Maze object to hold the currently tested maze
+    	Maze testMaze;
+    	StubOrder testOrder;
+    	
+    	//Creates a MazeBuilderBoruvka object to use the getEdgeWeight function.
+    	MazeBuilderBoruvka builder = new MazeBuilderBoruvka();
+    	builder.random = SingleRandom.getRandom();
+    	builder.createList();
+    	
+    	//Loops through each maze
+    	for(int mazeNum = 0; mazeNum < 10; mazeNum++)
+    	{
+    		//Set up all variables needed for edge weights
+    		testMaze = getMazeVariable(mazeNum);
+    		testOrder = getOrderVariable(mazeNum);
+    		builder.floorplan = testMaze.getFloorplan();
+    		builder.order = testOrder;
+    		
+    		//Sets up walls to test
+    		Wallboard wall = new Wallboard(0, 0, CardinalDirection.North);
+    		Wallboard wallNeighbor = new Wallboard(0, 0, CardinalDirection.North);
+    		
+    		//Loop through each wall
+    		for(int xIndex = 0; xIndex < testMaze.getWidth(); xIndex++)
+        	{
+        		for(int yIndex = 0; yIndex < testMaze.getHeight(); yIndex++)
+        		{
+        			//Checks if southern wall exists and is not a border
+        			wall.setLocationDirection(xIndex, yIndex, CardinalDirection.South);
+    				if(testMaze.getFloorplan().hasWall(xIndex, yIndex, CardinalDirection.South) && !testMaze.getFloorplan().isPartOfBorder(wall))
+    				{
+    					wallNeighbor.setLocationDirection(xIndex, yIndex + 1, CardinalDirection.North);
+    					assertEquals(builder.getEdgeWeight(wall), builder.getEdgeWeight(wallNeighbor));
+    				}
+    				
+    				//Checks if eastern wall exists and is not a border
+    				wall.setLocationDirection(xIndex, yIndex, CardinalDirection.East);
+    				if(testMaze.getFloorplan().hasWall(xIndex, yIndex, CardinalDirection.East) && !testMaze.getFloorplan().isPartOfBorder(wall))
+    				{
+    					wallNeighbor.setLocationDirection(xIndex + 1, yIndex, CardinalDirection.West);
+    					assertEquals(builder.getEdgeWeight(wall), builder.getEdgeWeight(wallNeighbor));
+    				}
+    				
+    				//Checks if northern wall exists and is not a border
+    				wall.setLocationDirection(xIndex, yIndex, CardinalDirection.North);
+    				if(testMaze.getFloorplan().hasWall(xIndex, yIndex, CardinalDirection.North) && !testMaze.getFloorplan().isPartOfBorder(wall))
+    				{
+    					wallNeighbor.setLocationDirection(xIndex, yIndex - 1, CardinalDirection.South);
+    					assertEquals(builder.getEdgeWeight(wall), builder.getEdgeWeight(wallNeighbor));
+    				}
+    				
+    				//Checks if western wall exists and is not a border
+    				wall.setLocationDirection(xIndex, yIndex, CardinalDirection.West);
+    				if(testMaze.getFloorplan().hasWall(xIndex, yIndex, CardinalDirection.West) && !testMaze.getFloorplan().isPartOfBorder(wall))
+    				{
+    					wallNeighbor.setLocationDirection(xIndex - 1, yIndex, CardinalDirection.East);
+    					assertEquals(builder.getEdgeWeight(wall), builder.getEdgeWeight(wallNeighbor));
+    				}
+        		}
+        	}
+    	}
+    }
+    
+    /**
+     * Test Case: Check if wall weights are equal when called multiple times
+     * Routine being tested: getEdgeWeight
+     * 
+     * Tests if the maze wall weighting algorithm produces
+     * same weights one wall over and over again
+     */
+    @Test
+    public void testWallWeightTwice()
+    {
+    	//Create a Maze object to hold the currently tested maze
+    	Maze testMaze;
+    	StubOrder testOrder;
+    	
+    	//Creates a MazeBuilderBoruvka object to use the getEdgeWeight function.
+    	MazeBuilderBoruvka builder = new MazeBuilderBoruvka();
+    	builder.random = SingleRandom.getRandom();
+    	builder.createList();
+    	
+    	//Loops through each maze
+    	for(int mazeNum = 0; mazeNum < 10; mazeNum++)
+    	{
+    		//Set up all variables needed for edge weights
+    		testMaze = getMazeVariable(mazeNum);
+    		testOrder = getOrderVariable(mazeNum);
+    		builder.floorplan = testMaze.getFloorplan();
+    		builder.order = testOrder;
+    		
+    		//Sets up walls to test
+    		Wallboard wall = new Wallboard(0, 0, CardinalDirection.North);
+    		
+    		//Loop through each wall
+    		for(int xIndex = 0; xIndex < testMaze.getWidth(); xIndex++)
+        	{
+        		for(int yIndex = 0; yIndex < testMaze.getHeight(); yIndex++)
+        		{
+        			//Checks if southern wall exists and is not a border
+        			wall.setLocationDirection(xIndex, yIndex, CardinalDirection.South);
+    				if(testMaze.getFloorplan().hasWall(xIndex, yIndex, CardinalDirection.South) && !testMaze.getFloorplan().isPartOfBorder(wall))
+    				{
+    					assertEquals(builder.getEdgeWeight(wall), builder.getEdgeWeight(wall));
+    				}
+    				
+    				//Checks if eastern wall exists and is not a border
+    				wall.setLocationDirection(xIndex, yIndex, CardinalDirection.East);
+    				if(testMaze.getFloorplan().hasWall(xIndex, yIndex, CardinalDirection.East) && !testMaze.getFloorplan().isPartOfBorder(wall))
+    				{
+    					assertEquals(builder.getEdgeWeight(wall), builder.getEdgeWeight(wall));
+    				}
+    				
+    				//Checks if northern wall exists and is not a border
+    				wall.setLocationDirection(xIndex, yIndex, CardinalDirection.North);
+    				if(testMaze.getFloorplan().hasWall(xIndex, yIndex, CardinalDirection.North) && !testMaze.getFloorplan().isPartOfBorder(wall))
+    				{
+    					assertEquals(builder.getEdgeWeight(wall), builder.getEdgeWeight(wall));
+    				}
+    				
+    				//Checks if western wall exists and is not a border
+    				wall.setLocationDirection(xIndex, yIndex, CardinalDirection.West);
+    				if(testMaze.getFloorplan().hasWall(xIndex, yIndex, CardinalDirection.West) && !testMaze.getFloorplan().isPartOfBorder(wall))
+    				{
+    					assertEquals(builder.getEdgeWeight(wall), builder.getEdgeWeight(wall));
+    				}
+        		}
+        	}
+    	}
     }
 }
