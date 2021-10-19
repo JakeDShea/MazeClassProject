@@ -83,6 +83,10 @@ public class Wizard implements RobotDriver {
 			}
 			// TODO: handle exception
 			
+			//Checks if the wizard solved the maze
+			if(solved)
+				break;
+			
 			//Returns false is Wizard's Robot ever walks on a cell it has already walked upon.
 			if(!hasBeenVisited[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]])
 				hasBeenVisited[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]] = true;
@@ -91,7 +95,9 @@ public class Wizard implements RobotDriver {
 			//Returns true otherwise, meaning it has completed the maze.
 		}
 		
-		return false;
+		//Makes robot finish maze
+		robot.move(1);
+		return true;
 	}
 
 	/**
@@ -123,6 +129,8 @@ public class Wizard implements RobotDriver {
 			
 			return false;
 		}
+		
+		System.out.println("[" + robot.getCurrentPosition()[0] + ", " + robot.getCurrentPosition()[1] + "]");
 		
 		//Else, moves the Robot 1 step in whatever the best direction is.
 		int[] destination = new int[2];
