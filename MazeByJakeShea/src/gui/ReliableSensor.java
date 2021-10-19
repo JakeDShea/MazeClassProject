@@ -16,6 +16,8 @@ import gui.Robot.Direction;
 
 public class ReliableSensor implements DistanceSensor {
 	//Sets up instance variables for the ReliableSensor, like the maze and direction
+	Direction sensorDirection;
+	Maze maze;
 	
 	/**
 	 * Tells the distance to an obstacle (a wallboard) that the sensor
@@ -50,16 +52,34 @@ public class ReliableSensor implements DistanceSensor {
 	public int distanceToObstacle(int[] currentPosition, CardinalDirection currentDirection, float[] powersupply)
 			throws Exception {
 		//Sets up an integer value to count how far away the next wallboard is
+		int count = 0;
+		int[] newPos = currentPosition;
 		
-		//From current position, checks if there is a wallboard in the current direction.
-		//If not, add one to counter variable.
+		while(maze.getFloorplan().hasNoWall(newPos[0], newPos[1], currentDirection))
+		{
+			//From current position, checks if there is a wallboard in the current direction.
+			//If not, add one to counter variable.
+			count++;
+			
+			//Check if next position is legal (i.e. in the maze)
+			//If not, then logically we had to have just left the maze through its exit. Returns Integer.MAX_VALUE.
+			//Else, we loop through the code again until we hit a wallboard or leave the maze.
+			if(maze.getFloorplan().hasNoWall(newPos[0], newPos[1], currentDirection) && (newPos[0] - 1 < 0 || newPos[0] + 1> maze.getWidth() || newPos[1] - 1< 0 || newPos[1] + 1> maze.getHeight()))
+			{
+				count = Integer.MAX_VALUE;
+				break;
+			}
+			
+			//Moves to next position
+			newPos[0] += currentDirection.getDirection()[0];
+			newPos[1] += currentDirection.getDirection()[1];
+		}
 		
-		//Check if next position is legal (i.e. in the maze)
-		//If not, then logically we had to have just left the maze through its exit. Returns Integer.MAX_VALUE.
-		//Else, we loop through the code again until we hit a wallboard or leave the maze.
+		//Decrements energy
+		powersupply[0] -= getEnergyConsumptionForSensing();
 		
 		//Return counter variable if wallboard has been found.
-		return 0;
+		return count;
 	}
 
 	/**
@@ -70,8 +90,9 @@ public class ReliableSensor implements DistanceSensor {
 	 * or if it does not contain a floor plan
 	 */
 	@Override
-	public void setMaze(Maze maze) {
+	public void setMaze(Maze mazeParam) {
 		//Sets ReliableSensor's maze instance variable to the Maze object parameter
+		maze = mazeParam;
 	}
 
 	/**
@@ -86,6 +107,7 @@ public class ReliableSensor implements DistanceSensor {
 	@Override
 	public void setSensorDirection(Direction mountedDirection) {
 		//Sets the direction of the ReliableSensor in its instance variable
+		sensorDirection = mountedDirection;
 	}
 
 	/**
@@ -97,7 +119,7 @@ public class ReliableSensor implements DistanceSensor {
 	@Override
 	public float getEnergyConsumptionForSensing() {
 		//Return set number for much energy is used by sensing
-		return 0;
+		return 1;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
