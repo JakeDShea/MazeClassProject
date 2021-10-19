@@ -1,5 +1,9 @@
 package gui;
 
+import static org.junit.Assert.assertFalse;
+
+import java.util.Arrays;
+
 import generation.CardinalDirection;
 
 /**
@@ -13,15 +17,33 @@ import generation.CardinalDirection;
  */
 
 public class ReliableRobot implements Robot {
-
 	//Sets up instance variables for the ReliableRobot, namely the 4 distance sensors and others
+	ReliableSensor leftSensor, rightSensor, forwardSensor, backwardSensor;
+	Controller robotController;
+	float[] energy;
+	int odometer = 0;
+	boolean crashed = false;
 	
 	/**
 	 * Creates the ReliableRobot object that will interact with the GUI along with
 	 * the 4 mounted sensors for the robot to have
+	 * 
+	 * The parameters are needed so that a robot can be created without all four sensors.
+	 * If a parameter is false, it will not create the sensor, if true then it will.
 	 */
-	public ReliableRobot() {
+	public ReliableRobot(boolean left, boolean right, boolean forward, boolean backward) {
 		//Creates 4 sensors and sets up robot instance variables
+		if(left)
+			addDistanceSensor(leftSensor, Direction.LEFT);
+		if(right)
+			addDistanceSensor(rightSensor, Direction.RIGHT);
+		if(forward)
+			addDistanceSensor(forwardSensor, Direction.FORWARD);
+		if(backward)
+			addDistanceSensor(backwardSensor, Direction.BACKWARD);
+		
+		energy = new float[1];
+		setBatteryLevel(3500);
 	}
 	
 	/**
@@ -37,7 +59,10 @@ public class ReliableRobot implements Robot {
 	 */
 	@Override
 	public void setController(Controller controller) {
-		//Sets up controller instance variable
+		robotController = controller;
+		
+		//Private method to give the sensors a maze from this new controller.
+		setMazesForSensors();
 	}
 
 	/**
@@ -60,6 +85,7 @@ public class ReliableRobot implements Robot {
 	@Override
 	public void addDistanceSensor(DistanceSensor sensor, Direction mountedDirection) {
 		//Sets up a DistanceSensor instance variable for Robot
+		sensor.setSensorDirection(mountedDirection);
 	}
 
 	/**
@@ -72,7 +98,7 @@ public class ReliableRobot implements Robot {
 	@Override
 	public int[] getCurrentPosition() throws Exception {
 		//Returns a tuple of the Robot's current position
-		return null;
+		return robotController.getCurrentPosition();
 	}
 
 	/**
@@ -82,7 +108,7 @@ public class ReliableRobot implements Robot {
 	@Override
 	public CardinalDirection getCurrentDirection() {
 		//Returns an enumerated CardinalDirection type which will likely be an instance variable for the Robot.
-		return null;
+		return robotController.getCurrentDirection();
 	}
 
 	/**
@@ -97,7 +123,7 @@ public class ReliableRobot implements Robot {
 	@Override
 	public float getBatteryLevel() {
 		//Returns the battery level of the Robot, which is an instance variable.
-		return 0;
+		return energy[0];
 	}
 
 	/**
@@ -113,6 +139,7 @@ public class ReliableRobot implements Robot {
 	@Override
 	public void setBatteryLevel(float level) {
 		//Sets Robot's battery level using the parameter value as the new level.
+		energy[0] = level;
 	}
 
 	/**
@@ -123,7 +150,7 @@ public class ReliableRobot implements Robot {
 	@Override
 	public float getEnergyForFullRotation() {
 		//Returns a set number for how much energy a full rotation uses.
-		return 0;
+		return 12;
 	}
 
 	/**
@@ -136,7 +163,7 @@ public class ReliableRobot implements Robot {
 	@Override
 	public float getEnergyForStepForward() {
 		//Returns a set number of energy for a single step forward of the Robot.
-		return 0;
+		return 6;
 	}
 
 	/** 
@@ -151,7 +178,7 @@ public class ReliableRobot implements Robot {
 	@Override
 	public int getOdometerReading() {
 		//Returns how many steps the Robot has moved so far.
-		return 0;
+		return odometer;
 	}
 
 	/** 
@@ -164,6 +191,7 @@ public class ReliableRobot implements Robot {
 	@Override
 	public void resetOdometer() {
 		//Sets the odometer back to 0.
+		odometer = 0;
 	}
 
 	/**
@@ -174,11 +202,41 @@ public class ReliableRobot implements Robot {
 	 */
 	@Override
 	public void rotate(Turn turn) {
+		int sizeOfTurn = 0;
+		
 		//Changes Robot's direction
+		switch(turn)
+		{
+			case LEFT:
+			{
+				robotController.keyDown(Constants.UserInput.LEFT, 0);
+				
+				//Finds denominator of fraction of energy used
+				sizeOfTurn = 360 / 90;
+				break;
+			}
+			case AROUND:
+			{
+				//Rotates fully around
+				robotController.keyDown(Constants.UserInput.LEFT, 0);
+				robotController.keyDown(Constants.UserInput.LEFT, 0);
+				
+				//Finds denominator of fraction of energy used
+				sizeOfTurn = 360 / 180;
+				break;
+			}
+			case RIGHT:
+			{
+				robotController.keyDown(Constants.UserInput.RIGHT, 0);
+				
+				//Finds denominator of fraction of energy used
+				sizeOfTurn = 360 / 90;
+				break;
+			}
+		}
 		
 		//Uses up an amount of energy based on the size of the turn
-		
-		//Makes sure the Robot has not yet stopped
+		setBatteryLevel(getBatteryLevel() - getEnergyForFullRotation()/sizeOfTurn);
 	}
 
 	/**
@@ -194,13 +252,29 @@ public class ReliableRobot implements Robot {
 	 */
 	@Override
 	public void move(int distance) {
+		int moves = distance;
+		int[] originalPos = robotController.getCurrentPosition();
+		
 		//Loops these lines as many times as Robot is set to move to know if he runs out of energy in the middle of the movement
+		while(moves > 0 && getBatteryLevel() > 0)
+		{
+			//Move Robot one step
+			robotController.keyDown(Constants.UserInput.UP, 0);
 		
-		//Move Robot one step
-		
-		//Decrease energy by using the getEnergyForStepForward() method
-		
-		//Check if Robot has stopped
+			//Checks if robot hit a wall and controller could not move robot
+			if(Arrays.equals(originalPos, robotController.getCurrentPosition()))
+				crashed = true;
+			else
+			{
+				//Decrease energy by using the getEnergyForStepForward() method
+				setBatteryLevel(getBatteryLevel() - getEnergyForStepForward());
+				
+				odometer++;
+			}
+			
+			//Assert robot does not crash
+			assertFalse(crashed);
+		}
 	}
 
 	/**
@@ -217,13 +291,25 @@ public class ReliableRobot implements Robot {
 	 */
 	@Override
 	public void jump() {
-		//Make sure Robot is not on the edge of the maze facing the border
+		//Make sure Robot is not on the edge of the maze facing the border by comparing original position to new one
+		int[] originalPos = robotController.getCurrentPosition();
 		
 		//Make Robot move forward, regardless if there is a wall or not
+		robotController.keyDown(Constants.UserInput.JUMP, 0);
 		
-		//Decrease the energy of the Robot for the cost of a jump
+		if(Arrays.equals(originalPos, robotController.getCurrentPosition()))
+		{
+			crashed = true;
+		}
+		else
+		{
+			//Decrease the energy of the Robot for the cost of a jump
+			setBatteryLevel(getBatteryLevel() - 60);
+			odometer++;
+		}
 		
-		//Make sure Robot has not stopped.
+		//Assert robot does not crash
+		assertFalse(crashed);
 	}
 
 	/**
@@ -234,8 +320,14 @@ public class ReliableRobot implements Robot {
 	 */
 	@Override
 	public boolean isAtExit() {
-		//Checks if cell Robot is in contains the exit to the maze
+		//Sets up variables for ease of understanding code
+		int posX = robotController.getCurrentPosition()[0];
+		int posY = robotController.getCurrentPosition()[1];
 		
+		//Checks if cell Robot is in contains the exit to the maze
+		if(robotController.getMazeConfiguration().getDistanceToExit(posX, posY) == 1)
+			return true;
+			
 		//Returns true if it is, false if not.
 		return false;
 	}
@@ -246,10 +338,13 @@ public class ReliableRobot implements Robot {
 	 */	
 	@Override
 	public boolean isInsideRoom() {
-		//Checks if cell Robot is in is in a room.
+		//Sets up variables for ease of understanding code
+		int posX = robotController.getCurrentPosition()[0];
+		int posY = robotController.getCurrentPosition()[1];
 		
+		//Checks if cell Robot is in is in a room.
 		//Returns true if it is, false if not.
-		return false;
+		return robotController.getMazeConfiguration().isInRoom(posX, posY);
 	}
 
 	/**
@@ -262,6 +357,8 @@ public class ReliableRobot implements Robot {
 	@Override
 	public boolean hasStopped() {
 		//Checks if Robot's energy has stopped, or if Robot has just ran into a wall
+		if(getBatteryLevel() < 0 || crashed)
+			return true;
 		
 		//Returns true if Robot has stopped, false otherwise.
 		return false;
@@ -282,13 +379,73 @@ public class ReliableRobot implements Robot {
 	 * @param direction specifies the direction of interest
 	 * @return number of steps towards obstacle if obstacle is visible 
 	 * in a straight line of sight, Integer.MAX_VALUE otherwise
-	 * @throws UnsupportedOperationException if robot has no sensor in this direction
-	 * or the sensor exists but is currently not operational
 	 */
 	@Override
-	public int distanceToObstacle(Direction direction) throws UnsupportedOperationException {
+	public int distanceToObstacle(Direction direction) {
+		int distance = 0;
 		//Uses sensor to find how many tiles the robot can walk in a given direction.
-		return 0;
+		
+		switch(direction)
+		{
+			//Using the left sensor
+			case LEFT:
+			{
+				try
+				{
+					//Will use left sensor and rotate "clockwise" once as a west and east are backwards so this will be the correct path to go.
+					distance = leftSensor.distanceToObstacle(getCurrentPosition(), getCurrentDirection().rotateClockwise(), energy);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+				break;
+			}
+			//Using the right sensor
+			case RIGHT:
+			{
+				try
+				{
+					//Will use right sensor to calculate distance and rotates direction from robot three times to get correct direction
+					distance = rightSensor.distanceToObstacle(getCurrentPosition(), getCurrentDirection().rotateClockwise().rotateClockwise().rotateClockwise(), energy);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+				break;
+			}
+			//Using the forward sensor
+			case FORWARD:
+			{
+				try
+				{
+					//Will use forward sensor to calculate distance and does not need to change direction from robot.
+					distance = forwardSensor.distanceToObstacle(getCurrentPosition(), getCurrentDirection(), energy);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+				break;
+			}
+			//Using the backwards sensor
+			case BACKWARD:
+			{
+				try
+				{
+					//Will use backwards sensor to calculate distance and goes 180 degrees around robots direction to get correct direction
+					distance = backwardSensor.distanceToObstacle(getCurrentPosition(), getCurrentDirection().oppositeDirection(), energy);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+				break;
+			}
+		}
+		
+		return distance;
 	}
 
 	/**
@@ -303,12 +460,37 @@ public class ReliableRobot implements Robot {
 	 */
 	@Override
 	public boolean canSeeThroughTheExitIntoEternity(Direction direction) throws UnsupportedOperationException {
+		int distance = 0;
+		
 		//Checks to see if Sensor never hits an obstacle because it is staring out the exit
+		distance = distanceToObstacle(direction);
 		
 		//Returns true if sensor goes to Integer.MAX_VALUE, false otherwise
-		return false;
+		if(distance == Integer.MAX_VALUE)
+			return true;
+		else
+			return false;
 	}
 
+	/**
+	 * A private method to set up sensors with mazes the second the Robot gets a controller.
+	 */
+	private void setMazesForSensors()
+	{
+		//Gives sensors mazes if they exist
+		if(leftSensor != null)
+			leftSensor.setMaze(robotController.getMazeConfiguration());
+		
+		if(rightSensor != null)
+			rightSensor.setMaze(robotController.getMazeConfiguration());
+		
+		if(forwardSensor != null)
+			forwardSensor.setMaze(robotController.getMazeConfiguration());
+		
+		if(backwardSensor != null)
+			backwardSensor.setMaze(robotController.getMazeConfiguration());
+	}
+	
 	////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////DO NOT HAVE TO DO THESE YET////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////
