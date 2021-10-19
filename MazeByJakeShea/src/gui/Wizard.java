@@ -1,8 +1,9 @@
 package gui;
 
-import java.nio.charset.StandardCharsets;
-
+import generation.CardinalDirection;
 import generation.Maze;
+import gui.Robot.Direction;
+import gui.Robot.Turn;
 
 /**
  * Class: Wizard
@@ -17,6 +18,9 @@ import generation.Maze;
 
 public class Wizard implements RobotDriver {
 	//Sets up instance variables for the Wizard, such as the Robot and maze.
+	ReliableRobot robot;
+	Maze maze;
+	boolean[][] hasBeenVisited;
 	
 	/**
 	 * Assigns a robot platform to the driver. 
@@ -26,6 +30,7 @@ public class Wizard implements RobotDriver {
 	@Override
 	public void setRobot(Robot r) {
 		//Sets up the Wizard's instance variable using a Robot passed as a parameter.
+		robot = (ReliableRobot) r;
 	}
 
 	/**
@@ -34,8 +39,16 @@ public class Wizard implements RobotDriver {
 	 * @param maze represents the maze, must be non-null and a fully functional maze object.
 	 */
 	@Override
-	public void setMaze(Maze maze) {
+	public void setMaze(Maze mazeParam) {
 		//Sets up the Wizard's maze instance variable using a Maze passed as a parameter.
+		maze = mazeParam;
+		
+		//Sets counterpart array to allow for checking if algorithm loops.
+		hasBeenVisited = new boolean[maze.getWidth()][maze.getHeight()];
+		
+		for(int x = 0; x < maze.getWidth(); x++)
+			for(int y = 0; y < maze.getHeight(); y++)
+				hasBeenVisited[x][y]= false; 
 	}
 
 	/**
@@ -55,13 +68,29 @@ public class Wizard implements RobotDriver {
 	 */
 	@Override
 	public boolean drive2Exit() throws Exception {
+		boolean solved = false;
 		//Tries to solve maze
+		while(!solved)
+		{
+			//Throws an exception if Wizard's Robot stops by means like losing energy or crashing
+			try
+			{
+				solved = !drive1Step2Exit();
+			}
+			catch (Exception e)
+			{
+				throw new Exception();
+			}
+			// TODO: handle exception
+			
+			//Returns false is Wizard's Robot ever walks on a cell it has already walked upon.
+			if(!hasBeenVisited[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]])
+				hasBeenVisited[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]] = true;
+			else
+				return false;
+			//Returns true otherwise, meaning it has completed the maze.
+		}
 		
-		//Throws an exception if Wizard's Robot stops by means like losing energy or crashing
-		
-		//Returns false is Wizard's Robot ever walks on a cell it has already walked upon.
-		
-		//Returns true otherwise, meaning it has completed the maze.
 		return false;
 	}
 
@@ -83,11 +112,140 @@ public class Wizard implements RobotDriver {
 	@Override
 	public boolean drive1Step2Exit() throws Exception {
 		//If Robot is at the exit, changes the Robot's direction to face the exit and returns false.
+		if(maze.getDistanceToExit(robot.getCurrentPosition()[0], robot.getCurrentPosition()[1]) == 1)
+		{
+			if(robot.canSeeThroughTheExitIntoEternity(Direction.LEFT))
+				robot.rotate(Turn.LEFT);
+			else if (robot.canSeeThroughTheExitIntoEternity(Direction.RIGHT))
+				robot.rotate(Turn.RIGHT);
+			else if(robot.canSeeThroughTheExitIntoEternity(Direction.BACKWARD))
+				robot.rotate(Turn.AROUND);
+			
+			return false;
+		}
 		
 		//Else, moves the Robot 1 step in whatever the best direction is.
+		int[] destination = new int[2];
+		CardinalDirection direction = CardinalDirection.East;
+		
+		destination = maze.getNeighborCloserToExit(robot.getCurrentPosition()[0], robot.getCurrentPosition()[1]);
+		
+		//Figures out which direction we want to go to
+		direction = CardinalDirection.getDirection(destination[0] - robot.getCurrentPosition()[0], destination[1] - robot.getCurrentPosition()[1]);
+		
+		//Figures out how to turn the Robot
+		switch(robot.getCurrentDirection())
+		{
+			//Checks if Robot is facing north and turns accordingly
+			case North:
+			{
+				switch(direction)
+				{
+					case East:
+					{
+						robot.rotate(Turn.LEFT);
+						break;
+					}
+					case West:
+					{
+						robot.rotate(Turn.RIGHT);
+						break;
+					}
+					case South:
+					{
+						robot.rotate(Turn.AROUND);
+						break;
+					}
+					default:
+						break;
+				}
+				break;
+			}
+			//Checks if Robot is facing south and turns accordingly
+			case South:
+			{
+				switch(direction)
+				{
+					case East:
+					{
+						robot.rotate(Turn.RIGHT);
+						break;
+					}
+					case West:
+					{
+						robot.rotate(Turn.LEFT);
+						break;
+					}
+					case North:
+					{
+						robot.rotate(Turn.AROUND);
+						break;
+					}
+					default:
+						break;
+				}
+				break;
+			}
+			//Checks if Robot is facing west and turns accordingly
+			case West:
+			{
+				switch(direction)
+				{
+					case East:
+					{
+						robot.rotate(Turn.AROUND);
+						break;
+					}
+					case South:
+					{
+						robot.rotate(Turn.RIGHT);
+						break;
+					}
+					case North:
+					{
+						robot.rotate(Turn.LEFT);
+						break;
+					}
+					default:
+						break;
+				}
+				break;
+			}
+			//Checks if Robot is facing east and turns accordingly
+			case East:
+			{
+				switch(direction)
+				{
+					case West:
+					{
+						robot.rotate(Turn.AROUND);
+						break;
+					}
+					case South:
+					{
+						robot.rotate(Turn.LEFT);
+						break;
+					}
+					case North:
+					{
+						robot.rotate(Turn.RIGHT);
+						break;
+					}
+					default:
+						break;
+				}
+				break;
+			}
+		}
+		
+		//Robot finally moves
+		robot.move(1);
 		
 		//Will throw an error if robot stops moving
-		return false;
+		if(robot.hasStopped())
+			throw new Exception();
+		
+		return true;
 	}
 
 	/**
@@ -100,7 +258,7 @@ public class Wizard implements RobotDriver {
 	@Override
 	public float getEnergyConsumption() {
 		//Returns Robot's starting energy minus it's final energy
-		return 0;
+		return 3500 - robot.getBatteryLevel();
 	}
 
 	/**
@@ -112,7 +270,7 @@ public class Wizard implements RobotDriver {
 	@Override
 	public int getPathLength() {
 		//Returns Robot's odometer reading.
-		return 0;
+		return robot.odometer;
 	}
 
 }
