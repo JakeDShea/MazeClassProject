@@ -185,8 +185,6 @@ public class MazeBuilder implements Runnable {
 		return true;
 	}
 
-
-	
 	/**
 	 * This method generates a maze.
 	 * It computes distances, determines a start and exit position that are as far apart as possible. 
@@ -203,7 +201,7 @@ public class MazeBuilder implements Runnable {
 		final int[] pos = dists.getStartPosition();
 		startx = pos[0] ;
 		starty = pos[1] ;
-
+		
 		// make exit position at true exit in the cells data structure
 		floorplan.setExitPosition(remote[0], remote[1]);
 	}

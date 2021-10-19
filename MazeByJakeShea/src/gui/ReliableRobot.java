@@ -18,7 +18,7 @@ import generation.CardinalDirection;
 
 public class ReliableRobot implements Robot {
 	//Sets up instance variables for the ReliableRobot, namely the 4 distance sensors and others
-	ReliableSensor leftSensor, rightSensor, forwardSensor, backwardSensor;
+	ReliableSensor leftSensor = new ReliableSensor(), rightSensor = new ReliableSensor(), forwardSensor = new ReliableSensor(), backwardSensor = new ReliableSensor();
 	Controller robotController;
 	float[] energy;
 	int odometer = 0;
@@ -263,17 +263,18 @@ public class ReliableRobot implements Robot {
 		
 			//Checks if robot hit a wall and controller could not move robot
 			if(Arrays.equals(originalPos, robotController.getCurrentPosition()))
+			{
 				crashed = true;
+				break;
+			}
 			else
 			{
 				//Decrease energy by using the getEnergyForStepForward() method
 				setBatteryLevel(getBatteryLevel() - getEnergyForStepForward());
 				
 				odometer++;
+				moves--;
 			}
-			
-			//Assert robot does not crash
-			assertFalse(crashed);
 		}
 	}
 
@@ -304,12 +305,9 @@ public class ReliableRobot implements Robot {
 		else
 		{
 			//Decrease the energy of the Robot for the cost of a jump
-			setBatteryLevel(getBatteryLevel() - 60);
+			setBatteryLevel(getBatteryLevel() - 40);
 			odometer++;
 		}
-		
-		//Assert robot does not crash
-		assertFalse(crashed);
 	}
 
 	/**
@@ -357,7 +355,7 @@ public class ReliableRobot implements Robot {
 	@Override
 	public boolean hasStopped() {
 		//Checks if Robot's energy has stopped, or if Robot has just ran into a wall
-		if(getBatteryLevel() < 0 || crashed)
+		if(getBatteryLevel() <= 0 || crashed)
 			return true;
 		
 		//Returns true if Robot has stopped, false otherwise.
