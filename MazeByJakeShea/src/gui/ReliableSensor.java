@@ -64,7 +64,7 @@ public class ReliableSensor implements DistanceSensor {
 			//Check if next position is legal (i.e. in the maze)
 			//If not, then logically we had to have just left the maze through its exit. Returns Integer.MAX_VALUE.
 			//Else, we loop through the code again until we hit a wallboard or leave the maze.
-			if(maze.getFloorplan().hasNoWall(newPos[0], newPos[1], currentDirection) && (newPos[0] - 1 < 0 || newPos[0] + 1> maze.getWidth() || newPos[1] - 1< 0 || newPos[1] + 1> maze.getHeight()))
+			if(maze.getFloorplan().hasNoWall(newPos[0], newPos[1], currentDirection) && (newPos[0] - 1 < 0 || newPos[0] + 1 >= maze.getWidth() || newPos[1] - 1 < 0 || newPos[1] + 1 >= maze.getHeight()))
 			{
 				count = Integer.MAX_VALUE;
 				break;
