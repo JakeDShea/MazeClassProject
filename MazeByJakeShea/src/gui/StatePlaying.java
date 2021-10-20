@@ -106,6 +106,27 @@ public class StatePlaying extends DefaultState {
         	// else: dry-run without graphics, most likely for testing purposes
         	printWarning();
         }
+    
+        //If there is a robot driver
+        if(control.driver != null)
+        {
+        	//Tries to solve maze
+        	try
+        	{
+        		showMaze = true;
+        		showSolution = true;
+        		mapMode = true;
+        		control.driver.drive2Exit();
+        		controller.switchFromPlayingToWizardEnding(0);
+        	} catch (Exception e) {
+        		//Still has to show an ending screen even if an exception happened where robot stops
+        		controller.switchFromPlayingToWizardEnding(0);
+        	}
+        	
+        	//Must reset the robot to allow for more plays in a single run of the program.
+        	control.robot.resetOdometer();
+        	control.robot.setBatteryLevel(3500);
+        }
     }
     /**
      * Initializes the drawer for the first person view

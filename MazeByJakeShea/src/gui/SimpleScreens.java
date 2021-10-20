@@ -137,6 +137,71 @@ public class SimpleScreens {
 		gc.setColor(blackWM);
 		centerString(gc, "Hit any key to restart", 300);
 	}
+	
+	//NEW METHODS FOR PROJECT 3
+	
+	/**
+     * Draws the finish screen, screen content is hard coded
+     * @param panel holds the graphics for the off-screen image
+     */
+	void redrawFinishLost(MazePanel panel, RobotDriver driver) {
+		Graphics g = panel.getBufferGraphics() ;
+        if (null == g) {
+            System.out.println(errorMsg) ;
+        }
+        else {
+            redrawFinishLost(g, driver);
+        }
+	}
+	/**
+	 * Helper method for redraw to draw final screen, screen is hard coded
+	 * @param gc graphics is the off-screen image
+	 */
+	private void redrawFinishLost(Graphics gc, RobotDriver driver) {
+		// produce blue background
+		drawBackground(gc);
+		// write the title 
+		updateFontAndColor(gc, largeBannerFont, goldWM);
+		centerString(gc, "Sorry, You Lost!", 100);
+		// write some extra blurb
+		updateFontAndColor(gc, smallBannerFont, greenWM);
+		centerString(gc, "Failure!", 160);
+		centerString(gc, "Steps walked: " + driver.getPathLength(), 200);
+		centerString(gc, "Energy used: " + driver.getEnergyConsumption(), 240);
+		// write the instructions
+		gc.setColor(blackWM);
+		centerString(gc, "Hit any key to restart", 300);
+	}
+	public void redrawFinishWon(MazePanel panel, RobotDriver driver)
+	{
+		Graphics g = panel.getBufferGraphics() ;
+        if (null == g) {
+            System.out.println(errorMsg) ;
+        }
+        else {
+            redrawFinishWon(g, driver);
+        }
+	}
+	/**
+	 * Helper method for redraw to draw final screen, screen is hard coded
+	 * @param gc graphics is the off-screen image
+	 */
+	private void redrawFinishWon(Graphics gc, RobotDriver driver) {
+		// produce blue background
+		drawBackground(gc);
+		// write the title 
+		updateFontAndColor(gc, largeBannerFont, goldWM);
+		centerString(gc, "Congratulations!", 100);
+		// write some extra blurb
+		updateFontAndColor(gc, smallBannerFont, greenWM);
+		centerString(gc, "Steps walked: " + driver.getPathLength(), 160);
+		centerString(gc, "Energy used: " + driver.getEnergyConsumption(), 200);
+		// write the instructions
+		gc.setColor(blackWM);
+		centerString(gc, "Hit any key to restart", 300);
+	}
+	//END OF METHODS FOR PROJECT 3
+	
     /**
      * Draws the generating screen, screen content is hard coded
      * @param panel holds the graphics for the off-screen image

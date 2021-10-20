@@ -96,6 +96,13 @@ public class MazeApplication extends JFrame {
 	    	msg = "MazeApplication: generating random maze with Boruvka's algorithm.";
 	        result.setBuilder(Order.Builder.Boruvka);
 	    }
+	    else if("Wizard".equalsIgnoreCase(parameter))
+	    {
+	    	msg = "MazeApplication: maze will be generated with a randomized algorithm.";
+	    	ReliableRobot robot = new ReliableRobot(true, true, true, true);
+	    	Wizard wizard = new Wizard();
+	        result.setRobotAndDriver(robot, wizard);
+	    }
 	    // Case 4: a file
 	    else {
 	        File f = new File(parameter) ;

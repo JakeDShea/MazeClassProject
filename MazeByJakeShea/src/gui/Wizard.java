@@ -18,9 +18,9 @@ import gui.Robot.Turn;
 
 public class Wizard implements RobotDriver {
 	//Sets up instance variables for the Wizard, such as the Robot and maze.
-	ReliableRobot robot;
-	Maze maze;
-	boolean[][] hasBeenVisited;
+	private ReliableRobot robot;
+	private Maze maze;
+	private boolean[][] hasBeenVisited;
 	
 	/**
 	 * Assigns a robot platform to the driver. 
@@ -50,7 +50,7 @@ public class Wizard implements RobotDriver {
 			for(int y = 0; y < maze.getHeight(); y++)
 				hasBeenVisited[x][y]= false; 
 	}
-
+	
 	/**
 	 * Drives the robot towards the exit following
 	 * its solution strategy and given the exit exists and  
@@ -129,8 +129,6 @@ public class Wizard implements RobotDriver {
 			
 			return false;
 		}
-		
-		System.out.println("[" + robot.getCurrentPosition()[0] + ", " + robot.getCurrentPosition()[1] + "]");
 		
 		//Else, moves the Robot 1 step in whatever the best direction is.
 		int[] destination = new int[2];

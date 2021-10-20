@@ -97,11 +97,12 @@ public class Controller {
     boolean deterministic;
     
     public Controller() {
-    	states = new State[4];
+    	states = new State[5];
         states[0] = new StateTitle();
         states[1] = new StateGenerating();
         states[2] = new StatePlaying();
         states[3] = new StateWinning();
+        states[4] = new StateWizard();
         currentState = states[0];
         panel = new MazePanel(); 
         fileName = null;
@@ -181,6 +182,13 @@ public class Controller {
     public void switchFromGeneratingToPlaying(Maze config) {
         currentState = states[2];
         currentState.setMazeConfiguration(config);
+        
+        if(this.driver != null)
+        {
+        	robot.setController(this);
+        	driver.setMaze(config);
+        }
+        
         currentState.start(this, panel);
     }
     /**
@@ -237,6 +245,8 @@ public class Controller {
         this.robot = robot;
         driver = robotdriver;
         
+        if(driver != null)
+        	robotdriver.setRobot(this.robot);
     }
     /**
      * The robot that is used in the automated playing mode.
@@ -288,5 +298,18 @@ public class Controller {
      */
     public CardinalDirection getCurrentDirection() {
         return ((StatePlaying)states[2]).getCurrentDirection();
+    }
+    
+    ////////////////////////////////////////////////////////////
+    /////////////New State Losing for Project 3/////////////////
+    ////////////////////////////////////////////////////////////
+    /**
+     * Switches the controller to the final screen
+     * @param pathLength gives the length of the path
+     */
+    public void switchFromPlayingToWizardEnding(int pathLength) {
+        currentState = states[4];
+        currentState.setPathLength(pathLength);
+        ((StateWizard) currentState).start(this, panel);
     }
 }

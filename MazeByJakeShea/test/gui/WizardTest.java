@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import generation.CardinalDirection;
@@ -16,17 +16,17 @@ import generation.Order.Builder;
 public class WizardTest
 {
 	//Sets up maze and stuff that robot needs.
-	private static Maze maze;
-	private static StubOrder order;
-	private static MazeFactory factory;
-	private static Controller controller;
+	private Maze maze;
+	private StubOrder order;
+	private MazeFactory factory;
+	private Controller controller;
 	
 	/**
 	 * Creates a maze for robot testing
 	 * This makes it so tests don't have to remake mazes multiple times.
 	 */
-	@BeforeClass
-	public static void setUp()
+	@Before
+	public void setUp()
 	{
 		//Set up factory object
 		factory = new MazeFactory();
@@ -123,7 +123,7 @@ public class WizardTest
 		assertTrue(testWizard.drive2Exit());
 		
 		//Asserts that wizard took shortest path via energy
-		//97 moves, 50 90-degree turns, and senses for the exit twice based off my algorithm gets me 732 energy used.
-		assertEquals(2766, testWizard.getEnergyConsumption());
+		//97 moves, 50 90-degree turns, and senses for the exit twice based off my algorithm gets me 734 energy used.
+		assertEquals(734, testWizard.getEnergyConsumption());
 	}
 }
