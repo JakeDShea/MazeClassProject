@@ -60,8 +60,6 @@ public class MazeBuilderPrim extends MazeBuilder implements Runnable {
 				x = curWallboard.getNeighborX();
 				y = curWallboard.getNeighborY();
 				
-				System.out.println("x: " + x + " y: " + y);
-				
 				floorplan.setCellAsVisited(x, y); // the flag is never reset, so this ensure we never go to (x,y) again
 				updateListOfWallboards(x, y, candidates); // checks to see if it has wallboards to new cells, if it does it adds them to the list
 				// note that each wallboard can get added at most once. This is important for termination and efficiency
