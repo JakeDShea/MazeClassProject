@@ -70,22 +70,20 @@ public class Wizard implements RobotDriver {
 	public boolean drive2Exit() throws Exception {
 		boolean solved = false;
 		//Tries to solve maze
-		while(!solved)
-		{
+		while(!solved){
 			//Throws an exception if Wizard's Robot stops by means like losing energy or crashing
-			try
-			{
+			try {
 				solved = !drive1Step2Exit();
 			}
-			catch (Exception e)
-			{
+			catch (Exception e) {
 				throw new Exception();
 			}
-			// TODO: handle exception
-			
 			//Checks if the wizard solved the maze
 			if(solved)
 				break;
+			
+			//Assert that wizard will never go on a cell twice
+			assert (!hasBeenVisited[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]]) : "Robot has never been here before";
 			
 			//Returns false is Wizard's Robot ever walks on a cell it has already walked upon.
 			if(!hasBeenVisited[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]])
@@ -94,7 +92,6 @@ public class Wizard implements RobotDriver {
 				return false;
 			//Returns true otherwise, meaning it has completed the maze.
 		}
-		
 		//Makes robot finish maze
 		robot.move(1);
 		return true;
@@ -125,7 +122,17 @@ public class Wizard implements RobotDriver {
 			else if (robot.canSeeThroughTheExitIntoEternity(Direction.RIGHT))
 				robot.rotate(Turn.RIGHT);
 			else if(robot.canSeeThroughTheExitIntoEternity(Direction.BACKWARD))
+			{
+				//Should never be reached by wizard's algorithm
+				assert (false);
+				
 				robot.rotate(Turn.AROUND);
+			}
+			else
+			{
+				//Assert that robot is already facing direction needed
+				assert (robot.canSeeThroughTheExitIntoEternity(Direction.FORWARD)) : "Robot is facing correct direction";
+			}
 			
 			return false;
 		}
@@ -159,6 +166,9 @@ public class Wizard implements RobotDriver {
 					}
 					case South:
 					{
+						//Should never have to turn around for wizard
+						assert (false);
+						
 						robot.rotate(Turn.AROUND);
 						break;
 					}
@@ -184,6 +194,9 @@ public class Wizard implements RobotDriver {
 					}
 					case North:
 					{
+						//Should never have to turn around for wizard
+						assert (false);
+						
 						robot.rotate(Turn.AROUND);
 						break;
 					}
@@ -199,6 +212,9 @@ public class Wizard implements RobotDriver {
 				{
 					case East:
 					{
+						//Should never have to turn around for wizard
+						assert (false);
+						
 						robot.rotate(Turn.AROUND);
 						break;
 					}
@@ -224,6 +240,7 @@ public class Wizard implements RobotDriver {
 				{
 					case West:
 					{
+						//Can actually hit this in case robot starts in the maze facing East and must go west instantly
 						robot.rotate(Turn.AROUND);
 						break;
 					}

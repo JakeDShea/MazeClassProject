@@ -99,7 +99,7 @@ public class MazeApplication extends JFrame {
 	    else if("Wizard".equalsIgnoreCase(parameter))
 	    {
 	    	msg = "MazeApplication: maze will be generated with a randomized algorithm.";
-	    	ReliableRobot robot = new ReliableRobot(true, true, true, true);
+	    	ReliableRobot robot = new ReliableRobot();
 	    	Wizard wizard = new Wizard();
 	        result.setRobotAndDriver(robot, wizard);
 	    }

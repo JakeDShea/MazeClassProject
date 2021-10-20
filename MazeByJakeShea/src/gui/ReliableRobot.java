@@ -1,7 +1,5 @@
 package gui;
 
-import static org.junit.Assert.assertFalse;
-
 import java.util.Arrays;
 
 import generation.CardinalDirection;
@@ -31,16 +29,12 @@ public class ReliableRobot implements Robot {
 	 * The parameters are needed so that a robot can be created without all four sensors.
 	 * If a parameter is false, it will not create the sensor, if true then it will.
 	 */
-	public ReliableRobot(boolean left, boolean right, boolean forward, boolean backward) {
+	public ReliableRobot() {
 		//Creates 4 sensors and sets up robot instance variables
-		if(left)
-			addDistanceSensor(leftSensor, Direction.LEFT);
-		if(right)
-			addDistanceSensor(rightSensor, Direction.RIGHT);
-		if(forward)
-			addDistanceSensor(forwardSensor, Direction.FORWARD);
-		if(backward)
-			addDistanceSensor(backwardSensor, Direction.BACKWARD);
+		addDistanceSensor(leftSensor, Direction.LEFT);
+		addDistanceSensor(rightSensor, Direction.RIGHT);
+		addDistanceSensor(forwardSensor, Direction.FORWARD);
+		addDistanceSensor(backwardSensor, Direction.BACKWARD);
 		
 		energy = new float[1];
 		setBatteryLevel(3500);
@@ -139,7 +133,11 @@ public class ReliableRobot implements Robot {
 	@Override
 	public void setBatteryLevel(float level) {
 		//Sets Robot's battery level using the parameter value as the new level.
-		energy[0] = level;
+		if(level >= 0)
+			energy[0] = level;
+		else {
+			throw new IllegalArgumentException();
+		}
 	}
 
 	/**
@@ -325,7 +323,7 @@ public class ReliableRobot implements Robot {
 		//Checks if cell Robot is in contains the exit to the maze
 		if(robotController.getMazeConfiguration().getDistanceToExit(posX, posY) == 1)
 			return true;
-			
+		
 		//Returns true if it is, false if not.
 		return false;
 	}
@@ -476,17 +474,10 @@ public class ReliableRobot implements Robot {
 	private void setMazesForSensors()
 	{
 		//Gives sensors mazes if they exist
-		if(leftSensor != null)
-			leftSensor.setMaze(robotController.getMazeConfiguration());
-		
-		if(rightSensor != null)
-			rightSensor.setMaze(robotController.getMazeConfiguration());
-		
-		if(forwardSensor != null)
-			forwardSensor.setMaze(robotController.getMazeConfiguration());
-		
-		if(backwardSensor != null)
-			backwardSensor.setMaze(robotController.getMazeConfiguration());
+		leftSensor.setMaze(robotController.getMazeConfiguration());
+		rightSensor.setMaze(robotController.getMazeConfiguration());
+		forwardSensor.setMaze(robotController.getMazeConfiguration());
+		backwardSensor.setMaze(robotController.getMazeConfiguration());
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////

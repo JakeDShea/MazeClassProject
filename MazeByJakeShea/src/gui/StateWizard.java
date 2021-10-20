@@ -2,10 +2,6 @@ package gui;
 
 import gui.Constants.UserInput;
 
-import generation.CardinalDirection;
-import generation.Floorplan;
-import generation.Maze;
-
 /**
  * Refactored from Dr. Peter Kemper's StateWinning.java
  * 

@@ -69,7 +69,7 @@ public class ReliableSensorTest
 	{
 		//Basic setup for tests
 		//We only need the one sensor right now, which we have the forward sensor up
-		ReliableRobot robot = new ReliableRobot(false, false, true, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//Check that the sensor works when it has a wall immediately in front of it.
@@ -88,7 +88,7 @@ public class ReliableSensorTest
 	{
 		//Basic setup for tests
 		//We only need the one sensor right now, which we have the forward sensor up
-		ReliableRobot robot = new ReliableRobot(false, false, true, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//Have robot turn
@@ -110,7 +110,7 @@ public class ReliableSensorTest
 	{
 		//Basic setup for tests
 		//We only need the one sensor right now, which we have the forward sensor up
-		ReliableRobot robot = new ReliableRobot(false, false, true, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//Move robot to an area with a long stretch until a wall
@@ -134,7 +134,7 @@ public class ReliableSensorTest
 	{
 		//Basic setup for tests
 		//We only need the one sensor right now, which we have the forward sensor up
-		ReliableRobot robot = new ReliableRobot(false, false, true, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//Have robot sense with sensor
@@ -174,7 +174,7 @@ public class ReliableSensorTest
 		
 		//Basic setup for tests
 		//We only need the one sensor right now, which we have the forward sensor up
-		ReliableRobot robot = new ReliableRobot(false, false, true, false);
+		ReliableRobot robot = new ReliableRobot();
 		
 		newController.switchFromGeneratingToPlaying(newMaze);
 		robot.setController(newController);
@@ -222,7 +222,7 @@ public class ReliableSensorTest
 		
 		//Basic setup for tests
 		//We only need the one sensor right now, which we have the forward sensor up
-		ReliableRobot robot = new ReliableRobot(false, false, true, false);
+		ReliableRobot robot = new ReliableRobot();
 		
 		newController.switchFromGeneratingToPlaying(newMaze);
 		robot.setController(newController);

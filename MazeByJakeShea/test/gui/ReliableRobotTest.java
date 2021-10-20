@@ -70,7 +70,7 @@ public class ReliableRobotTest
 	public void testRobotStarts() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot(false, false, false, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//Assert robot starts in correct area.
@@ -95,7 +95,7 @@ public class ReliableRobotTest
 	public void testRobotTurns() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot(false, false, false, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//Robot turns only once
@@ -124,7 +124,7 @@ public class ReliableRobotTest
 	public void testRobotJumps() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot(false, false, false, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//Robot jumps only once
@@ -162,7 +162,7 @@ public class ReliableRobotTest
 	public void testRobotRotatesCorrectly() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot(false, false, false, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//Robot rotates to the left
@@ -202,7 +202,7 @@ public class ReliableRobotTest
 	public void testRobotMoves() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot(false, false, false, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//Robot rotates to the left to be able to move in a straight line
@@ -230,7 +230,7 @@ public class ReliableRobotTest
 	public void testRobotMovesMultipleTimes() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot(false, false, false, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//Robot rotates to the left to be able to move in a straight line
@@ -261,7 +261,7 @@ public class ReliableRobotTest
 	public void testRobotCrashed() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot(false, false, false, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//Robot moves into wall
@@ -286,7 +286,7 @@ public class ReliableRobotTest
 	public void testRobotHasNotStopped() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot(false, false, false, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//Asserts that the robot has not hit any criteria to stop yet
@@ -304,7 +304,7 @@ public class ReliableRobotTest
 	public void testRobotAtExit() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot(false, false, false, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//Makes robot jump to get to a straigh path to exit
@@ -346,7 +346,7 @@ public class ReliableRobotTest
 	public void testRobotinRoom() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot(false, false, false, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//Assert that robot knows it is currently not in a room
@@ -373,7 +373,7 @@ public class ReliableRobotTest
 	public void testRobotRunsOutOfEnergy() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot(false, false, false, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		/*   //Can do this if you want actual code to drain the battery, but code is expensive in time due to GUI attempting to paint this
@@ -411,7 +411,7 @@ public class ReliableRobotTest
 	public void testRobotOdometerAccuracy() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot(false, false, false, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//We use the path to the exit we did in a previous test because the path is known to us
@@ -440,7 +440,7 @@ public class ReliableRobotTest
 	public void testRobotOdometerReset() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot(false, false, false, false);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//We use the path to the exit we did in a previous test because the path is known to us
@@ -475,7 +475,7 @@ public class ReliableRobotTest
 	public void testRobotWitHSensors() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot(true, true, true, true);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 	}
 	
@@ -490,7 +490,7 @@ public class ReliableRobotTest
 	public void testRobotSensorsWork() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot(true, true, true, true);
+		ReliableRobot robot = new ReliableRobot();
 		setRobot(robot);
 		
 		//Assert that robot's sensors work in all directions, regardless of the robot's orientation
@@ -527,5 +527,35 @@ public class ReliableRobotTest
 		assertEquals(0, robot.distanceToObstacle(Direction.RIGHT));
 		assertEquals(0, robot.distanceToObstacle(Direction.LEFT));
 		assertEquals(1, robot.distanceToObstacle(Direction.BACKWARD));
+	}
+	
+	/**
+	 * Test Case: Check if robot can see out of the exit of a maze
+     * Routine being tested: canSeeThroughTheExitIntoEternity()
+     * 
+     * Tests if a robot sees no obstacles after looking through the exit of a maze
+	 * @throws Exception 
+	 */
+	@Test
+	public void testRobotSeesInfinity() throws Exception
+	{
+		//Basic setup for tests
+		ReliableRobot robot = new ReliableRobot();
+		setRobot(robot);
+		
+		//Makes robot jump to get to a straigh path to exit
+		robot.jump();
+		
+		//Make robot rotate to face exit
+		robot.rotate(Turn.RIGHT);
+		
+		//Robot moves twice to be one cell away from cell with exit
+		robot.move(3);
+		
+		//Asserts Robot can peer out of the exit with the correct sensor
+		assertTrue(robot.canSeeThroughTheExitIntoEternity(Direction.LEFT));
+		assertFalse(robot.canSeeThroughTheExitIntoEternity(Direction.RIGHT));
+		assertFalse(robot.canSeeThroughTheExitIntoEternity(Direction.FORWARD));
+		assertFalse(robot.canSeeThroughTheExitIntoEternity(Direction.BACKWARD));
 	}
 }
