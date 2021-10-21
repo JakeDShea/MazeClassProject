@@ -2,6 +2,8 @@ package gui;
 
 import gui.Constants.UserInput;
 
+import org.hamcrest.core.IsInstanceOf;
+
 import generation.CardinalDirection;
 import generation.Floorplan;
 import generation.Maze;
@@ -117,15 +119,30 @@ public class StatePlaying extends DefaultState {
         		showSolution = true;
         		mapMode = true;
         		control.driver.drive2Exit();
-        		controller.switchFromPlayingToWizardEnding(0);
         	} catch (Exception e) {
-        		//Still has to show an ending screen even if an exception happened where robot stops
-        		controller.switchFromPlayingToWizardEnding(0);
+        		//Still has to show an ending screen even if an exception happened where robot stops if it ran out of energy
+        		
+        		//Will not show an ending screen if we clicked "RETURNTOTITLE" key
+        		if(!(controller.currentState instanceof StateTitle))
+        		{
+        			System.out.println("Uhoh");
+        			controller.switchFromPlayingToWizard(0);
+        		}
+        		else {
+        			controller.switchToTitle();
+				}
         	}
         	
         	//Must reset the robot to allow for more plays in a single run of the program.
+            control.robot = new ReliableRobot();
+            
         	control.robot.resetOdometer();
         	control.robot.setBatteryLevel(3500);
+            
+        	control.driver = new Wizard();
+        	control.driver.setRobot(control.robot);
+        	
+        	control.setRobotAndDriver(control.robot, control.driver);
         }
     }
     /**
@@ -184,7 +201,11 @@ public class StatePlaying extends DefaultState {
             walk(1);
             // check termination, did we leave the maze?
             if (isOutside(px,py)) {
-                control.switchFromPlayingToWinning(0);
+            	//Depends on whether a wizard is being used or not
+            	if(control.driver == null)
+            		control.switchFromPlayingToWinning(0);
+            	else
+					control.switchFromPlayingToWizard(0);
             }
             break;
         case LEFT: // turn left
@@ -197,7 +218,11 @@ public class StatePlaying extends DefaultState {
             walk(-1);
             // check termination, did we leave the maze?
             if (isOutside(px,py)) {
-                control.switchFromPlayingToWinning(0);
+            	//Depends on whether a wizard is being used or not
+            	if(control.driver == null)
+            		control.switchFromPlayingToWinning(0);
+            	else
+					control.switchFromPlayingToWizard(0);
             }
             break;
         case RETURNTOTITLE: // escape to title screen

@@ -81,7 +81,7 @@ public class ReliableRobotTest
 		assertEquals(CardinalDirection.East, robot.getCurrentDirection());
 		
 		//Assert it starts with correct amount of energy
-		assertEquals(3500, robot.getBatteryLevel());
+		assertEquals(100, robot.getBatteryLevel());
 	}
 	
 	/**

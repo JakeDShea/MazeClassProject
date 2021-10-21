@@ -101,6 +101,7 @@ public class MazeApplication extends JFrame {
 	    	msg = "MazeApplication: maze will be generated with a randomized algorithm.";
 	    	ReliableRobot robot = new ReliableRobot();
 	    	Wizard wizard = new Wizard();
+	    	wizard.setRobot(robot);
 	        result.setRobotAndDriver(robot, wizard);
 	    }
 	    // Case 4: a file

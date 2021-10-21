@@ -46,13 +46,26 @@ public class StateWizard extends DefaultState {
         // otherwise show finish screen with winning message
         // draw content on panel
         //Check specifically if robot stopped
+        System.out.println(control.robot.getBatteryLevel());
+        
         if(controller.getRobot().hasStopped())
-        	view.redrawFinishLost(panel, controller.driver);
+        	view.redrawFinishLost(panel, control.driver);
         else
-        	view.redrawFinishWon(panel, controller.driver);
+        	view.redrawFinishWon(panel, control.driver);
+        
+        //Must reset the robot to allow for more plays in a single run of the program.
+        control.robot = new ReliableRobot();
+        
+    	control.robot.resetOdometer();
+    	control.robot.setBatteryLevel(3500);
+        
+    	control.driver = new Wizard();
+    	control.driver.setRobot(control.robot);
+    	
+    	control.setRobotAndDriver(control.robot, control.driver);
+        
         // update screen with panel content
         panel.update();
-
     }
     
     /**
@@ -66,6 +79,7 @@ public class StateWizard extends DefaultState {
     public boolean keyDown(UserInput key, int value) {
         if (!started)
             return false;
+        
         // for any keyboard input switch to title screen
         control.switchToTitle();    
         return true;

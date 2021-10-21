@@ -136,6 +136,8 @@ public class ReliableRobot implements Robot {
 		if(level >= 0)
 			energy[0] = level;
 		else {
+			//Makes robot stop and ends run
+			energy[0] = 0;
 			throw new IllegalArgumentException();
 		}
 	}

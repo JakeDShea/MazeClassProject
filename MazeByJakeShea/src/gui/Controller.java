@@ -307,7 +307,7 @@ public class Controller {
      * Switches the controller to the final screen
      * @param pathLength gives the length of the path
      */
-    public void switchFromPlayingToWizardEnding(int pathLength) {
+    public void switchFromPlayingToWizard(int pathLength) {
         currentState = states[4];
         currentState.setPathLength(pathLength);
         ((StateWizard) currentState).start(this, panel);
