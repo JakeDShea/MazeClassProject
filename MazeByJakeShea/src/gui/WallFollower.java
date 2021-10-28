@@ -1,6 +1,7 @@
 package gui;
 
 import generation.Maze;
+import gui.Robot.Direction;
 
 /**
  * Class: WallFollower
@@ -13,8 +14,11 @@ import generation.Maze;
  */
 
 
-public class WallFollower implements RobotDriver {
-
+public class WallFollower implements RobotDriver
+{
+	// A robot field to interact with the maze
+	// A maze field to know what the game looks like
+	
 	/**
 	 * Assigns a robot platform to the driver. 
 	 * The driver uses a robot to perform, this method provides it with this necessary information.
@@ -22,7 +26,7 @@ public class WallFollower implements RobotDriver {
 	 */
 	@Override
 	public void setRobot(Robot r) {
-		// TODO Auto-generated method stub
+		// Sets the robot field to the paramter r
 
 	}
 
@@ -33,7 +37,7 @@ public class WallFollower implements RobotDriver {
 	 */
 	@Override
 	public void setMaze(Maze maze) {
-		// TODO Auto-generated method stub
+		// Sets the maze field to the paramter maze
 
 	}
 
@@ -54,7 +58,13 @@ public class WallFollower implements RobotDriver {
 	 */
 	@Override
 	public boolean drive2Exit() throws Exception {
-		// TODO Auto-generated method stub
+		// Keeps looping as long as the method drive1Step2Exit continues working
+		// Calls the method drive1Step2Exit()
+		
+		// If robot has stopped, throw an exception
+		// If robot has found the exit, return true
+		// Otherwise, return false
+		
 		return false;
 	}
 
@@ -75,7 +85,23 @@ public class WallFollower implements RobotDriver {
 	 */
 	@Override
 	public boolean drive1Step2Exit() throws Exception {
-		// TODO Auto-generated method stub
+		// Check all of the robots sensors to see which one works using the
+		// getWorkingDirection() method
+		
+		// Turn robot using the direction we get from above using the
+		// makeThisFaceLeft(...) method
+		
+		// Check if a wall exists using the sensor that works
+		// Turn robot to the right once and check if there is a wall in front
+		
+		// If there is not, move forward.
+		// If there is, turn the robot once more to the right.
+		
+		// Recheck the sensors and check the wall on the left again.
+		
+		// If there is a wall, just move forward.
+		// If not, turn back to the left and move forward.
+		
 		return false;
 	}
 
@@ -88,7 +114,7 @@ public class WallFollower implements RobotDriver {
 	 */
 	@Override
 	public float getEnergyConsumption() {
-		// TODO Auto-generated method stub
+		// Return how much energy the robot has used
 		return 0;
 	}
 
@@ -100,8 +126,46 @@ public class WallFollower implements RobotDriver {
 	 */
 	@Override
 	public int getPathLength() {
-		// TODO Auto-generated method stub
+		// Return how far the robot has moved
 		return 0;
 	}
-
+	
+	/**
+	 * A private method that is used to find the first working sensor in the
+	 * preferred order of left, front, back, and then right lastly.
+	 * 
+	 * This is made into its own method for ease of writing and not copying code
+	 * multiple times.
+	 * 
+	 * @return the first possible direction of the driver's robot's working sensor
+	 */
+	private Direction getWorkingDirection()
+	{
+		// Checks if the driver's robot's left sensor is working. If so, return left
+		
+		// Checks if forward sensor is working. If so, return forward
+		
+		// Checks if backward sensor is working. If so, return backward
+		
+		// Checks if right sensor is working. If so, return right
+		
+		return null;
+	}
+	
+	/**
+	 * A private method that is used to turn the robot as efficiently as possible
+	 * to standardize when one of its working sensors shall face the left wall.
+	 * 
+	 * @param dir : the direction of the nearest sensor that works
+	 */
+	private void makeThisFaceLeft(Direction dir)
+	{
+		// Checks if dir is left, then does nothing
+		
+		// Checks if dir is forward, then turns robot left once.
+		
+		// Checks if dir is backward, then turns the robot right once.
+		
+		//Checks if dir is right, then turns the robot around.
+	}
 }
