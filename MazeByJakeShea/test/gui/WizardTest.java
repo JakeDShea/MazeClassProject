@@ -5,44 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.Test;
 
-import generation.Maze;
-import generation.MazeFactory;
-import generation.StubOrder;
-import gui.Robot.Turn;
-import generation.Order.Builder;
-
-public class WizardTest
+public class WizardTest extends DriverTest
 {
-	//Sets up maze and stuff that robot needs.
-	private Maze maze;
-	private StubOrder order;
-	private MazeFactory factory;
-	private Controller controller;
-	
-	/**
-	 * Creates a maze for robot testing
-	 * This makes it so tests don't have to remake mazes multiple times.
-	 */
-	public void setUp(int seed, int skill)
-	{
-		//Set up factory object
-		factory = new MazeFactory();
-		
-		//Sets up order object
-		order = new StubOrder();
-		order.setBuilder(Builder.DFS);
-		order.setSeed(seed);
-		order.setSkill(skill);
-		
-		//Orders maze
-		factory.order(order);
-		factory.waitTillDelivered();
-		
-		maze = order.getMaze();
-		
-		controller = new Controller();
-	}
-	
 	/**
 	 * Test Case: Tests if the Wizard can solve a maze
      * Routine being tested: drive2Exit()
@@ -58,11 +22,8 @@ public class WizardTest
 		ReliableRobot robot = new ReliableRobot();
 		Wizard testWizard = new Wizard();
 		
-		testWizard.setRobot(robot);
-		testWizard.setMaze(maze);
-		controller.switchFromGeneratingToPlaying(maze);
-		robot.setController(controller);
-		controller.setRobotAndDriver(robot, testWizard);
+		//Set up for communication between robot, wizard, and controller
+		setForTesting(testWizard, robot);
 		
 		//True if wizard solves maze
 		assertTrue(testWizard.drive2Exit());
@@ -83,11 +44,8 @@ public class WizardTest
 		ReliableRobot robot = new ReliableRobot();
 		Wizard testWizard = new Wizard();
 		
-		testWizard.setRobot(robot);
-		testWizard.setMaze(maze);
-		controller.switchFromGeneratingToPlaying(maze);
-		robot.setController(controller);
-		controller.setRobotAndDriver(robot, testWizard);
+		//Set up for communication between robot, wizard, and controller
+		setForTesting(testWizard, robot);
 		
 		//Asserts if wizard solves maze
 		assertTrue(testWizard.drive2Exit());
@@ -111,11 +69,8 @@ public class WizardTest
 		ReliableRobot robot = new ReliableRobot();
 		Wizard testWizard = new Wizard();
 		
-		testWizard.setRobot(robot);
-		testWizard.setMaze(maze);
-		controller.switchFromGeneratingToPlaying(maze);
-		robot.setController(controller);
-		controller.setRobotAndDriver(robot, testWizard);
+		//Set up for communication between robot, wizard, and controller
+		setForTesting(testWizard, robot);
 		
 		//Asserts if wizard solves maze
 		assertTrue(testWizard.drive2Exit());
@@ -141,11 +96,8 @@ public class WizardTest
 		ReliableRobot robot = new ReliableRobot();
 		Wizard testWizard = new Wizard();
 		
-		testWizard.setRobot(robot);
-		testWizard.setMaze(maze);
-		controller.switchFromGeneratingToPlaying(maze);
-		robot.setController(controller);
-		controller.setRobotAndDriver(robot, testWizard);
+		//Set up for communication between robot, wizard, and controller
+		setForTesting(testWizard, robot);
 		
 		//Asserts if wizard solves maze
 		assertTrue(testWizard.drive2Exit());
@@ -167,11 +119,8 @@ public class WizardTest
 		ReliableRobot robot = new ReliableRobot();
 		Wizard testWizard = new Wizard();
 		
-		testWizard.setRobot(robot);
-		testWizard.setMaze(maze);
-		controller.switchFromGeneratingToPlaying(maze);
-		robot.setController(controller);
-		controller.setRobotAndDriver(robot, testWizard);
+		//Set up for communication between robot, wizard, and controller
+		setForTesting(testWizard, robot);
 		
 		//Asserts if wizard solves maze
 		assertTrue(testWizard.drive2Exit());
@@ -193,11 +142,8 @@ public class WizardTest
 		ReliableRobot robot = new ReliableRobot();
 		Wizard testWizard = new Wizard();
 		
-		testWizard.setRobot(robot);
-		testWizard.setMaze(maze);
-		controller.switchFromGeneratingToPlaying(maze);
-		robot.setController(controller);
-		controller.setRobotAndDriver(robot, testWizard);
+		//Set up for communication between robot, wizard, and controller
+		setForTesting(testWizard, robot);
 		
 		//Asserts if wizard solves maze
 		assertTrue(testWizard.drive2Exit());
@@ -220,11 +166,7 @@ public class WizardTest
 		Wizard testWizard = new Wizard();
 		
 		//Set up for communication between robot, wizard, and controller
-		testWizard.setRobot(robot);
-		testWizard.setMaze(maze);
-		controller.switchFromGeneratingToPlaying(maze);
-		robot.setController(controller);
-		controller.setRobotAndDriver(robot, testWizard);
+		setForTesting(testWizard, robot);
 		
 		//Asserts if wizard solves maze
 		assertTrue(testWizard.drive2Exit());
@@ -249,11 +191,7 @@ public class WizardTest
 		robot.setBatteryLevel(0);
 		
 		//Set up for communication between robot, wizard, and controller
-		testWizard.setRobot(robot);
-		testWizard.setMaze(maze);
-		controller.switchFromGeneratingToPlaying(maze);
-		robot.setController(controller);
-		controller.setRobotAndDriver(robot, testWizard);
+		setForTesting(testWizard, robot);
 		
 		//Asserts the wizard fails
 		try {

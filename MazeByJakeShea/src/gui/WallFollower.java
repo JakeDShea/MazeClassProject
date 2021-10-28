@@ -8,7 +8,7 @@ import gui.Robot.Direction;
  * Responsibilities: Figuring out where to go for Robot using a specific algorithm
  * Collaborators: gui.RobotDriver.java
  * 				  generation.Maze.java
- * 				  gui.ReliableRobot.java
+ * 				  gui.Robot.java
  * 
  * @Author Jake Shea
  */
