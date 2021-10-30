@@ -5,6 +5,16 @@ import generation.MazeFactory;
 import generation.StubOrder;
 import generation.Order.Builder;
 
+/**
+ * Class: DriverTest
+ * Responsibilities: Make driver test classes inherit needed code
+ * Collaborators: generation.Maze.java
+ * 				  generation.MazeFactory.java
+ * 				  generation.StubOrder.java
+ * 
+ * @Author Jake Shea
+ */
+
 public class DriverTest
 {
 	//Sets up maze and stuff that robot needs.

@@ -2,6 +2,14 @@ package gui;
 
 import org.junit.Test;
 
+/**
+ * Class: WallFollowerTest
+ * Responsibilities: Tests whether the WallFollower algorithm works correctly
+ * Collaborators: tests.gui.DriverTest.java
+ * 
+ * @Author Jake Shea
+ */
+
 public class WallFollowerTest extends DriverTest
 {
 	/**
