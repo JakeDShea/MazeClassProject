@@ -311,4 +311,11 @@ public interface Robot {
 	 * @throws UnsupportedOperationException if method not supported
 	 */
 	void stopFailureAndRepairProcess(Direction direction) throws UnsupportedOperationException;
+	/**
+	 * A method that is used to get a DistanceSensor from the robot
+	 * 
+	 * @param dir is the direction that we want
+	 * @return the distance sensor that is asked for by the parameter
+	 */
+	DistanceSensor getSensor(Direction dir);
 }

@@ -2,6 +2,7 @@ package gui;
 
 import generation.Maze;
 import gui.Robot.Direction;
+import gui.Robot.Turn;
 
 /**
  * Class: WallFollower
@@ -17,7 +18,9 @@ import gui.Robot.Direction;
 public class WallFollower implements RobotDriver
 {
 	// A robot field to interact with the maze
+	Robot robot;
 	// A maze field to know what the game looks like
+	Maze maze;
 	
 	/**
 	 * Assigns a robot platform to the driver. 
@@ -27,7 +30,7 @@ public class WallFollower implements RobotDriver
 	@Override
 	public void setRobot(Robot r) {
 		// Sets the robot field to the paramter r
-
+		robot = r;
 	}
 
 	/**
@@ -36,9 +39,9 @@ public class WallFollower implements RobotDriver
 	 * @param maze represents the maze, must be non-null and a fully functional maze object.
 	 */
 	@Override
-	public void setMaze(Maze maze) {
+	public void setMaze(Maze mazeParam) {
 		// Sets the maze field to the paramter maze
-
+		maze = mazeParam;
 	}
 
 	/**
@@ -58,14 +61,26 @@ public class WallFollower implements RobotDriver
 	 */
 	@Override
 	public boolean drive2Exit() throws Exception {
+		boolean solved = false;
 		// Keeps looping as long as the method drive1Step2Exit continues working
-		// Calls the method drive1Step2Exit()
+		while(!solved)
+		{
+			// Calls the method drive1Step2Exit()
+			try {
+				solved = drive1Step2Exit();
+			} catch (Exception e) {
+				// If robot has stopped, throw an exception
+				throw new Exception();
+			}
 		
-		// If robot has stopped, throw an exception
-		// If robot has found the exit, return true
-		// Otherwise, return false
+			// If robot has found the exit, return true
+			if(solved)
+				break;
 		
-		return false;
+			// Otherwise, return false
+		}
+		
+		return solved;
 	}
 
 	/**
@@ -87,22 +102,52 @@ public class WallFollower implements RobotDriver
 	public boolean drive1Step2Exit() throws Exception {
 		// Check all of the robots sensors to see which one works using the
 		// getWorkingDirection() method
+		Direction works = getWorkingDirection();
+		Boolean moved = false;
 		
 		// Turn robot using the direction we get from above using the
 		// makeThisFaceLeft(...) method
+		makeThisFaceLeft(works);
 		
 		// Check if a wall exists using the sensor that works
 		// Turn robot to the right once and check if there is a wall in front
+		if(robot.distanceToObstacle(works) == 0)
+		{
+			robot.rotate(Turn.RIGHT);
+			if(robot.distanceToObstacle(works) != 0)
+			{	// If there is not, move forward.
+				robot.rotate(Turn.LEFT);
+				faceBackForward(works);
+				robot.move(1);
+				moved = true;
+			}
+			// If there is, turn the robot once more to the right.
+			else
+			{
+				robot.rotate(Turn.RIGHT);
 		
-		// If there is not, move forward.
-		// If there is, turn the robot once more to the right.
+				// Recheck the sensors and check the wall on the left again.
+				works = getWorkingDirection();
+				makeThisFaceLeft(works);
 		
-		// Recheck the sensors and check the wall on the left again.
+				// If there is a wall, just move forward.
+				if(robot.distanceToObstacle(works) == 0)
+				{
+					robot.move(1);
+					moved = true;
+				}
+				else
+				{
+					// If not, turn back to the left and move forward.
+					faceBackForward(works);
+					robot.rotate(Turn.LEFT);
+					robot.move(1);
+					moved = true;
+				}
+			}
+		}
 		
-		// If there is a wall, just move forward.
-		// If not, turn back to the left and move forward.
-		
-		return false;
+		return moved;
 	}
 
 	/**
@@ -115,7 +160,7 @@ public class WallFollower implements RobotDriver
 	@Override
 	public float getEnergyConsumption() {
 		// Return how much energy the robot has used
-		return 0;
+		return 3500 - robot.getBatteryLevel();
 	}
 
 	/**
@@ -127,7 +172,7 @@ public class WallFollower implements RobotDriver
 	@Override
 	public int getPathLength() {
 		// Return how far the robot has moved
-		return 0;
+		return robot.getOdometerReading();
 	}
 	
 	/**
@@ -142,14 +187,55 @@ public class WallFollower implements RobotDriver
 	private Direction getWorkingDirection()
 	{
 		// Checks if the driver's robot's left sensor is working. If so, return left
-		
-		// Checks if forward sensor is working. If so, return forward
-		
-		// Checks if backward sensor is working. If so, return backward
-		
-		// Checks if right sensor is working. If so, return right
-		
-		return null;
+		if(robot.getSensor(Direction.LEFT) instanceof UnreliableSensor)
+		{
+			if(((UnreliableSensor) robot.getSensor(Direction.LEFT)).isFunctioning)
+				return Direction.LEFT;
+			else
+			{
+				// Checks if forward sensor is working. If so, return forward
+				if(robot.getSensor(Direction.FORWARD) instanceof UnreliableSensor)
+				{
+					if(((UnreliableSensor) robot.getSensor(Direction.FORWARD)).isFunctioning)
+						return Direction.FORWARD;
+					else
+					{
+						// Checks if backward sensor is working. If so, return backward
+						if(robot.getSensor(Direction.BACKWARD) instanceof UnreliableSensor)
+						{
+							if(((UnreliableSensor) robot.getSensor(Direction.BACKWARD)).isFunctioning)
+								return Direction.BACKWARD;
+							else
+							{
+								// Checks if right sensor is working. If so, return right
+								if(robot.getSensor(Direction.RIGHT) instanceof UnreliableSensor)
+								{
+									if(((UnreliableSensor) robot.getSensor(Direction.RIGHT)).isFunctioning)
+										return Direction.RIGHT;
+									else
+									{
+										// Recalls the method until it finds a functioning direction
+										return getWorkingDirection();
+									}
+								}
+								// Right has to work because it is reliable
+								else
+									return Direction.RIGHT;
+							}
+						}
+						// Backward has to work because it is reliable
+						else
+							return Direction.BACKWARD;
+					}
+				}
+				// Forward has to work because it is reliable
+				else
+					return Direction.FORWARD;
+			}
+		}
+		// Left has to work because it is reliable
+		else
+			return Direction.LEFT;
 	}
 	
 	/**
@@ -163,9 +249,40 @@ public class WallFollower implements RobotDriver
 		// Checks if dir is left, then does nothing
 		
 		// Checks if dir is forward, then turns robot left once.
+		if(dir == Direction.FORWARD)
+			robot.rotate(Turn.LEFT);
 		
 		// Checks if dir is backward, then turns the robot right once.
+		if(dir == Direction.BACKWARD)
+			robot.rotate(Turn.RIGHT);
 		
 		//Checks if dir is right, then turns the robot around.
+		if(dir == Direction.RIGHT)
+			robot.rotate(Turn.AROUND);
+	}
+	
+	/**
+	 * A private method that is used to easily make the robot turn
+	 * around to correctly face the correct path again.
+	 * 
+	 * Effectively reverses the turn made in makeThisFaceLeft()
+	 * 
+	 * @param dir the direction of the working sensor that was used
+	 */
+	private void faceBackForward(Direction dir)
+	{
+		// Checks if dir is left, then does nothing
+		
+		// Checks if dir is forward, then turns robot right once.
+		if(dir == Direction.FORWARD)
+			robot.rotate(Turn.RIGHT);
+		
+		// Checks if dir is backward, then turns the robot left once.
+		if(dir == Direction.BACKWARD)
+			robot.rotate(Turn.LEFT);
+		
+		//Checks if dir is right, then turns the robot around.
+		if(dir == Direction.RIGHT)
+			robot.rotate(Turn.AROUND);
 	}
 }
