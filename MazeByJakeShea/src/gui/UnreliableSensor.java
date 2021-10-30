@@ -5,15 +5,27 @@ package gui;
  * Responsibilities: Interacting with obstacles in Maze
  * 					 To break and be repaired
  * Collaborators: gui.ReliableSensor.java
+ * 				  Runnable.java
+ * 				  Thread.java
  * 
  * @Author Jake Shea
  */
 
-
 public class UnreliableSensor extends ReliableSensor implements Runnable
 {
 	// A boolean value to say whether the sensor is currently working or not
+	boolean isFunctioning;
 	// A thread object that uses the runnable UnreliableSensor.
+	Thread sensorThread;
+	
+	/**
+	 * Constructor for an UnreliableSensor object
+	 */
+	public UnreliableSensor()
+	{
+		isFunctioning = true;
+		sensorThread = new Thread(this);
+	}
 	
 	/**
 	 * A method that will be used to first break, then repair said sensor.
@@ -26,10 +38,25 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 	public void startFailureAndRepairProcess(int meanTimeBetweenFailures, int meanTimeToRepair)
 			throws UnsupportedOperationException{
 		// Has the sensor thread wait for meanTimeBetweenFailures seconds.
+		try
+		{
+			Thread.sleep(meanTimeToRepair * 1000);
+		}
+		catch (InterruptedException e) {
+			System.out.println("Thread is asleep");
+		}
 		
 		// Sets the sensor to failing state.
+		isFunctioning = false;
 		
 		// Has the sensor thread wait for meanTimeToRepair more seconds.
+		try
+		{
+			Thread.sleep(meanTimeToRepair * 1000);
+		}
+		catch (InterruptedException e) {
+			System.out.println("Thread is asleep");
+		}
 	}
 
 	/**
@@ -54,8 +81,13 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 	public void stopFailureAndRepairProcess() throws UnsupportedOperationException {
 		// Checks if the sensor is currently failing.
 		// If so, repair the sensor.
-		
+		if(!isFunctioning)
+			isFunctioning = !isFunctioning;
 		// Otherwise this method will throw an exception.
+		else
+		{
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	/**
@@ -66,7 +98,19 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 	@Override
 	public void run() {
 		// Will run while the maze is still playing
+		while(maze != null)
+		{
+			//Keeps thread active until maze ends
+		}
 		
-		// Loops the failing and repairing processes
+	}
+	
+	/**
+	 * This method will be called by the constructor to start
+	 * the thread this object has.
+	 */
+	public void start()
+	{
+		sensorThread.start();
 	}
 }
