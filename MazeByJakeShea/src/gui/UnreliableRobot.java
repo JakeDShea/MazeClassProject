@@ -6,6 +6,7 @@ package gui;
  * 					 To have tools that may not function at all times
  * Collaborators: gui.ReliableSensor.java
  * 				  gui.UnreliableSensor.java
+ * 				  gui.DistanceSensor.java
  * 
  * @Author Jake Shea
  */
@@ -13,6 +14,7 @@ package gui;
 public class UnreliableRobot extends ReliableRobot
 {
 	// Four DistanceSensors that can be either reliable or unreliable
+	DistanceSensor leftSensor, forwardSensor, backwardSensor, rightSensor;
 	// All other necessary fields are to be inherited
 	
 	/**
@@ -28,5 +30,29 @@ public class UnreliableRobot extends ReliableRobot
 	{
 		//Check each integer parameter.
 		//If it is a 1, make it a reliable sensor, if a 0 then make it an unreliable one
+		
+		//Creates the sensor for the forward direction
+		if(forward == 1)
+			forwardSensor = new ReliableSensor();
+		else
+			forwardSensor = new UnreliableSensor();
+		
+		//Creates the sensor for the left direction
+		if(left == 1)
+			leftSensor = new ReliableSensor();
+		else
+			leftSensor = new UnreliableSensor();
+		
+		//Creates the sensor for the right direction
+		if(right == 1)
+			rightSensor = new ReliableSensor();
+		else
+			rightSensor = new UnreliableSensor();
+		
+		//Creates the sensor for the backward direction
+		if(back == 1)
+			backwardSensor = new ReliableSensor();
+		else
+			backwardSensor = new UnreliableSensor();
 	}
 }
