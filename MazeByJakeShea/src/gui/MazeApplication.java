@@ -21,6 +21,10 @@ import javax.swing.JFrame;
  * TODO: use logger for output instead of Sys.out
  */
 public class MazeApplication extends JFrame {
+	// Sets up command-line parameters for the program with defaults
+	private static String argGen = "DFS";
+	private static String argDrive = "Manual";
+	private static String argSensors = "1111";
 
 	// not used, just to make the compiler, static code checker happy
 	private static final long serialVersionUID = 1L;
@@ -38,17 +42,20 @@ public class MazeApplication extends JFrame {
 	 * Constructor
 	 */
 	public MazeApplication() {
-		init(null);
+		init();
 	}
 
+	//////////////////////////////////////////////////////////////////
+	///////////////////////NOW DEPRECATED/////////////////////////////
+	//////////////////////////////////////////////////////////////////
 	/**
 	 * Constructor that loads a maze from a given file or uses a particular method to generate a maze
 	 * @param parameter can identify a generation method (Prim, Kruskal, Eller)
      * or a filename that stores an already generated maze that is then loaded, or can be null
 	 */
-	public MazeApplication(String parameter) {
+	/*public MazeApplication(String parameter) {
 		init(parameter);
-	}
+	}*/
 
 	/**
 	 * Instantiates a controller with settings according to the given parameter.
@@ -57,7 +64,7 @@ public class MazeApplication extends JFrame {
 	 * or can be null
 	 * @return the newly instantiated and configured controller
 	 */
-	 Controller createController(String parameter) {
+	 Controller createController() {
 	    // need to instantiate a controller to return as a result in any case
 	    Controller result = new Controller() ;
 	    // can decide if user repeatedly plays the same mazes or 
@@ -69,55 +76,104 @@ public class MazeApplication extends JFrame {
 	    else
 	    	result.setDeterministic(false);
 	    String msg = null; // message for feedback
+	    
+	    // First creates the generation of the Maze
 	    // Case 1: no input
-	    if (parameter == null) {
-	        msg = "MazeApplication: maze will be generated with a randomized algorithm."; 
+	    if ("DFS".equalsIgnoreCase(argGen)) {
+	        msg = "MazeApplication: maze will be generated with a randomized algorithm"; 
 	    }
 	    // Case 2: Prim
-	    else if ("Prim".equalsIgnoreCase(parameter))
+	    else if ("Prim".equalsIgnoreCase(argGen))
 	    {
-	        msg = "MazeApplication: generating random maze with Prim's algorithm.";
+	        msg = "MazeApplication: generating random maze with Prim's algorithm";
 	        result.setBuilder(Order.Builder.Prim);
 	    }
 	    // Case 3 a and b: Eller, Kruskal, Boruvka or some other generation algorithm
-	    else if ("Kruskal".equalsIgnoreCase(parameter))
+	    else if ("Kruskal".equalsIgnoreCase(argGen))
 	    {
 	    	// TODO: for P2 assignment, please add code to set the builder accordingly
 	        throw new RuntimeException("Don't know anybody named Kruskal ...");
 	    }
-	    else if ("Eller".equalsIgnoreCase(parameter))
+	    else if ("Eller".equalsIgnoreCase(argGen))
 	    {
 	    	// TODO: for P2 assignment, please add code to set the builder accordingly
 	        throw new RuntimeException("Don't know anybody named Eller ...");
 	    }
-	    else if ("Boruvka".equalsIgnoreCase(parameter))
+	    else if ("Boruvka".equalsIgnoreCase(argGen))
 	    {
 	    	// TODO: for P2 assignment, please add code to set the builder accordingly
-	    	msg = "MazeApplication: generating random maze with Boruvka's algorithm.";
+	    	msg = "MazeApplication: generating random maze with Boruvka's algorithm";
 	        result.setBuilder(Order.Builder.Boruvka);
-	    }
-	    else if("Wizard".equalsIgnoreCase(parameter))
-	    {
-	    	msg = "MazeApplication: maze will be generated with a randomized algorithm.";
-	    	ReliableRobot robot = new ReliableRobot();
-	    	Wizard wizard = new Wizard();
-	    	wizard.setRobot(robot);
-	        result.setRobotAndDriver(robot, wizard);
 	    }
 	    // Case 4: a file
 	    else {
-	        File f = new File(parameter) ;
+	        File f = new File(argGen) ;
 	        if (f.exists() && f.canRead())
 	        {
-	            msg = "MazeApplication: loading maze from file: " + parameter;
-	            result.setFileName(parameter);
+	            msg = "MazeApplication: loading maze from file: " + argGen;
+	            result.setFileName(argGen);
 	            return result;
 	        }
 	        else {
 	            // None of the predefined strings and not a filename either: 
-	            msg = "MazeApplication: unknown parameter value: " + parameter + " ignored, operating in default mode.";
+	            msg = "MazeApplication: unknown parameter value: " + argGen + " ignored, operating in default mode.";
 	        }
 	    }
+	    
+	    Robot robot;
+	    String robotMsg = "";
+	    
+	    // Next creates the robot as necessary
+	    // Case 0: A reliable robot is called for
+	    if(argSensors.equalsIgnoreCase("1111"))
+	    {
+	    	robot = new ReliableRobot();
+	    	robotMsg = " with a reliable robot.";
+	    }
+	    // Case 1: An unreliable robot is called for
+	    else
+	    {
+	    	// Gets the integer for a forward parameter
+			int forward = Integer.parseInt(argSensors.substring(0,1));
+			
+			// Gets the integer for a left parameter
+			int left = Integer.parseInt(argSensors.substring(1,2));
+			
+			// Gets the integer for a right parameter
+			int right = Integer.parseInt(argSensors.substring(2,3));
+				
+			// Gets the integer for a back parameter
+			int back = Integer.parseInt(argSensors.substring(3,4));
+			
+			robot = new UnreliableRobot(forward, left, right, back);
+			robotMsg = " with an unreliable robot.";
+		}
+	    
+	    // Finally creates the driver for the maze
+	    // Case 0: A wizard is used
+	    if("Wizard".equalsIgnoreCase(argDrive))
+	    {
+	    	msg += " and will be driven with a Wizard";
+	    	msg += robotMsg;
+	    	Wizard wizard = new Wizard();
+	    	wizard.setRobot(robot);
+	        result.setRobotAndDriver(robot, wizard);
+	    }
+	    // Case 1: A WallFollower is used
+	    else if("Wallfollower".equalsIgnoreCase(argDrive))
+	    {
+	    	msg += " and will be driven with a WallFollower";
+	    	msg += robotMsg;
+	    	WallFollower follower = new WallFollower();
+	    	follower.setRobot(robot);
+	        result.setRobotAndDriver(robot, follower);
+	    }
+	    // Case 2: Driven manually
+	    else
+	    {
+	    	msg += " and will be driven manually.";
+		}
+	    
 	    // controller instantiated and attributes set according to given input parameter
 	    // output message and return controller
 	    System.out.println(msg);
@@ -129,9 +185,9 @@ public class MazeApplication extends JFrame {
 	 * @param parameter can identify a generation method (Prim, Kruskal, Eller)
      * or a filename that contains a generated maze that is then loaded, or can be null
 	 */
-	private void init(String parameter) {
+	private void init() {
 	    // instantiate a game controller and add it to the JFrame
-	    Controller controller = createController(parameter);
+	    Controller controller = createController();
 		add(controller.getPanel()) ;
 		// instantiate a key listener that feeds keyboard input into the controller
 		// and add it to the JFrame
@@ -162,14 +218,32 @@ public class MazeApplication extends JFrame {
 	 */
 	public static void main(String[] args) {
 	    JFrame app ; 
-		switch (args.length) {
-		case 1 : app = new MazeApplication(args[0]);
-		break ;
-		case 0 : 
-		default : app = new MazeApplication() ;
-		break ;
+		// All possible arguments
+		for(int i = 0; i < args.length; i++)
+		{
+			// Checks if this command line arguments is a key argument
+			if(args[i].charAt(0) == ('-'))
+			{
+				//Sets up command line parameters
+				switch(args[i].charAt(1))
+				{
+				case 'g' : {
+					argGen = args[i+1];
+					break;
+				}
+				case 'd' : {
+					argDrive = args[i+1];
+					break;
+				}
+				case 'r' : {
+					argSensors = args[i+1];
+					break;
+				}
+				}
+			}
 		}
+		app = new MazeApplication() ;
+		
 		app.repaint() ;
 	}
-
 }

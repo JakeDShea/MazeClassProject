@@ -45,21 +45,37 @@ public class StateWizard extends DefaultState {
     	}
         // otherwise show finish screen with winning message
         // draw content on panel
-        //Check specifically if robot stopped
-        System.out.println(control.robot.getBatteryLevel());
+        // Check specifically if robot stopped
         
         if(controller.getRobot().hasStopped())
         	view.redrawFinishLost(panel, control.driver);
         else
         	view.redrawFinishWon(panel, control.driver);
         
-        //Must reset the robot to allow for more plays in a single run of the program.
-        control.robot = new ReliableRobot();
+        // Must reset the robot to allow for more plays in a single run of the program.
+        if(control.robot instanceof ReliableRobot)
+        	control.robot = new ReliableRobot();
+        else
+        {
+        	// Sets up parameters for a new unreliable robot on these lines because it is so wordy
+        	int leftParam = ((UnreliableRobot) control.robot).leftSense;
+        	int rightParam = ((UnreliableRobot) control.robot).rightSense;
+        	int forwardParam = ((UnreliableRobot) control.robot).forwardSense;
+        	int backwardParam = ((UnreliableRobot) control.robot).backwardSense;
+        	
+        	// Creates the new robot
+        	control.robot = new UnreliableRobot(forwardParam, leftParam, rightParam, backwardParam);
+        }
         
     	control.robot.resetOdometer();
     	control.robot.setBatteryLevel(3500);
         
-    	control.driver = new Wizard();
+    	// Sets up the driver based on whether it is a wizard or wallfollower
+    	if(control.driver instanceof Wizard)
+    		control.driver = new Wizard();
+    	else
+    		control.driver = new WallFollower();
+    	
     	control.driver.setRobot(control.robot);
     	
     	control.setRobotAndDriver(control.robot, control.driver);
