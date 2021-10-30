@@ -67,18 +67,22 @@ public class WallFollower implements RobotDriver
 		{
 			// Calls the method drive1Step2Exit()
 			try {
-				solved = drive1Step2Exit();
+				solved = !drive1Step2Exit();
 			} catch (Exception e) {
 				// If robot has stopped, throw an exception
 				throw new Exception();
 			}
 		
+			System.out.println(robot.getCurrentPosition()[0] + ", " + robot.getCurrentPosition()[1]);
+			
 			// If robot has found the exit, return true
 			if(solved)
 				break;
 		
 			// Otherwise, return false
 		}
+		
+		robot.move(1);
 		
 		return solved;
 	}
@@ -105,50 +109,69 @@ public class WallFollower implements RobotDriver
 		Direction works = getWorkingDirection();
 		Boolean moved = false;
 		
-		// Turn robot using the direction we get from above using the
-		// makeThisFaceLeft(...) method
-		makeThisFaceLeft(works);
-		
-		// Check if a wall exists using the sensor that works
-		// Turn robot to the right once and check if there is a wall in front
-		if(robot.distanceToObstacle(works) == 0)
+		// First checks if robot has found the exit
+		if(robot.isAtExit())
 		{
-			robot.rotate(Turn.RIGHT);
-			if(robot.distanceToObstacle(works) != 0)
-			{	// If there is not, move forward.
-				robot.rotate(Turn.LEFT);
+			// Checks where the exit is and positions robot accordingly
+			checkForExit(works);
+		}
+		else
+		{
+			// Turn robot using the direction we get from above using the
+			// makeThisFaceLeft(...) method
+			makeThisFaceLeft(works);
+			
+			// Check if a wall exists using the sensor that works
+			// Turn robot to the right once and check if there is a wall in front
+			if(robot.distanceToObstacle(works) == 0)
+			{
+				robot.rotate(Turn.RIGHT);
+				if(robot.distanceToObstacle(works) != 0)
+				{	// If there is not, move forward.
+					robot.rotate(Turn.LEFT);
+					faceBackForward(works);
+					robot.move(1);
+					moved = true;
+				}
+				// If there is, turn the robot once more to the right.
+				else
+				{
+					robot.rotate(Turn.RIGHT);
+			
+					// Recheck the sensors and check the wall on the left again.
+					works = getWorkingDirection();
+					makeThisFaceLeft(works);
+			
+					// If there is a wall, just move forward.
+					if(robot.distanceToObstacle(works) == 0)
+					{
+						robot.move(1);
+						moved = true;
+					}
+					else
+					{
+						// If not, turn back to the left and move forward.
+						faceBackForward(works);
+						robot.rotate(Turn.LEFT);
+						robot.move(1);
+						moved = true;
+					}
+				}
+			}
+			else
+			{
+				// Robot can turn left
 				faceBackForward(works);
+				robot.rotate(Turn.LEFT);
 				robot.move(1);
 				moved = true;
 			}
-			// If there is, turn the robot once more to the right.
-			else
-			{
-				robot.rotate(Turn.RIGHT);
-		
-				// Recheck the sensors and check the wall on the left again.
-				works = getWorkingDirection();
-				makeThisFaceLeft(works);
-		
-				// If there is a wall, just move forward.
-				if(robot.distanceToObstacle(works) == 0)
-				{
-					robot.move(1);
-					moved = true;
-				}
-				else
-				{
-					// If not, turn back to the left and move forward.
-					faceBackForward(works);
-					robot.rotate(Turn.LEFT);
-					robot.move(1);
-					moved = true;
-				}
-			}
 		}
-		
+	
 		return moved;
 	}
+
+
 
 	/**
 	 * Returns the total energy consumption of the journey, i.e.,
@@ -284,5 +307,48 @@ public class WallFollower implements RobotDriver
 		//Checks if dir is right, then turns the robot around.
 		if(dir == Direction.RIGHT)
 			robot.rotate(Turn.AROUND);
+	}
+	
+	private void checkForExit(Direction working)
+	{
+		// Standardizes the robots direction
+		makeThisFaceLeft(working);
+		
+		// Checks if robot can see through the exit
+		if(robot.canSeeThroughTheExitIntoEternity(working))
+		{
+			faceBackForward(working);
+			robot.rotate(Turn.LEFT);
+		}
+		else
+		{
+			// Turns the robot a little
+			robot.rotate(Turn.RIGHT);
+			
+			if(robot.canSeeThroughTheExitIntoEternity(working))
+			{
+				// Rotates Robot back to original position
+				robot.rotate(Turn.LEFT);
+				faceBackForward(working);
+			}
+			else
+			{
+				// Turns robot even more
+				robot.rotate(Turn.RIGHT);
+				
+				if(robot.canSeeThroughTheExitIntoEternity(working))
+				{
+					// Rotates Robot back to original position
+					robot.rotate(Turn.AROUND);
+					faceBackForward(working);
+					robot.rotate(Turn.RIGHT);
+				}
+				else
+				{
+					// Exit must be behind the robot here
+					robot.rotate(Turn.AROUND);
+				}
+			}
+		}
 	}
 }

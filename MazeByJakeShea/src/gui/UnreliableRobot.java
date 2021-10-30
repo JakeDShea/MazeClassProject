@@ -110,4 +110,26 @@ public class UnreliableRobot extends ReliableRobot
 		if (getSensor(direction) instanceof UnreliableSensor)
 			getSensor(direction).stopFailureAndRepairProcess();
 	}
+	
+	/**
+	 * A method to return the sensor of the robot
+	 * @param dir is the direction of which sensor we want
+	 * @return the sensor of the specified direction
+	 */
+	@Override
+	public DistanceSensor getSensor(Direction dir)
+	{
+		// Checks if we want the left-facing sensor
+		if(dir == Direction.LEFT)
+			return leftSensor;
+		// Checks if we want the forward-facing sensor
+		else if (dir == Direction.FORWARD)
+			return forwardSensor;
+		// Checks if we want the backward-facing sensor
+		else if (dir == Direction.BACKWARD)
+			return backwardSensor;
+		// Seems we want the right-facing sensor otherwise
+		else
+			return rightSensor;
+	}
 }
