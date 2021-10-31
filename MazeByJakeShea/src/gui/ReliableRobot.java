@@ -487,7 +487,6 @@ public class ReliableRobot implements Robot {
 	 * @param dir is the direction of which sensor we want
 	 * @return the sensor of the specified direction
 	 */
-	@Override
 	public DistanceSensor getSensor(Direction dir)
 	{
 		// Checks if we want the left-facing sensor

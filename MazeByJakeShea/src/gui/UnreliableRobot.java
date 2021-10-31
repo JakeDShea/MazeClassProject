@@ -16,7 +16,10 @@ import gui.Robot.Direction;
 public class UnreliableRobot extends ReliableRobot
 {
 	// Four DistanceSensors that can be either reliable or unreliable
-	DistanceSensor leftSensor, forwardSensor, backwardSensor, rightSensor;
+	private DistanceSensor leftSensor, forwardSensor, backwardSensor, rightSensor;
+	
+	// Four int fields to set up sensors again after games are made
+	public int leftSense, forwardSense, backwardSense, rightSense; 
 	// All other necessary fields are to be inherited
 	
 	/**
@@ -30,6 +33,12 @@ public class UnreliableRobot extends ReliableRobot
 	 */
 	public UnreliableRobot(int forward, int left, int right, int back)
 	{
+		// Sets up the int fields
+		leftSense = left;
+		forwardSense = forward;
+		rightSense = right;
+		backwardSense = back;
+		
 		//Check each integer parameter.
 		//If it is a 1, make it a reliable sensor, if a 0 then make it an unreliable one
 		
@@ -82,7 +91,13 @@ public class UnreliableRobot extends ReliableRobot
 			throws UnsupportedOperationException {
 		// First checks if the sensor is unreliable, otherwise it cannot fail
 		if (getSensor(direction) instanceof UnreliableSensor)
+		{
+			// Starts the failing process
 			getSensor(direction).startFailureAndRepairProcess(meanTimeBetweenFailures, meanTimeToRepair);
+			
+			//Makes all other threads in the system wait 1.3 seconds to prevent concurrent and synchronized failures
+			pauseOtherThreads(direction);
+		}
 	}
 
 	/**
@@ -131,5 +146,80 @@ public class UnreliableRobot extends ReliableRobot
 		// Seems we want the right-facing sensor otherwise
 		else
 			return rightSensor;
+	}
+	
+	/**
+	 * This method will be called by the controller to start
+	 * the thread this object has.
+	 */
+	public void start()
+	{
+    	// Goes through all the robot's distance sensors
+    	// Checks left sensor and starts as needed
+    	if(getSensor(Direction.LEFT) instanceof UnreliableSensor)
+    	{
+    		((UnreliableSensor) getSensor(Direction.LEFT)).setRobot(this);
+    		((UnreliableSensor) getSensor(Direction.LEFT)).setDirection(Direction.LEFT);
+    		startFailureAndRepairProcess(Direction.LEFT, 4000, 2000);
+    	}
+    	
+    	// Checks forward sensor and starts as needed
+    	if(getSensor(Direction.FORWARD) instanceof UnreliableSensor)
+    	{
+    		((UnreliableSensor) getSensor(Direction.FORWARD)).setRobot(this);
+    		((UnreliableSensor) getSensor(Direction.FORWARD)).setDirection(Direction.FORWARD);
+    		startFailureAndRepairProcess(Direction.FORWARD, 4000, 2000);
+    	}
+    	
+    	// Checks backward sensor and starts as needed
+    	if(getSensor(Direction.BACKWARD) instanceof UnreliableSensor)
+    	{
+    		((UnreliableSensor) getSensor(Direction.BACKWARD)).setRobot(this);
+    		((UnreliableSensor) getSensor(Direction.BACKWARD)).setDirection(Direction.BACKWARD);
+    		startFailureAndRepairProcess(Direction.BACKWARD, 4000, 2000);
+    	}
+    	
+    	// Checks right sensor and starts as needed
+    	if(getSensor(Direction.RIGHT) instanceof UnreliableSensor)
+    	{
+    		((UnreliableSensor) getSensor(Direction.RIGHT)).setRobot(this);
+    		((UnreliableSensor) getSensor(Direction.RIGHT)).setDirection(Direction.RIGHT);
+    		startFailureAndRepairProcess(Direction.RIGHT, 4000, 2000);
+    	}
+	}
+	
+	/**
+	 * A helper method that is used to check if there are threads that
+	 * need to be paused so that we do not have synchronous failures
+	 * by multiple unreliable sensors.
+	 * 
+	 * @param direction is the direction we want to ignore, we check all other directions
+	 */
+	private void pauseOtherThreads(Direction direction)
+	{
+		// Loops through all possible directions denoted by gui.Robot.java
+		for(Direction dir: Robot.Direction.values())
+		{
+			// Checks for all the directions besides the one we came from
+			if(dir != direction)
+			{
+				// Checks first if the sensor is an UnreliableSensor
+				if(getSensor(dir) instanceof UnreliableSensor)
+				{
+					// Checks if the UnreliableSensor is not yet starting the failure process
+					if(!((UnreliableSensor)getSensor(dir)).inStartProcess)
+					{
+						// Makes the sensorThread sleep for a bit of time before continuing
+						try {
+							((UnreliableSensor)getSensor(dir)).sensorThread.sleep(1300);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+		
 	}
 }

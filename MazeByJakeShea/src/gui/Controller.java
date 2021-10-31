@@ -1,6 +1,7 @@
 package gui;
 
 import gui.Constants.UserInput;
+import gui.Robot.Direction;
 
 import java.util.Random;
 
@@ -187,6 +188,12 @@ public class Controller {
         {
         	robot.setController(this);
         	driver.setMaze(config);
+        }
+        
+        // Starts the unreliable sensor failures if an unreliable sensor is used
+        if(this.robot != null && this.robot instanceof UnreliableRobot)
+        {
+        	((UnreliableRobot) this.robot).start();
         }
         
         currentState.start(this, panel);

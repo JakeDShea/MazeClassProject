@@ -1,6 +1,7 @@
 package gui;
 
 import gui.Constants.UserInput;
+import gui.Robot.Direction;
 
 /**
  * Refactored from Dr. Peter Kemper's StateWinning.java
@@ -51,6 +52,26 @@ public class StateWizard extends DefaultState {
         	view.redrawFinishLost(panel, control.driver);
         else
         	view.redrawFinishWon(panel, control.driver);
+        
+        // This checks if there are any background threads to ask to kill after the maze ends
+        if(controller.getRobot() instanceof UnreliableRobot)
+        {
+        	// Interrupts the left sensor threads if it exists
+        	if(((UnreliableRobot) control.robot).getSensor(Direction.LEFT) instanceof UnreliableSensor)
+        		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.LEFT);
+        	
+        	// Interrupts the forward sensor threads if it exists
+        	if(((UnreliableRobot) control.robot).getSensor(Direction.FORWARD) instanceof UnreliableSensor)
+        		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.FORWARD);
+        	
+        	// Interrupts the backward sensor threads if it exists
+        	if(((UnreliableRobot) control.robot).getSensor(Direction.BACKWARD) instanceof UnreliableSensor)
+        		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.BACKWARD);
+        	
+        	// Interrupts the right sensor threads if it exists
+        	if(((UnreliableRobot) control.robot).getSensor(Direction.RIGHT) instanceof UnreliableSensor)
+        		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.RIGHT);
+        }
         
         // Must reset the robot to allow for more plays in a single run of the program.
         if(control.robot instanceof ReliableRobot)

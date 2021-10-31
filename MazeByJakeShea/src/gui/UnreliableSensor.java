@@ -1,5 +1,7 @@
 package gui;
 
+import gui.Robot.Direction;
+
 /**
  * Class: UnreliableSensor
  * Responsibilities: Interacting with obstacles in Maze
@@ -14,9 +16,15 @@ package gui;
 public class UnreliableSensor extends ReliableSensor implements Runnable
 {
 	// A boolean value to say whether the sensor is currently working or not
-	boolean isFunctioning;
+	public boolean isFunctioning, inStartProcess;
 	// A thread object that uses the runnable UnreliableSensor.
 	Thread sensorThread;
+	int uptime, downtime;
+	
+	// The robot that this sensor is on
+	UnreliableRobot robot;
+	// The direction it is facing as well
+	Direction sensorDirection;
 	
 	/**
 	 * Constructor for an UnreliableSensor object
@@ -24,7 +32,10 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 	public UnreliableSensor()
 	{
 		isFunctioning = true;
+		inStartProcess = false;
 		sensorThread = new Thread(this);
+		uptime = 0;
+		downtime = 0;
 	}
 	
 	/**
@@ -37,26 +48,15 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 	@Override
 	public void startFailureAndRepairProcess(int meanTimeBetweenFailures, int meanTimeToRepair)
 			throws UnsupportedOperationException{
+		// Sets a boolean value that says whether this sensor is currently in the failing process
+		inStartProcess = true;
+		
+		uptime = meanTimeBetweenFailures;
+		downtime = meanTimeToRepair;
+		
 		// Has the sensor thread wait for meanTimeBetweenFailures seconds.
-		try
-		{
-			Thread.sleep(meanTimeToRepair * 1000);
-		}
-		catch (InterruptedException e) {
-			System.out.println("Thread is asleep");
-		}
+		sensorThread.start();
 		
-		// Sets the sensor to failing state.
-		isFunctioning = false;
-		
-		// Has the sensor thread wait for meanTimeToRepair more seconds.
-		try
-		{
-			Thread.sleep(meanTimeToRepair * 1000);
-		}
-		catch (InterruptedException e) {
-			System.out.println("Thread is asleep");
-		}
 	}
 
 	/**
@@ -81,15 +81,42 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 	public void stopFailureAndRepairProcess() throws UnsupportedOperationException {
 		// Checks if the sensor is currently failing.
 		// If so, repair the sensor.
-		if(!isFunctioning)
+		if(inStartProcess)
+		{
 			isFunctioning = !isFunctioning;
+			inStartProcess = false;
+		}
 		// Otherwise this method will throw an exception.
 		else
 		{
 			throw new UnsupportedOperationException();
 		}
+		
+		sensorThread.interrupt();
 	}
 
+	/**
+	 * A method that is used to set the robot field for this param for thread
+	 * purposes.
+	 * 
+	 * @param robotParam the robot that this sensor object is used by
+	 */
+	public void setRobot(UnreliableRobot robotParam)
+	{
+		robot = robotParam;
+	}
+	
+	/**
+	 * A method that is used for setting up the directional field of the
+	 * sensor.
+	 * 
+	 * @param dir the direction of the robot this sensor is on
+	 */
+	public void setDirection(Direction dir)
+	{
+		sensorDirection = dir;
+	}
+	
 	/**
 	 * This method will be used to kick off the UnreliableSensor's
 	 * thread activity, allowing for the background thread to work
@@ -98,19 +125,27 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 	@Override
 	public void run() {
 		// Will run while the maze is still playing
-		while(maze != null)
+		while(!sensorThread.isInterrupted())
 		{
-			//Keeps thread active until maze ends
+			try {
+				sensorThread.sleep(uptime);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				isFunctioning = true;
+			}
+			
+			isFunctioning = false;
+			
+			try {
+				sensorThread.sleep(downtime);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				isFunctioning = true;
+			}
+			
+			isFunctioning = true;
 		}
-		
-	}
-	
-	/**
-	 * This method will be called by the constructor to start
-	 * the thread this object has.
-	 */
-	public void start()
-	{
-		sensorThread.start();
 	}
 }

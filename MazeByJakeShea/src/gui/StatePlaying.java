@@ -1,7 +1,7 @@
 package gui;
 
 import gui.Constants.UserInput;
-
+import gui.Robot.Direction;
 import generation.CardinalDirection;
 import generation.Floorplan;
 import generation.Maze;
@@ -118,12 +118,31 @@ public class StatePlaying extends DefaultState {
         		mapMode = true;
         		control.driver.drive2Exit();
         	} catch (Exception e) {
-        		//Still has to show an ending screen even if an exception happened where robot stops if it ran out of energy
+        		// Cleans up threads that may exist
+        		if(controller.getRobot() instanceof UnreliableRobot)
+                {
+                	// Interrupts the left sensor threads if it exists
+                	if(((UnreliableRobot) control.robot).getSensor(Direction.LEFT) instanceof UnreliableSensor)
+                		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.LEFT);
+                	
+                	// Interrupts the forward sensor threads if it exists
+                	if(((UnreliableRobot) control.robot).getSensor(Direction.FORWARD) instanceof UnreliableSensor)
+                		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.FORWARD);
+                	
+                	// Interrupts the backward sensor threads if it exists
+                	if(((UnreliableRobot) control.robot).getSensor(Direction.BACKWARD) instanceof UnreliableSensor)
+                		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.BACKWARD);
+                	
+                	// Interrupts the right sensor threads if it exists
+                	if(((UnreliableRobot) control.robot).getSensor(Direction.RIGHT) instanceof UnreliableSensor)
+                		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.RIGHT);
+                }
         		
-        		//Will not show an ending screen if we clicked "RETURNTOTITLE" key
+        		// Still has to show an ending screen even if an exception happened where robot stops if it ran out of energy
+        		
+        		// Will not show an ending screen if we clicked "RETURNTOTITLE" key
         		if(!(controller.currentState instanceof StateTitle))
         		{
-        			System.out.println("Uhoh");
         			controller.switchFromPlayingToWizard(0);
         		}
         		else {

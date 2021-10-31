@@ -113,10 +113,7 @@ public class WallFollowerTest extends DriverTest
 		setForTesting(testFollower, robot);
 		
 		//Makes controller start the unreliable sensor failures.
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.LEFT)).start();
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.FORWARD)).start();
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.BACKWARD)).start();
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.RIGHT)).start();
+		((UnreliableRobot) controller.getRobot()).start();
 		
 		// Assert that the WallFollower can use drive2Exit() to finish the maze
 		assertTrue(testFollower.drive2Exit());
@@ -143,10 +140,7 @@ public class WallFollowerTest extends DriverTest
 		setForTesting(testFollower, robot);
 		
 		//Makes controller start the unreliable sensor failures.
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.LEFT)).start();
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.FORWARD)).start();
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.BACKWARD)).start();
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.RIGHT)).start();
+		((UnreliableRobot) controller.getRobot()).start();
 		
 		// Assert that the WallFollower can use drive2Exit() to finish the maze
 		assert(testFollower.drive2Exit());
@@ -173,10 +167,7 @@ public class WallFollowerTest extends DriverTest
 		setForTesting(testFollower, robot);
 		
 		//Makes controller start the unreliable sensor failures.
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.LEFT)).start();
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.FORWARD)).start();
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.BACKWARD)).start();
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.RIGHT)).start();
+		((UnreliableRobot) controller.getRobot()).start();
 		
 		// Assert that the WallFollower can use drive2Exit() to finish the maze
 		assertTrue(testFollower.drive2Exit());
@@ -226,10 +217,7 @@ public class WallFollowerTest extends DriverTest
 		setForTesting(testFollower, robot);
 		
 		//Makes controller start the unreliable sensor failures.
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.LEFT)).start();
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.FORWARD)).start();
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.BACKWARD)).start();
-		((UnreliableSensor) controller.getRobot().getSensor(Direction.RIGHT)).start();
+		((UnreliableRobot) controller.getRobot()).start();
 		
 		// Assert that the WallFollower knows that it will fail here trying to finish the maze.
 		try
