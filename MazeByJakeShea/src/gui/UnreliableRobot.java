@@ -191,17 +191,4 @@ public class UnreliableRobot extends ReliableRobot
     		count++;
     	}
 	}
-	
-	/**
-	 * A method used to easily determine whether a robot
-	 * is reliable or not. The unreliable robot will return
-	 * false always.
-	 * 
-	 * @return Returns false always
-	 */
-	@Override
-	public boolean isReliable()
-	{
-		return false;
-	}
 }

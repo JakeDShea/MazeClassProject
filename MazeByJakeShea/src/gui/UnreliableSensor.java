@@ -83,7 +83,7 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 		// If so, repair the sensor.
 		if(inStartProcess)
 		{
-			isFunctioning = !isFunctioning;
+			isFunctioning = true;
 			inStartProcess = false;
 		}
 		// Otherwise this method will throw an exception.
@@ -91,8 +91,6 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 		{
 			throw new UnsupportedOperationException();
 		}
-		
-		sensorThread.interrupt();
 	}
 
 	/**
@@ -125,7 +123,7 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 	@Override
 	public void run() {
 		// Will run while the maze is still playing
-		while(!sensorThread.isInterrupted())
+		while(inStartProcess)
 		{
 			try {
 				Thread.sleep(uptime);
@@ -146,7 +144,7 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 			}
 			
 			isFunctioning = true;
-			
+			System.out.println(sensorDirection + " BACK UP!");
 			// Synchronizes uptime for all threads after the first run is done
 			uptime = 4000;
 		}

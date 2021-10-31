@@ -106,7 +106,7 @@ public class StatePlaying extends DefaultState {
         	// else: dry-run without graphics, most likely for testing purposes
         	printWarning();
         }
-    
+        
         // If there is a robot driver
         if(control.driver != null)
         {
@@ -123,30 +123,30 @@ public class StatePlaying extends DefaultState {
                 {
                 	// Interrupts the left sensor threads if it exists
                 	if(control.reliability.charAt(1) == '0')
-                		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.LEFT);
+                		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.LEFT);
                 	
                 	// Interrupts the forward sensor threads if it exists
                 	if(control.reliability.charAt(0) == '0')
-                		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.FORWARD);
+                		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.FORWARD);
                 	
                 	// Interrupts the backward sensor threads if it exists
                 	if(control.reliability.charAt(3) == '0')
-                		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.BACKWARD);
+                		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.BACKWARD);
                 	
                 	// Interrupts the right sensor threads if it exists
                 	if(control.reliability.charAt(2) == '0')
-                		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.RIGHT);
+                		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.RIGHT);
                 }
         		
         		// Still has to show an ending screen even if an exception happened where robot stops if it ran out of energy
         		
         		// Will not show an ending screen if we clicked "RETURNTOTITLE" key
-        		if(!(controller.currentState instanceof StateTitle))
+        		if(!(control.currentState instanceof StateTitle))
         		{
-        			controller.switchFromPlayingToWizard(0);
+        			control.switchFromPlayingToWizard(0);
         		}
         		else {
-        			controller.switchToTitle();
+        			control.switchToTitle();
 				}
         	}
             

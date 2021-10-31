@@ -58,23 +58,23 @@ public class StateWizard extends DefaultState {
         {
         	// Interrupts the left sensor threads if it exists
         	if(control.reliability.charAt(1) == '0')
-        		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.LEFT);
+        		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.LEFT);
         	
         	// Interrupts the forward sensor threads if it exists
         	if(control.reliability.charAt(0) == '0')
-        		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.FORWARD);
+        		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.FORWARD);
         	
         	// Interrupts the backward sensor threads if it exists
         	if(control.reliability.charAt(3) == '0')
-        		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.BACKWARD);
+        		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.BACKWARD);
         	
         	// Interrupts the right sensor threads if it exists
         	if(control.reliability.charAt(2) == '0')
-        		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.RIGHT);
+        		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.RIGHT);
         }
         
         // Must reset the robot to allow for more plays in a single run of the program.
-        if(controller.reliability.equals("1111"))
+        if(control.reliability.equals("1111"))
         	control.robot = new ReliableRobot();
         else
         {
