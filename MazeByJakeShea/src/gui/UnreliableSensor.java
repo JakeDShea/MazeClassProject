@@ -128,7 +128,7 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 		while(!sensorThread.isInterrupted())
 		{
 			try {
-				sensorThread.sleep(uptime);
+				Thread.sleep(uptime);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -138,7 +138,7 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 			isFunctioning = false;
 			
 			try {
-				sensorThread.sleep(downtime);
+				Thread.sleep(downtime);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -146,6 +146,9 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 			}
 			
 			isFunctioning = true;
+			
+			// Synchronizes uptime for all threads after the first run is done
+			uptime = 4000;
 		}
 	}
 }

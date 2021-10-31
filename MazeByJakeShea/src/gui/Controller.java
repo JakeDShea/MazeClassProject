@@ -1,7 +1,6 @@
 package gui;
 
 import gui.Constants.UserInput;
-import gui.Robot.Direction;
 
 import java.util.Random;
 
@@ -96,6 +95,12 @@ public class Controller {
      * builder, and perfect remain the same.
      */
     boolean deterministic;
+    /**
+     * Saves the reliability of the sensors in a field
+     * to easily determine whether a robot is unreliable
+     * or not since instanceof will fail here.
+     */
+    String reliability = "";
     
     public Controller() {
     	states = new State[5];
@@ -184,16 +189,16 @@ public class Controller {
         currentState = states[2];
         currentState.setMazeConfiguration(config);
         
+        // Starts the unreliable sensor failures if an unreliable sensor is used
+        if(this.robot != null && !reliability.equals("1111"))
+        {
+        	((UnreliableRobot) this.robot).start();
+        }
+        
         if(this.driver != null)
         {
         	robot.setController(this);
         	driver.setMaze(config);
-        }
-        
-        // Starts the unreliable sensor failures if an unreliable sensor is used
-        if(this.robot != null && this.robot instanceof UnreliableRobot)
-        {
-        	((UnreliableRobot) this.robot).start();
         }
         
         currentState.start(this, panel);
@@ -253,7 +258,9 @@ public class Controller {
         driver = robotdriver;
         
         if(driver != null)
+        {
         	robotdriver.setRobot(this.robot);
+        }
     }
     /**
      * The robot that is used in the automated playing mode.

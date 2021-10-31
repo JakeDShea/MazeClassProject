@@ -107,10 +107,10 @@ public class StatePlaying extends DefaultState {
         	printWarning();
         }
     
-        //If there is a robot driver
+        // If there is a robot driver
         if(control.driver != null)
         {
-        	//Tries to solve maze
+        	// Tries to solve maze
         	try
         	{
         		showMaze = true;
@@ -119,22 +119,22 @@ public class StatePlaying extends DefaultState {
         		control.driver.drive2Exit();
         	} catch (Exception e) {
         		// Cleans up threads that may exist
-        		if(controller.getRobot() instanceof UnreliableRobot)
+        		if(!control.reliability.equals("1111"))
                 {
                 	// Interrupts the left sensor threads if it exists
-                	if(((UnreliableRobot) control.robot).getSensor(Direction.LEFT) instanceof UnreliableSensor)
+                	if(control.reliability.charAt(1) == '0')
                 		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.LEFT);
                 	
                 	// Interrupts the forward sensor threads if it exists
-                	if(((UnreliableRobot) control.robot).getSensor(Direction.FORWARD) instanceof UnreliableSensor)
+                	if(control.reliability.charAt(0) == '0')
                 		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.FORWARD);
                 	
                 	// Interrupts the backward sensor threads if it exists
-                	if(((UnreliableRobot) control.robot).getSensor(Direction.BACKWARD) instanceof UnreliableSensor)
+                	if(control.reliability.charAt(3) == '0')
                 		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.BACKWARD);
                 	
                 	// Interrupts the right sensor threads if it exists
-                	if(((UnreliableRobot) control.robot).getSensor(Direction.RIGHT) instanceof UnreliableSensor)
+                	if(control.reliability.charAt(2) == '0')
                 		((UnreliableRobot) controller.robot).stopFailureAndRepairProcess(Direction.RIGHT);
                 }
         		
@@ -151,7 +151,7 @@ public class StatePlaying extends DefaultState {
         	}
             
             // Must reset the robot to allow for more plays in a single run of the program.
-            if(control.robot instanceof ReliableRobot)
+            if(control.reliability.equals("1111"))
             	control.robot = new ReliableRobot();
             else
             {

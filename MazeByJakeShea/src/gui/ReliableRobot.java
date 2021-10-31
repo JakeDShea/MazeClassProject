@@ -503,6 +503,18 @@ public class ReliableRobot implements Robot {
 			return rightSensor;
 	}
 	
+	/**
+	 * A method used to easily determine whether a robot
+	 * is reliable or not. The reliable robot will return
+	 * true always.
+	 * 
+	 * @return Returns true always
+	 */
+	public boolean isReliable()
+	{
+		return true;
+	}
+	
 	////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////DO NOT HAVE TO DO THESE YET////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////

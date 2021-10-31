@@ -188,6 +188,10 @@ public class MazeApplication extends JFrame {
 	private void init() {
 	    // instantiate a game controller and add it to the JFrame
 	    Controller controller = createController();
+	    
+	    // Saves the command-line argument
+	    controller.reliability = argSensors;
+	    
 		add(controller.getPanel()) ;
 		// instantiate a key listener that feeds keyboard input into the controller
 		// and add it to the JFrame
