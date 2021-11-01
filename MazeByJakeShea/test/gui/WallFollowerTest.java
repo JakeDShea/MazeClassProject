@@ -13,6 +13,13 @@ import gui.Robot.Direction;
  * Responsibilities: Tests whether the WallFollower algorithm works correctly
  * Collaborators: tests.gui.DriverTest.java
  * 
+ * If you are reading this, I apologize for the
+ * long running time, but in order to accurately
+ * test my wall-following algorithm, I need to do
+ * a bunch of tests with size 1 mazes which it cannot
+ * solve efficiently. These tests take a while
+ * and I could not shorten them well.
+ * 
  * @Author Jake Shea
  */
 
@@ -354,6 +361,38 @@ public class WallFollowerTest extends DriverTest
 		// Set up the maze and controller
 		// Sets up with a maze that specifically has an southern exit
 		setUp(110, 1);
+		
+		// Needs this to be set for GUI purposes. Does not matter for the test otherwise
+		controller.reliability = "1100";
+		
+		// Create a new WallFollower driver and robot which will take most efficient path
+		UnreliableRobot robot = new UnreliableRobot(1, 1, 0, 0);
+		WallFollower testFollower = new WallFollower();
+		
+		// Set them up to each other and to the controller
+		setForTesting(testFollower, robot);
+		
+		//Makes controller start the unreliable sensor failures.
+		((UnreliableRobot) controller.getRobot()).start();
+		
+		// Assert that the WallFollower can use drive2Exit() to finish the maze
+		assertTrue(testFollower.drive2Exit());
+	}
+	
+	/**
+	 * Test Case: Tests if WallFollower can break out of a loop
+     * Routine being tested: drive2Exit
+     * 
+     * Tests if the robot is able to finish a maze where the left wall
+     * is an inner wall as well
+	 * @throws Exception 
+	 */
+	@Test
+	public void testFollowerSolvesAnInfiniteLoop() throws Exception
+	{
+		// Set up the maze and controller
+		// Sets up with a maze that specifically has an southern exit
+		setUp(933, 1);
 		
 		// Needs this to be set for GUI purposes. Does not matter for the test otherwise
 		controller.reliability = "1100";

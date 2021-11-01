@@ -1,5 +1,6 @@
 package gui;
 
+import generation.CardinalDirection;
 import generation.Maze;
 import gui.Robot.Direction;
 import gui.Robot.Turn;
@@ -24,6 +25,15 @@ public class WallFollower implements RobotDriver
 	
 	// A boolean value for finding the exit
 	private boolean foundExit = false;
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////INSTANCE VARIABLES TO ALLOW FOR A WALLFOLLOWER TO LEAVE INNER WALLS///////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	int[][] countTable;
+	
+	// A variable that will be set to true when a variable has escaped a loop
+	boolean escaped = false;
+	
 	
 	/**
 	 * Assigns a robot platform to the driver. 
@@ -65,6 +75,15 @@ public class WallFollower implements RobotDriver
 	@Override
 	public boolean drive2Exit() throws Exception {
 		boolean solved = false;
+		
+		// Sets the fields for escaping inner walls
+		countTable = new int[maze.getWidth()][maze.getHeight()];
+		
+		for(int i = 0; i < maze.getWidth(); i++)
+			for(int j = 0; j < maze.getWidth(); j++)
+			{
+				countTable[i][j]= 0; 
+			}
 		
 		// Starts by checking if the robot spawns in a room
 		if(robot.isInsideRoom())
@@ -156,6 +175,11 @@ public class WallFollower implements RobotDriver
 					if(forwardDistance == Integer.MAX_VALUE)
 						foundExit = true;
 					
+					// Check the tables when about to move
+					if(maze.isValidPosition(robot.getCurrentPosition()[0] + robot.getCurrentDirection().getDirection()[0], robot.getCurrentPosition()[1] + robot.getCurrentDirection().getDirection()[1])
+							&& (countTable[robot.getCurrentPosition()[0] + robot.getCurrentDirection().getDirection()[0]][robot.getCurrentPosition()[1] + robot.getCurrentDirection().getDirection()[1]] < 5))
+					checkTables();
+					
 					robot.move(1);
 					moved = true;
 				}
@@ -179,6 +203,10 @@ public class WallFollower implements RobotDriver
 				
 				if(leftDistance == Integer.MAX_VALUE)
 					foundExit = true;
+				
+				// Check the tables when about to move
+				if(maze.isValidPosition(robot.getCurrentPosition()[0] + robot.getCurrentDirection().getDirection()[0], robot.getCurrentPosition()[1] + robot.getCurrentDirection().getDirection()[1])
+						&& (countTable[robot.getCurrentPosition()[0] + robot.getCurrentDirection().getDirection()[0]][robot.getCurrentPosition()[1] + robot.getCurrentDirection().getDirection()[1]] < 5))
 				
 				robot.move(1);
 				moved = true;
@@ -582,5 +610,27 @@ public class WallFollower implements RobotDriver
 			return Direction.LEFT;
 		
 		return null;
+	}
+	
+	//////////////////////////////////////////////////////////////
+	///////////PRIVATE METHOD TO GET OUT OF LOOPS/////////////////
+	//////////////////////////////////////////////////////////////
+	
+	/**
+	 * A helper method which checks when a robot is about to move whether
+	 * the move it makes will continue a path it has already taken.
+	 * 
+	 * This means that if a robot moves into a spot in the direction where
+	 * it had left that spot originally, it must be in a loop.
+	 */
+	private void checkTables()
+	{
+		try {
+			// Increment the count as we visit this cell again
+			countTable[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]]++;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
