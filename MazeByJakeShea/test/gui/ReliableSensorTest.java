@@ -53,6 +53,7 @@ public class ReliableSensorTest
 	{
 		//Sets up needed objects for robot
 		controller.switchFromGeneratingToPlaying(maze);
+		controller.reliability = "1111";
 		robotParam.setController(controller);
 		controller.setRobotAndDriver(robotParam, null);
 	}

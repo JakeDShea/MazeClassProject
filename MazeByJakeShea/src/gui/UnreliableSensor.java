@@ -1,5 +1,6 @@
 package gui;
 
+import generation.CardinalDirection;
 import gui.Robot.Direction;
 
 /**
@@ -22,9 +23,9 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 	int uptime, downtime;
 	
 	// The robot that this sensor is on
-	UnreliableRobot robot;
+	public UnreliableRobot robot;
 	// The direction it is facing as well
-	Direction sensorDirection;
+	public Direction sensorDirection;
 	
 	/**
 	 * Constructor for an UnreliableSensor object
@@ -36,6 +37,44 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 		sensorThread = new Thread(this);
 		uptime = 0;
 		downtime = 0;
+	}
+	
+	/**
+	 * Tells the distance to an obstacle (a wallboard) that the sensor
+	 * measures. The sensor is assumed to be mounted in a particular
+	 * direction relative to the forward direction of the robot.
+	 * Distance is measured in the number of cells towards that obstacle, 
+	 * e.g. 0 if the current cell has a wallboard in this direction, 
+	 * 1 if it is one step in this direction before directly facing a wallboard,
+	 * Integer.MaxValue if one looks through the exit into eternity.
+	 * 
+	 * This method requires that the sensor has been given a reference
+	 * to the current maze and a mountedDirection by calling 
+	 * the corresponding set methods with a parameterized constructor.
+	 * 
+	 * @param currentPosition is the current location as (x,y) coordinates
+	 * @param currentDirection specifies the direction of the robot
+	 * @param powersupply is an array of length 1, whose content is modified 
+	 * to account for the power consumption for sensing
+	 * @return number of steps towards obstacle if obstacle is visible 
+	 * in a straight line of sight, Integer.MAX_VALUE otherwise.
+	 * @throws Exception with message 
+	 * SensorFailure if the sensor is currently not operational
+	 * PowerFailure if the power supply is insufficient for the operation
+	 * @throws IllegalArgumentException if any parameter is null
+	 * or if currentPosition is outside of legal range
+	 * ({@code currentPosition[0] < 0 || currentPosition[0] >= width})
+	 * ({@code currentPosition[1] < 0 || currentPosition[1] >= height}) 
+	 * @throws IndexOutOfBoundsException if the powersupply is out of range
+	 * ({@code powersupply < 0}) 
+	 */
+	@Override
+	public int distanceToObstacle(int[] currentPosition, CardinalDirection currentDirection, float[] powersupply) throws Exception
+	{
+		if(!isFunctioning)
+			throw new Exception("SensorFailure");
+		
+		return super.distanceToObstacle(currentPosition, currentDirection, powersupply);
 	}
 	
 	/**
