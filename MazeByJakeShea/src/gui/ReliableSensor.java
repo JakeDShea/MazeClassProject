@@ -19,6 +19,9 @@ public class ReliableSensor implements DistanceSensor {
 	Direction sensorDirection;
 	Maze maze;
 	
+	// Always true for a reliable sensor
+	public boolean isFunctioning = true;
+	
 	/**
 	 * Tells the distance to an obstacle (a wallboard) that the sensor
 	 * measures. The sensor is assumed to be mounted in a particular

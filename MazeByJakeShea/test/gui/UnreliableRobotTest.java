@@ -5,18 +5,17 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import generation.CardinalDirection;
 import generation.Maze;
 import generation.MazeFactory;
 import generation.StubOrder;
+import generation.Order.Builder;
 import gui.Robot.Direction;
 import gui.Robot.Turn;
-import generation.Order.Builder;
 
-import org.junit.Test;
-
-public class ReliableRobotTest
+public class UnreliableRobotTest
 {
 	//Sets up maze and stuff that robot needs.
 	private static Maze maze;
@@ -48,9 +47,7 @@ public class ReliableRobotTest
 		
 		maze = order.getMaze();
 		
-		// Sets up controller with correct arguments as needed for the GUI. Not needed for tests logic
 		controller = new Controller();
-		controller.reliability = "1111";
 	}
 	
 	private void setRobot(ReliableRobot robotParam)
@@ -72,7 +69,7 @@ public class ReliableRobotTest
 	public void testRobotStarts() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 		
 		//Assert robot starts in correct area.
@@ -97,7 +94,7 @@ public class ReliableRobotTest
 	public void testRobotTurns() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 		
 		//Robot turns only once
@@ -126,7 +123,7 @@ public class ReliableRobotTest
 	public void testRobotJumps() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 		
 		//Robot jumps only once
@@ -164,7 +161,7 @@ public class ReliableRobotTest
 	public void testRobotRotatesCorrectly() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 		
 		//Robot rotates to the left
@@ -204,7 +201,7 @@ public class ReliableRobotTest
 	public void testRobotMoves() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 		
 		//Robot rotates to the left to be able to move in a straight line
@@ -232,7 +229,7 @@ public class ReliableRobotTest
 	public void testRobotMovesMultipleTimes() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 		
 		//Robot rotates to the left to be able to move in a straight line
@@ -263,7 +260,7 @@ public class ReliableRobotTest
 	public void testRobotCrashed() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 		
 		//Robot moves into wall
@@ -288,7 +285,7 @@ public class ReliableRobotTest
 	public void testRobotHasNotStopped() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 		
 		//Asserts that the robot has not hit any criteria to stop yet
@@ -306,7 +303,7 @@ public class ReliableRobotTest
 	public void testRobotAtExit() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 		
 		//Makes robot jump to get to a straigh path to exit
@@ -348,7 +345,7 @@ public class ReliableRobotTest
 	public void testRobotinRoom() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 		
 		//Assert that robot knows it is currently not in a room
@@ -375,7 +372,7 @@ public class ReliableRobotTest
 	public void testRobotRunsOutOfEnergy() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 		
 		/*   //Can do this if you want actual code to drain the battery, but code is expensive in time due to GUI attempting to paint this
@@ -413,7 +410,7 @@ public class ReliableRobotTest
 	public void testRobotOdometerAccuracy() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 		
 		//We use the path to the exit we did in a previous test because the path is known to us
@@ -442,7 +439,7 @@ public class ReliableRobotTest
 	public void testRobotOdometerReset() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 		
 		//We use the path to the exit we did in a previous test because the path is known to us
@@ -477,7 +474,7 @@ public class ReliableRobotTest
 	public void testRobotWitHSensors() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 	}
 	
@@ -492,7 +489,7 @@ public class ReliableRobotTest
 	public void testRobotSensorsWork() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 		
 		//Assert that robot's sensors work in all directions, regardless of the robot's orientation
@@ -533,16 +530,16 @@ public class ReliableRobotTest
 	
 	/**
 	 * Test Case: Check if robot can see out of the exit of a maze
-     * Routine being tested: canSeeThroughTheExitIntoEternity()
-     * 
-     * Tests if a robot sees no obstacles after looking through the exit of a maze
+	 * Routine being tested: canSeeThroughTheExitIntoEternity()
+	 * 
+	 * Tests if a robot sees no obstacles after looking through the exit of a maze
 	 * @throws Exception 
 	 */
 	@Test
 	public void testRobotSeesInfinity() throws Exception
 	{
 		//Basic setup for tests
-		ReliableRobot robot = new ReliableRobot();
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
 		setRobot(robot);
 		
 		//Makes robot jump to get to a straigh path to exit
@@ -559,5 +556,133 @@ public class ReliableRobotTest
 		assertFalse(robot.canSeeThroughTheExitIntoEternity(Direction.RIGHT));
 		assertFalse(robot.canSeeThroughTheExitIntoEternity(Direction.FORWARD));
 		assertFalse(robot.canSeeThroughTheExitIntoEternity(Direction.BACKWARD));
+	}
+		
+	/**
+	 * Test Case: Tests that sensors fail in correct order
+     * Routine being tested: run()
+     * 
+     * Tests the robot's unreliable sensor status
+	 * @throws Exception 
+	 */
+	@Test
+	public void testSensorsFailAsynchronously() throws Exception
+	{
+		// Create a new WallFollower driver and robot
+		UnreliableRobot robot = new UnreliableRobot(0, 0, 0, 0);
+		WallFollower testFollower = new WallFollower();
+		Controller testController = new Controller();
+				
+		// Set them up to each other and to the controller
+		testFollower.setRobot(robot);
+		testController.reliability = "0000";
+		testController.switchFromGeneratingToPlaying(maze);
+		testController.setRobotAndDriver(robot, testFollower);
+		
+		//Makes controller start the unreliable sensor failures.
+		((UnreliableRobot) testController.getRobot()).start();
+		
+		long startTime = System.nanoTime();
+		long endTime = System.nanoTime();
+		
+		do {
+			// Work on near second-long intervals
+			if((endTime - startTime) % 1000000000 > 10000)
+			{
+				// Always want to update endTime
+				endTime = System.nanoTime();
+				continue;
+			}
+			
+			// Check when left sensor is failing, the forward and backward sensors should always be up
+			if(!((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.LEFT)).isFunctioning)
+			{
+				assertTrue(((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.BACKWARD)).isFunctioning);
+				assertTrue(((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.RIGHT)).isFunctioning);
+			}
+			
+			// Check when forward sensor is failing, the backward and right sensors should always be up
+			if(!((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.FORWARD)).isFunctioning)
+			{
+				assertTrue(((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.RIGHT)).isFunctioning);
+			}
+			
+			// Check when backward sensor is failing, the right and left sensors should always be up
+			if(!((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.BACKWARD)).isFunctioning)
+			{
+				assertTrue(((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.LEFT)).isFunctioning);
+			}
+			
+			// Check when right sensor is failing, the left and forward sensors should always be up
+			if(!((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.RIGHT)).isFunctioning)
+			{
+				assertTrue(((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.FORWARD)).isFunctioning);
+			}
+			
+			endTime = System.nanoTime();
+		// has the background threads run for 9 seconds, which should be enough time for two cycles
+		} while (endTime - startTime < 9000000000.0);
+		
+		// Clean up threads
+		testController.getRobot().stopFailureAndRepairProcess(Direction.LEFT);
+		testController.getRobot().stopFailureAndRepairProcess(Direction.FORWARD);
+		testController.getRobot().stopFailureAndRepairProcess(Direction.BACKWARD);
+		testController.getRobot().stopFailureAndRepairProcess(Direction.RIGHT);
+	}
+	
+	/**
+	 * Test Case: Check if robot can have reliable sensors as parameters
+	 * Routine being tested: UnreliableRobot(...)
+	 * 
+	 * This test will never happen in the code, but I am using it as a
+	 * catch-all for the constructor parameters as an efficient method
+	 * for testing that the constructor and therefore the robot runs as expected
+	 * @throws Exception 
+	 */
+	@Test
+	public void testUnreliableRobtCanBeRobot() throws Exception
+	{
+		// Create a new WallFollower driver and robot
+		UnreliableRobot robot = new UnreliableRobot(1, 1, 1, 1);
+		WallFollower testFollower = new WallFollower();
+		Controller testController = new Controller();
+				
+		// Set them up to each other and to the controller
+		testFollower.setRobot(robot);
+		testController.reliability = "1111";
+		testController.switchFromGeneratingToPlaying(maze);
+		testController.setRobotAndDriver(robot, testFollower);
+		
+		//Makes controller start the unreliable sensor failures.
+		((UnreliableRobot) testController.getRobot()).start();
+		
+		long startTime = System.nanoTime();
+		long endTime = System.nanoTime();
+		
+		do {
+			// Work on near second-long intervals
+			if((endTime - startTime) % 1000000000 > 10000)
+			{
+				// Always want to update endTime
+				endTime = System.nanoTime();
+				continue;
+			}
+			
+			// Assert that the sensors are always operational as they should be reliable
+			
+			assertTrue(((ReliableSensor)((UnreliableRobot) robot).getSensor(Direction.LEFT)).isFunctioning);
+			assertTrue(((ReliableSensor)((UnreliableRobot) robot).getSensor(Direction.FORWARD)).isFunctioning);
+			assertTrue(((ReliableSensor)((UnreliableRobot) robot).getSensor(Direction.BACKWARD)).isFunctioning);
+			assertTrue(((ReliableSensor)((UnreliableRobot) robot).getSensor(Direction.RIGHT)).isFunctioning);
+			
+			endTime = System.nanoTime();
+		// has the background threads run for 9 seconds, which should be enough time for two cycles
+		} while (endTime - startTime < 9000000000.0);
+		
+		// Clean up threads
+		testController.getRobot().stopFailureAndRepairProcess(Direction.LEFT);
+		testController.getRobot().stopFailureAndRepairProcess(Direction.FORWARD);
+		testController.getRobot().stopFailureAndRepairProcess(Direction.BACKWARD);
+		testController.getRobot().stopFailureAndRepairProcess(Direction.RIGHT);
 	}
 }

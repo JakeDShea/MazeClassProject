@@ -144,7 +144,6 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 			}
 			
 			isFunctioning = true;
-			System.out.println(sensorDirection + " BACK UP!");
 			// Synchronizes uptime for all threads after the first run is done
 			uptime = 4000;
 		}
