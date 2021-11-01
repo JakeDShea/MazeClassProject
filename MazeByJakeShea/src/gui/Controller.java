@@ -100,7 +100,7 @@ public class Controller {
      * to easily determine whether a robot is unreliable
      * or not since instanceof will fail here.
      */
-    String reliability = "";
+    String reliability = "1111";
     
     public Controller() {
     	states = new State[5];

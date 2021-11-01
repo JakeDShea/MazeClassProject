@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.Test;
 
 public class WizardTest extends DriverTest
-{
+{	
 	/**
 	 * Test Case: Tests if the Wizard can solve a maze
      * Routine being tested: drive2Exit()
@@ -24,6 +24,9 @@ public class WizardTest extends DriverTest
 		
 		//Set up for communication between robot, wizard, and controller
 		setForTesting(testWizard, robot);
+		
+		// Set up for the GUI, should not affect the logic of the tests
+		controller.reliability = "1111";
 		
 		//True if wizard solves maze
 		assertTrue(testWizard.drive2Exit());
@@ -51,7 +54,7 @@ public class WizardTest extends DriverTest
 		assertTrue(testWizard.drive2Exit());
 		
 		//Asserts that wizard took shortest path
-		assertEquals(16, testWizard.getPathLength());
+		assertEquals(2, testWizard.getPathLength());
 	}
 	
 	/**
@@ -77,7 +80,7 @@ public class WizardTest extends DriverTest
 		
 		//Asserts that wizard took shortest path via energy
 		//97 moves, 50 90-degree turns, and senses for the exit twice based off my algorithm gets me 734 energy used.
-		assertEquals(130, testWizard.getEnergyConsumption());
+		assertEquals(51, testWizard.getEnergyConsumption());
 	}
 	
 	/**

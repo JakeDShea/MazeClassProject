@@ -138,13 +138,176 @@ public class Wizard implements RobotDriver {
 		}
 		
 		//Else, moves the Robot 1 step in whatever the best direction is.
-		int[] destination = new int[2];
+		boolean jumping = getNeighborClosestToExit(robot.getCurrentPosition()[0], robot.getCurrentPosition()[1]);
+		
+		// if the closest neighbor has a wall, we will jump
+		if(jumping)
+			robot.jump();
+		// Otherwise, we simply move
+		else
+			robot.move(1);
+		
+		//Will throw an error if robot stops moving
+		if(robot.hasStopped())
+			throw new Exception();
+		
+		return true;
+	}
+
+	/**
+	 * Returns the total energy consumption of the journey, i.e.,
+	 * the difference between the robot's initial energy level at
+	 * the starting position and its energy level at the exit position. 
+	 * This is used as a measure of efficiency for a robot driver.
+	 * @return the total energy consumption of the journey
+	 */
+	@Override
+	public float getEnergyConsumption() {
+		//Returns Robot's starting energy minus it's final energy
+		return 3500 - robot.getBatteryLevel();
+	}
+
+	/**
+	 * Returns the total length of the journey in number of cells traversed. 
+	 * Being at the initial position counts as 0. 
+	 * This is used as a measure of efficiency for a robot driver.
+	 * @return the total length of the journey in number of cells traversed
+	 */
+	@Override
+	public int getPathLength() {
+		//Returns Robot's odometer reading.
+		return robot.odometer;
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	//////////////////////THIS METHOD IS FOR SMART JUMPING//////////////////////////
+	////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * A private method that will turn the robot towards the closest neighbor,
+	 * then returns a boolean value for whether the robot has to jump or simply
+	 * move.
+	 * True for jump, False for move
+	 * 
+	 * @param xCoor the current x-coordinate of the robot
+	 * @param yCoor the curreent y-coordinate of the robot
+	 * @return returns a boolean for whether the robot has to jump or not
+	 */
+	private boolean getNeighborClosestToExit(int xCoor, int yCoor)
+	{
+		// Set up the value to hold the smallest distance
+		int minDistance = maze.getDistanceToExit(maze.getNeighborCloserToExit(xCoor, yCoor)[0], maze.getNeighborCloserToExit(xCoor, yCoor)[1]);
+		int minX = maze.getNeighborCloserToExit(xCoor, yCoor)[0];
+		int minY = maze.getNeighborCloserToExit(xCoor, yCoor)[1];
+		
+		// Sets up flag for if the robot will have to jump to get to this position
+		boolean willJump = false;
+		
+		// Creates a private sensor to quickly tell if there is a wall
+		ReliableSensor sensor = new ReliableSensor();
+		sensor.setMaze(maze);
+		
+		int[] pos = {xCoor, yCoor};
+		float[] power = {3500};
+		
+		// Checks if one spot to the right is the smallest value
+		if(maze.isValidPosition(xCoor+1, yCoor))
+		{
+			// Checks if closer than current min
+			if(minDistance - 6 > maze.getDistanceToExit(xCoor+1, yCoor))
+			{
+				minDistance = maze.getDistanceToExit(xCoor+1, yCoor);
+				minX = xCoor + 1;
+				minY = yCoor;
+				
+				// Checks if there is a wall there
+				try {
+					if(sensor.distanceToObstacle(pos, CardinalDirection.East, power) == 0)
+						willJump = true;
+					else
+						willJump = false;
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		// Checks if one spot to the above is the smallest value
+		if(maze.isValidPosition(xCoor, yCoor+1))
+		{
+			// Checks if closer than current min
+			if(minDistance - 6> maze.getDistanceToExit(xCoor, yCoor+1))
+			{
+				minDistance = maze.getDistanceToExit(xCoor, yCoor+1);
+				minX = xCoor;
+				minY = yCoor + 1;
+				
+				// Checks if there is a wall there
+				try {
+					if(sensor.distanceToObstacle(pos, CardinalDirection.South, power) == 0)
+						willJump = true;
+					else
+						willJump = false;
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		// Checks if one spot to the left is the smallest value
+		if(maze.isValidPosition(xCoor-1, yCoor))
+		{
+			// Checks if closer than current min
+			if(minDistance - 6> maze.getDistanceToExit(xCoor-1, yCoor))
+			{
+				minDistance = maze.getDistanceToExit(xCoor-1, yCoor);
+				minX = xCoor-1;
+				minY = yCoor;
+				
+				// Checks if there is a wall there
+				try {
+					if(sensor.distanceToObstacle(pos, CardinalDirection.West, power) == 0)
+						willJump = true;
+					else
+						willJump = false;
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		// Checks if one spot to the above is the smallest value
+		if(maze.isValidPosition(xCoor, yCoor-1))
+		{
+			// Checks if closer than current min
+			if(minDistance - 6> maze.getDistanceToExit(xCoor, yCoor-1))
+			{
+				minDistance = maze.getDistanceToExit(xCoor, yCoor-1);
+				minX = xCoor;
+				minY = yCoor - 1;
+				
+				// Checks if there is a wall there
+				try {
+					if(sensor.distanceToObstacle(pos, CardinalDirection.North, power) == 0)
+						willJump = true;
+					else
+						willJump = false;
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		// Now figures out which direction we should be going
 		CardinalDirection direction = CardinalDirection.East;
 		
-		destination = maze.getNeighborCloserToExit(robot.getCurrentPosition()[0], robot.getCurrentPosition()[1]);
-		
 		//Figures out which direction we want to go to
-		direction = CardinalDirection.getDirection(destination[0] - robot.getCurrentPosition()[0], destination[1] - robot.getCurrentPosition()[1]);
+		direction = CardinalDirection.getDirection(minX - xCoor, minY - yCoor);
+		
+		System.out.println(direction);
 		
 		//Figures out how to turn the Robot
 		switch(robot.getCurrentDirection())
@@ -261,39 +424,7 @@ public class Wizard implements RobotDriver {
 			}
 		}
 		
-		//Robot finally moves
-		robot.move(1);
-		
-		//Will throw an error if robot stops moving
-		if(robot.hasStopped())
-			throw new Exception();
-		
-		return true;
+		// Has figured out and turned the robot towards where it wants to go, and returns whether it must jump or move
+		return willJump;
 	}
-
-	/**
-	 * Returns the total energy consumption of the journey, i.e.,
-	 * the difference between the robot's initial energy level at
-	 * the starting position and its energy level at the exit position. 
-	 * This is used as a measure of efficiency for a robot driver.
-	 * @return the total energy consumption of the journey
-	 */
-	@Override
-	public float getEnergyConsumption() {
-		//Returns Robot's starting energy minus it's final energy
-		return 3500 - robot.getBatteryLevel();
-	}
-
-	/**
-	 * Returns the total length of the journey in number of cells traversed. 
-	 * Being at the initial position counts as 0. 
-	 * This is used as a measure of efficiency for a robot driver.
-	 * @return the total length of the journey in number of cells traversed
-	 */
-	@Override
-	public int getPathLength() {
-		//Returns Robot's odometer reading.
-		return robot.odometer;
-	}
-
 }
