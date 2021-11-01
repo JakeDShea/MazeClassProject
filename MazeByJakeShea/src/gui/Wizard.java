@@ -307,8 +307,6 @@ public class Wizard implements RobotDriver {
 		//Figures out which direction we want to go to
 		direction = CardinalDirection.getDirection(minX - xCoor, minY - yCoor);
 		
-		System.out.println(direction);
-		
 		//Figures out how to turn the Robot
 		switch(robot.getCurrentDirection())
 		{

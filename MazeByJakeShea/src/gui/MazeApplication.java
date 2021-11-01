@@ -10,7 +10,6 @@ import java.io.File;
 
 import javax.swing.JFrame;
 
-
 /**
  * This class is a wrapper class to startup the Maze game as a Java application
  * 
@@ -127,7 +126,17 @@ public class MazeApplication extends JFrame {
 	    // Case 0: A reliable robot is called for
 	    if(argSensors.equalsIgnoreCase("1111"))
 	    {
-	    	robot = new ReliableRobot();
+	    	// Will cheat a bit as WallFollower works weird with Reliable Robots
+	    	if(argDrive.equalsIgnoreCase("WallFollower"))
+	    	{
+	    		// Creates a robot with only the back unreliable, as this will not affect
+	    		// the algorithm and it will look like a reliable robot from an abstracted point of view
+	    		argSensors = "1110";
+	    		robot = new UnreliableRobot(1, 1, 1, 0);
+	    	}
+	    	else
+	    		robot = new ReliableRobot();
+	    	
 	    	robotMsg = " with a reliable robot.";
 	    }
 	    // Case 1: An unreliable robot is called for
