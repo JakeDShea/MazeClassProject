@@ -53,6 +53,8 @@ public class MazeBuilder implements Runnable {
 		this.order = order;
 		// configure and obtain the random number generator
 		SingleRandom.setSeed(order.getSeed());
+		//SingleRandom.setSeed(110);
+		System.out.println(order.getSeed());
 		random = SingleRandom.getRandom();
 		// derive parameters 
 		int skill = order.getSkillLevel() ;

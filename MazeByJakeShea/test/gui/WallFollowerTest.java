@@ -308,4 +308,67 @@ public class WallFollowerTest extends DriverTest
 		// Assert that the WallFollower can use drive2Exit() to finish the maze
 		assertTrue(testFollower.drive2Exit());
 	}
+	
+	/**
+	 * Test Case: Tests if WallFollower will see a maze exit and immediately go for it
+     * Routine being tested: drive2Exit()
+     * 
+     * Tests if the robot is able to leave a maze and sense its exit before it is right next to it
+	 * @throws Exception 
+	 */
+	@Test
+	public void testFollowerSeesExitAndRuns() throws Exception
+	{
+		// Set up the maze and controller
+		// Sets up with a maze that specifically has an southern exit
+		setUp(893, 1);
+		
+		// Needs this to be set for GUI purposes. Does not matter for the test otherwise
+		controller.reliability = "1100";
+		
+		// Create a new WallFollower driver and robot which will take most efficient path
+		UnreliableRobot robot = new UnreliableRobot(1, 1, 0, 0);
+		WallFollower testFollower = new WallFollower();
+		
+		// Set them up to each other and to the controller
+		setForTesting(testFollower, robot);
+		
+		//Makes controller start the unreliable sensor failures.
+		((UnreliableRobot) controller.getRobot()).start();
+		
+		// Assert that the WallFollower can use drive2Exit() to finish the maze
+		assertTrue(testFollower.drive2Exit());
+	}
+	
+	/**
+	 * Test Case: Tests if WallFollower doesn't break when weirdly spawning in a room
+     * Routine being tested: dealWithRoom
+     * 
+     * Tests if the robot is able to leave a maze where the robot
+     * spawned in a room with no wall to its left
+	 * @throws Exception 
+	 */
+	@Test
+	public void testFollowerStartsInRoom() throws Exception
+	{
+		// Set up the maze and controller
+		// Sets up with a maze that specifically has an southern exit
+		setUp(110, 1);
+		
+		// Needs this to be set for GUI purposes. Does not matter for the test otherwise
+		controller.reliability = "1100";
+		
+		// Create a new WallFollower driver and robot which will take most efficient path
+		UnreliableRobot robot = new UnreliableRobot(1, 1, 0, 0);
+		WallFollower testFollower = new WallFollower();
+		
+		// Set them up to each other and to the controller
+		setForTesting(testFollower, robot);
+		
+		//Makes controller start the unreliable sensor failures.
+		((UnreliableRobot) controller.getRobot()).start();
+		
+		// Assert that the WallFollower can use drive2Exit() to finish the maze
+		assertTrue(testFollower.drive2Exit());
+	}
 }

@@ -22,6 +22,9 @@ public class WallFollower implements RobotDriver
 	// A maze field to know what the game looks like
 	Maze maze;
 	
+	// A boolean value for finding the exit
+	private boolean foundExit = false;
+	
 	/**
 	 * Assigns a robot platform to the driver. 
 	 * The driver uses a robot to perform, this method provides it with this necessary information.
@@ -62,6 +65,11 @@ public class WallFollower implements RobotDriver
 	@Override
 	public boolean drive2Exit() throws Exception {
 		boolean solved = false;
+		
+		// Starts by checking if the robot spawns in a room
+		if(robot.isInsideRoom())
+			dealWithRoom();
+		
 		// Keeps looping as long as the method drive1Step2Exit continues working
 		while(!solved)
 		{
@@ -117,6 +125,13 @@ public class WallFollower implements RobotDriver
 			// Checks where the exit is and positions robot accordingly
 			checkForExit(works);
 		}
+		// Second checks if the robot has already seen the exit
+		else if(foundExit)
+		{
+			robot.move(1);
+			moved = true;
+		}
+		// Otherwise moves as normally
 		else
 		{
 			// Turn robot using the direction we get from above using the
@@ -137,6 +152,10 @@ public class WallFollower implements RobotDriver
 				{	// If there is not, move forward.
 					turnRobotBackAgain(works, support);
 					faceBackForward(works);
+					
+					if(forwardDistance == Integer.MAX_VALUE)
+						foundExit = true;
+					
 					robot.move(1);
 					moved = true;
 				}
@@ -157,6 +176,10 @@ public class WallFollower implements RobotDriver
 				// Robot can turn left
 				faceBackForward(works);
 				robot.rotate(Turn.LEFT);
+				
+				if(leftDistance == Integer.MAX_VALUE)
+					foundExit = true;
+				
 				robot.move(1);
 				moved = true;
 			}
@@ -392,6 +415,38 @@ public class WallFollower implements RobotDriver
 		// Must be the final case where robot has to turn around
 		else
 			robot.rotate(Turn.AROUND);
+	}
+	
+	/**
+	 * A helper method to deal with corner cases where
+	 * the robot may spawn in the middle of a room
+	 */
+	private void dealWithRoom()
+	{
+		// This means the robot spawned such that it had no wall to its left
+		if(robot.distanceToObstacle(Direction.LEFT) > 0)
+		{
+			// Moves the robot as far forward as possible
+			while (robot.distanceToObstacle(Direction.FORWARD) > 0 || !robot.isInsideRoom())
+			{
+				robot.move(1);
+			}
+			
+			// Checks if the robot left the room
+			if(!robot.isInsideRoom())
+			{
+				// Checks if there is no wall to the left. If not, turn, otherwise, we are set
+				if(robot.distanceToObstacle(Direction.LEFT) > 0)
+				{
+					robot.rotate(Turn.LEFT);
+					robot.move(1);
+				}
+			}
+			// Otherwise we have hit a wall and can turn to make the wall start on the left of our robot
+			else {
+				robot.rotate(Turn.RIGHT);
+			}
+		}
 	}
 	
 	////////////////////////////////////////////////////////////////////
