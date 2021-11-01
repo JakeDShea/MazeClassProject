@@ -197,10 +197,6 @@ public class WallFollower implements RobotDriver
 			return forBackward();
 		}
 		// Checks best direction that can check in front of robot if right sensor is working
-		case RIGHT:
-		{
-			return forRight();
-		}
 		}
 		
 		// Should never hit this
@@ -422,11 +418,11 @@ public class WallFollower implements RobotDriver
 						{
 							if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.LEFT)).isFunctioning)
 								return Direction.LEFT;
-							else
+							/*else
 							{
 								// Otherwise backwards is our best bet
 								return Direction.BACKWARD;
-							}
+							}*/
 						}
 						// Left has to work because it is reliable
 						else
@@ -441,6 +437,8 @@ public class WallFollower implements RobotDriver
 		// Forward has to work because it is reliable
 		else
 			return Direction.FORWARD;
+		
+		return null;
 	}
 	
 	private Direction forForward()
@@ -464,11 +462,11 @@ public class WallFollower implements RobotDriver
 						{
 							if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.FORWARD)).isFunctioning)
 								return Direction.FORWARD;
-							else
+							/*else
 							{
 								// Otherwise Left is the best bet
 								return Direction.LEFT;
-							}
+							}*/
 						}
 						// Forward has to work because it is reliable
 						else
@@ -483,48 +481,8 @@ public class WallFollower implements RobotDriver
 		// Right has to work because it is reliable
 		else
 			return Direction.RIGHT;
-	}
-	
-	private Direction forRight()
-	{
-		// Will check if the backward sensor is working
-		if(((UnreliableRobot) robot).getSensor(Direction.BACKWARD) instanceof UnreliableSensor)
-		{
-			if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.BACKWARD)).isFunctioning)
-				return Direction.BACKWARD;
-			else
-			{
-				// Checks if left sensor is working. If so, return left
-				if(((UnreliableRobot) robot).getSensor(Direction.LEFT) instanceof UnreliableSensor)
-				{
-					if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.LEFT)).isFunctioning)
-						return Direction.LEFT;
-					else
-					{
-						// Checks if right sensor is working. If so, return right
-						if(((UnreliableRobot) robot).getSensor(Direction.RIGHT) instanceof UnreliableSensor)
-						{
-							if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.RIGHT)).isFunctioning)
-								return Direction.RIGHT;
-							else
-							{
-								// Otherwise Forward is the best bet
-								return Direction.FORWARD;
-							}
-						}
-						// Forward has to work because it is reliable
-						else
-							return Direction.RIGHT;
-					}
-				}
-				// Backward has to work because it is reliable
-				else
-					return Direction.LEFT;
-			}
-		}
-		// Right has to work because it is reliable
-		else
-			return Direction.BACKWARD;
+		
+		return null;
 	}
 	
 	private Direction forBackward()
@@ -548,11 +506,11 @@ public class WallFollower implements RobotDriver
 						{
 							if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.BACKWARD)).isFunctioning)
 								return Direction.BACKWARD;
-							else
+							/*else
 							{
 								// Otherwise Right is the best bet
 								return Direction.RIGHT;
-							}
+							}*/
 						}
 						// Backward has to work because it is reliable
 						else
@@ -567,5 +525,7 @@ public class WallFollower implements RobotDriver
 		// Left has to work because it is reliable
 		else
 			return Direction.LEFT;
+		
+		return null;
 	}
 }
