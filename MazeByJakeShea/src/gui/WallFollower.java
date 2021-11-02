@@ -80,15 +80,13 @@ public class WallFollower implements RobotDriver
 		countTable = new int[maze.getWidth()][maze.getHeight()];
 		
 		for(int i = 0; i < maze.getWidth(); i++)
-			for(int j = 0; j < maze.getWidth(); j++)
+			for(int j = 0; j < maze.getHeight(); j++)
 			{
 				countTable[i][j]= 0; 
 			}
-		
 		// Starts by checking if the robot spawns in a room
 		if(robot.isInsideRoom())
 			dealWithRoom();
-		
 		// Keeps looping as long as the method drive1Step2Exit continues working
 		while(!solved)
 		{
@@ -106,7 +104,6 @@ public class WallFollower implements RobotDriver
 		
 			// Otherwise, return false
 		}
-		
 		robot.move(1);
 		
 		return solved;

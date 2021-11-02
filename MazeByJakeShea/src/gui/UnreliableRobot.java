@@ -188,7 +188,6 @@ public class UnreliableRobot extends ReliableRobot
     		((UnreliableSensor) getSensor(Direction.RIGHT)).setRobot(this);
     		((UnreliableSensor) getSensor(Direction.RIGHT)).setDirection(Direction.RIGHT);
     		startFailureAndRepairProcess(Direction.RIGHT, 4000 + count * 1300, 2000);
-    		count++;
     	}
 	}
 }
