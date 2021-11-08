@@ -16,11 +16,11 @@ import gui.Robot.Direction;
 
 public class ReliableSensor implements DistanceSensor {
 	//Sets up instance variables for the ReliableSensor, like the maze and direction
-	Direction sensorDirection;
-	Maze maze;
+	private Direction sensorDirection;
+	private Maze maze;
 	
 	// Always true for a reliable sensor
-	public boolean isFunctioning = true;
+	private boolean isFunctioning = true;
 	
 	/**
 	 * Tells the distance to an obstacle (a wallboard) that the sensor
@@ -58,6 +58,7 @@ public class ReliableSensor implements DistanceSensor {
 		int count = 0;
 		int[] newPos = currentPosition;
 		
+		// Keeps looping until it hits a wall
 		while(maze.getFloorplan().hasNoWall(newPos[0], newPos[1], currentDirection))
 		{
 			//From current position, checks if there is a wallboard in the current direction.
