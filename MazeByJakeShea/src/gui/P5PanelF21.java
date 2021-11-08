@@ -44,8 +44,8 @@ public interface P5PanelF21 {
 	
 	// Colors specifically used by Compass Rose, there are a lot
 	static final Color black = Color.decode("#000000");
-	static final Color highlight = Color.decode("#FFFFFF").darker();
-	static final Color shade = Color.decode("#000000").brighter();
+	static final Color highlight = new Color(1.0f, 1.0f, 1.0f, 0.8f);
+	static final Color shade = new Color(1.0f, 1.0f, 1.0f, 0.3f);
 	
 	/**
      * Determines the color for a wall.
