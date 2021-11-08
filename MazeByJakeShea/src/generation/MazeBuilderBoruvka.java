@@ -19,8 +19,8 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 	 * and direction.
 	 * Postcondition: An integer variable specifically created for
 	 * the wallboard.
-	 * @param w
-	 * @return
+	 * @param w is the wallboard that we want to find a weight for
+	 * @return the unique weight of the wallboard
 	 */
 	public int getEdgeWeight(Wallboard w)
 	{
@@ -84,11 +84,13 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 				compartmentalized[i][j] = false; 
 		
 		//Sets up mergable array, which will be useful for keep track of where components merge
+		// This works by saving two pairs of coordinates per row, and finds the wall between them
 		int[][] mergable = new int[width*height][4];
 		for(int i = 0; i < mergable.length; i++)
 			for(int j = 0; j < mergable[i].length; j++)
 				mergable[i][j] = -1; 
 		
+		// Gets ready to find a minimum value 
 		int minWeight = Integer.MAX_VALUE;
 		Wallboard minWallboard = new Wallboard(0, 0, CardinalDirection.North);
 		
@@ -108,8 +110,10 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 					tree.add(deepCopy(roomComponent(tree, compartmentalized, x, y)));
 				else if(!floorplan.isInRoom(x, y) && !compartmentalized[x][y])
 				{
+					// Uses deepcopying to get rid of any pesky memory issues
 					coor.add(deepCopy(coordinates));
 					
+					// Sets that the current cell we are on has been put into some component
 					compartmentalized[x][y] = true; 
 					
 					//Adds coordinate into main ArrayList
@@ -129,8 +133,10 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 		//near them.
 		while(tree.size() > 1)
 		{
+			// This will run through each component
 			for(int i = 0; i < tree.size(); i++)
 			{
+				// This will run through each value in the current component
 				for(int j = 0; j < tree.get(i).size(); j++)
 				{
 					//Keep a running total of the minimum wallboard weight and the wallboard associated with it.
@@ -140,7 +146,7 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 					tempX = tree.get(i).get(j)[0];
 					tempY = tree.get(i).get(j)[1];
 					
-					//Goes through all possible directions
+					//Goes through all possible directions to find smallest wall weight
 					if(floorplan.hasWall(tempX, tempY, CardinalDirection.North))
 					{
 						//Checks that cell is not already in same component
@@ -317,6 +323,10 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 	
 	/**
 	 * Merges two components into a sorted new component
+	 * 
+	 * @param first the first component we are dealing with
+	 * @param second the second component that we want to merge into with the first
+	 * @return Returns a sorted ArrayList that contains all objects from the two parameters
 	 */
 	private ArrayList<int[]> mergeComponents(ArrayList<int[]> first, ArrayList<int[]> second)
 	{
@@ -359,6 +369,9 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 	
 	/**
 	 * Creates a deep copy of an ArrayList
+	 * 
+	 * @param aList the ArrayList we plan on deep copying
+	 * @return A new copy of the original ArrayList that should have a different memory address
 	 */
 	private ArrayList<int[]> deepCopy(ArrayList<int[]> aList)
 	{
@@ -379,6 +392,9 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 	
 	/**
 	 * Creates a deep copy of an array
+	 * 
+	 * @param arr the array we plan on deep copying
+	 * @return A new copy of the original array that should have a different memory address
 	 */
 	private int[] deepCopy(int[] arr)
 	{
@@ -394,6 +410,13 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 	/**
 	 * A private helper method to see whether the
 	 * two cells are in the same component or not.
+	 * 
+	 * @param compGroup The main ArrayList that holds all components
+	 * @param xCord1 the x-coordinate of the first cell we check
+	 * @param yCord1 the y-coordinate of the first cell we check
+	 * @param xCord2 the x-coordinate of the second cell we check
+	 * @param yCord2 the y-coordinate of the second cell we check
+	 * @return a boolean value, true if the two cells are in the same component, false otherwise
 	 */
 	private boolean inSameComponent(ArrayList<ArrayList<int[]>> compGroup, int xCord1, int yCord1, int xCord2, int yCord2)
 	{
@@ -425,24 +448,24 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 	/**
 	 * Method to create components out of rooms and arbitrarily
 	 * combine it with cells near it not in rooms using the seed
-	 * to allow for Boruvska's algorithm to work
+	 * to allow for Boruvka's algorithm to work
+	 * 
+	 * @param compGroup The main ArrayList that holds all components
+	 * @param compMap a boolean map to say whether a cell is in a component or not already
+	 * @param xCord the x-coordinate of the first cell we are checking
+	 * @param yCord the y-coordinate of the first cell we are checking
+	 * @return a component that makes up the entire room of the maze we currently are in
 	 */
-	private ArrayList<int[]> roomComponent(ArrayList<ArrayList<int[]>> mst, boolean[][]compMap, int xCord, int yCord)
+	private ArrayList<int[]> roomComponent(ArrayList<ArrayList<int[]>> compGroup, boolean[][]compMap, int xCord, int yCord)
 	{
 		//Sets up coordinates
 		int x = xCord;
 		int y = yCord;
 		
-		//Sets up a wallboard for deletion
-		Wallboard deleteWall = new Wallboard(0, 0, CardinalDirection.North);
-		
 		//Sets up return value
 		ArrayList<int[]> component = new ArrayList<int[]>();
 		ArrayList<int[]> compForSorting = new ArrayList<int[]>();
 		int[] coordinates = new int[2];
-		
-		int roomDimX;
-		int roomDimY;
 		
 		while(floorplan.isInRoom(x, y))
 		{
@@ -461,16 +484,8 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 			//Checks if iteration has left room through right wall
 			if(!floorplan.isInRoom(x, y))
 			{
-				roomDimX = x - xCord;
 				x = xCord;
 				y++;
-			}
-			
-			//Checks if iteration has fully left room
-			if(!floorplan.isInRoom(x, y))
-			{
-				roomDimY = y - yCord;
-				break;
 			}
 		}
 		return component;
@@ -479,27 +494,37 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 	/**
 	 * Method meant for sorting the components quickly
 	 * returns a 1 for first array, 2 for second
+	 * 
+	 * @param first the first ArrayList we are checking
+	 * @param second the second ArrayList we are checking
+	 * @return a 1 for if the first ArrayList comes first in a sort, 2 otherwise.
 	 */
 	private int sortArrayList(ArrayList<int[]> first, ArrayList<int[]> second)
 	{
+		// Checks if first ArrayList will be first in the sort
 		if(first.get(0)[0] <= second.get(0)[0])
 		{
+			// Checks a corner case where both values are equal and we don't know which is first yet
 			if(first.get(0)[0] == second.get(0)[0])
 			{
+				// If in this case, we arbitrarily choose this ArrayList for the sort
 				if(first.get(0)[1] <= second.get(0)[1])
 				{
 					return 1;
 				}
+				// The second ArrayList must be first in the sort
 				else
 				{
 					return 2;
 				}
 			}
+			// First ArrayList must be first in the sort
 			else
 			{
 				return 1;
 			}
 		}
+		// Second ArrayList must be first in the sort
 		else
 		{
 			return 2;
@@ -514,6 +539,7 @@ public class MazeBuilderBoruvka extends MazeBuilder implements Runnable
 	{
 		for(int i = 0; i < 1000000; i++)
 		{
+			// Creates a list for edge weights for the walls via a seed
 			seedVals[i] = random.nextIntWithinInterval(0, 1000000);
 		}
 	}
