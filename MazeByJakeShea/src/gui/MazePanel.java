@@ -35,6 +35,9 @@ public class MazePanel extends Panel implements P5PanelF21 {
 	
 	// Font object for the compass rose
 	private final Font markerFont;
+	// Track current color
+	private int currentColor;
+	
 	/**
 	 * Constructor. Object is not focusable.
 	 */
@@ -125,7 +128,7 @@ public class MazePanel extends Panel implements P5PanelF21 {
 	 */
 	@Override
 	public void commit() {
-		paint(getGraphics());
+		paint(getBufferGraphics());
 	}
 
 	/**
@@ -136,7 +139,7 @@ public class MazePanel extends Panel implements P5PanelF21 {
 	 */
 	@Override
 	public boolean isOperational() {
-		if (graphics == null)
+		if (getBufferGraphics() == null)
 			return false;
 		else
 			return true;
@@ -151,6 +154,7 @@ public class MazePanel extends Panel implements P5PanelF21 {
 	@Override
 	public void setColor(int rgb) {
 		Color color = new Color(rgb);
+		currentColor = rgb;
 		graphics.setColor(color);
 	}
 
@@ -161,7 +165,7 @@ public class MazePanel extends Panel implements P5PanelF21 {
 	@Override
 	public int getColor() {
 		// TODO Auto-generated method stub
-		return graphics.getColor().getRGB();
+		return currentColor;
 	}
 
 	/**

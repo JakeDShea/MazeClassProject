@@ -30,6 +30,13 @@ public interface P5PanelF21 {
 	// TODO FOR P5:
 	// Add code to the following static method that will help you with Wall.java
 	//
+	
+	// Adds normally used Colors
+	static final Color greenWM = Color.decode("#115740");
+	static final Color goldWM = Color.decode("#916f41");
+	static final Color yellowWM = Color.decode("#FFFF99");
+	static final Color white = Color.decode("#FFFFFF");
+	
 	/**
      * Determines the color for a wall.
      * Supports color determination for the Wall.initColor method.

@@ -124,38 +124,6 @@ public class Wall {
                 (int) Math.signum(pdy));
     }
  
-    /**
-     * Default minimum value for RGB values.
-     */
-    private static final int RGB_DEF = 20;
-    private static final int RGB_DEF_GREEN = 60;
-    /**
-     * Determine the color for this wall.
-     *
-     * @param distance
-     *            to exit
-     * @param cc
-     *            obscure
-     */
-    private int createColor(final int distance, final int cc) {
-        return P5PanelF21.getWallColor(distance, cc, getExtensionX());
-    }
-
-    /**
-     * Computes an RGB value based on the given numerical value.
-     *
-     * @param distance
-     *            value to select color
-     * @return the calculated RGB value
-     */
-    private int calculateRGBValue(final int distance) {
-        // compute rgb value, depends on distance and x direction
-        // 7 in binary is 0...0111
-        // use AND to get last 3 digits of distance
-        final int part1 = distance & 7;
-        final int add = (getExtensionX() != 0) ? 1 : 0;
-        return ((part1 + 2 + add) * 70) / 8 + 80;
-    }
 
     /**
      * Computes specific integer values for the X,Y directions.
