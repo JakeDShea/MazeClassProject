@@ -216,7 +216,7 @@ public class MazeFileReader {
 		Wall result = new Wall(x,y,dx,dy,dist,cc) ;
 		// get a few more attributes and set those explicitly
 		int col = getElementIntValue("colSeg_" + number+ "_" + i, eElement);
-		result.setColor(new Color(col)); 
+		result.setColor((new Color(col)).getRGB()); 
 		result.setSeen(getElementBooleanValue("seenSeg_" + number+ "_" + i, eElement));
 		result.setPartition(getElementBooleanValue("partitionSeg_" + number+ "_" + i, eElement));
 		return result;
