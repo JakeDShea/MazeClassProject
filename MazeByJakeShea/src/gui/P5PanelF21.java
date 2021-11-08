@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.Color;
 
+import javax.swing.text.Highlighter.Highlight;
+
 /**
  * Provides an adapter for a graphics object for the first person view
  * and the map view to draw on. 
@@ -39,6 +41,11 @@ public interface P5PanelF21 {
 	static final Color gray = Color.decode("#999999");
 	static final Color red = Color.decode("#FF0000");
 	static final Color yellow = Color.decode("#FFFF00");
+	
+	// Colors specifically used by Compass Rose, there are a lot
+	static final Color black = Color.decode("#000000");
+	static final Color highlight = Color.decode("#FFFFFF").darker();
+	static final Color shade = Color.decode("#000000").brighter();
 	
 	/**
      * Determines the color for a wall.

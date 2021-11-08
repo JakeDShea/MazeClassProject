@@ -1,13 +1,5 @@
 package gui;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.font.GlyphVector;
-import java.awt.geom.Rectangle2D;
-
 import generation.CardinalDirection;
 
 /**
@@ -21,31 +13,18 @@ import generation.CardinalDirection;
 public class CompassRose {
 	private static final long serialVersionUID = 1916497172430988388L;
 	
-	// some fixed color settings
-	private static final Color greenWM = Color.decode("#115740");
-	private static final Color goldWM = Color.decode("#916f41");
-	
 	// fixed configuration for arms
-    private static final Color MAIN_COLOR = greenWM; //new Color(0.4f, 0.4f, 1.0f);
     private static final float MAIN_LENGTH = 0.95f;
     private static final float MAIN_WIDTH = 0.15f;
     
     // fixed configuration for circle surrounding arms
     private static final int CIRCLE_BORDER = 2;
-    private static final Color CIRCLE_HIGHLIGHT = new Color(1.0f, 1.0f, 1.0f, 0.8f); 
-    //Color.decode("#115740").darker();// = new Color(1.0f, 1.0f, 1.0f, 0.8f); 
-    private static final Color CIRCLE_SHADE = new Color(1.0f, 1.0f, 1.0f, 0.3f); 
-    //Color.decode("#115740").brighter(); //new Color(0.0f, 0.0f, 0.0f, 0.2f); 
-    
-    // fixed configuration for letters used to indicate direction
-    private static final Color MARKER_COLOR = Color.black;  
     /**
      * The font used to write letters N,E,S,W on compass rose. 
      * There is little need for flexibility, 
      * so this is why it is fixed by the constructor.
      * It could be made flexible with getters/setters if needed.
      */
-    private final Font markerFont;  
     
     // The scaler of the rose.  
     // The bordering circle will be this portion of the component dimensions.
@@ -67,7 +46,7 @@ public class CompassRose {
      * Construct a compass rose with the default settings.
      */
     public CompassRose() {
-        this(0.9, 1.7, Font.decode("Serif-PLAIN-16"));
+        this(0.9, 1.7);
     }
      
     /**
@@ -78,10 +57,9 @@ public class CompassRose {
      *                      will position the markers outside of the bordering circle.
      * @param markerFont    The font used for the markers.
      */
-    public CompassRose(double scaler, double markerRadius, Font markerFont) {
+    public CompassRose(double scaler, double markerRadius) {
         this.scaler = scaler;
         this.markerRadius = markerRadius;
-        this.markerFont = markerFont;
     }
     /**
      * Sets the center position for the compass rose and its size
@@ -110,9 +88,8 @@ public class CompassRose {
      * one in JComponent.
      * @param g The graphics object to draw on, actually must be a Graphics2D object.
      */
-    public void paintComponent(Graphics g) {
+    public void paintComponent(MazePanel panel) {
         
-        final Graphics2D g2 = (Graphics2D) g;
         /* Original code
         Dimension dimension = this.getSize();
         int width = Math.min(dimension.width, dimension.height);
@@ -126,8 +103,8 @@ public class CompassRose {
         final int armWidth = (int) (width * MAIN_WIDTH / 2);
         
         // Set rendering hints to adjust quality of rendering  
-        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        panel.setRenderingHint(P5PanelF21.P5RenderingHints.KEY_RENDERING, P5PanelF21.P5RenderingHints.VALUE_RENDER_QUALITY);
+        panel.setRenderingHint(P5PanelF21.P5RenderingHints.KEY_ANTIALIASING, P5PanelF21.P5RenderingHints.VALUE_ANTIALIAS_ON);
         
         /*
          * The compass rose is drawn from several components, 
@@ -136,10 +113,10 @@ public class CompassRose {
          * a circle connecting the end points of each arm
          * one letter to tell the direction, positioned at end of each arm
          */
-        drawBackground(g2);
-        drawArms(g2, armLength, armWidth);
-        drawBorderCircle(g2, width); // note: not currently visible due to color settings
-        drawDirectionMarker(g2, width);
+        drawBackground(panel);
+        drawArms(panel, armLength, armWidth);
+        drawBorderCircle(panel, width); // note: not currently visible due to color settings
+        drawDirectionMarker(panel, width);
     }
 
     /**
@@ -149,7 +126,7 @@ public class CompassRose {
      * @param length The length of an arm
      * @param width The width of an arm
      */
-	private void drawArms(final Graphics2D g2, final int length, final int width) {
+	private void drawArms(MazePanel panel, final int length, final int width) {
 		// Each arm of the compass rose is a symbol created
         // with 2 triangles, one filled, the other one not
         // The first point in the triangle is always the center point.
@@ -161,12 +138,12 @@ public class CompassRose {
         x[0] = centerX;
         y[0] = centerY;
         // use the same color for all arms
-        g2.setColor(MAIN_COLOR);
+        panel.setColor(P5PanelF21.greenWM.getRGB());
         // draw each arm
-        drawArmNorth(g2, length, width, x, y);
-        drawArmEast(g2, length, width, x, y);
-        drawArmSouth(g2, length, width, x, y);
-        drawArmWest(g2, length, width, x, y);
+        drawArmNorth(panel, length, width, x, y);
+        drawArmEast(panel, length, width, x, y);
+        drawArmSouth(panel, length, width, x, y);
+        drawArmWest(panel, length, width, x, y);
 	}
 
     /**
@@ -174,16 +151,16 @@ public class CompassRose {
      * at the current center x,y position and for the current size.
      * @param g2 The graphics object to draw on
      */
-	private void drawBackground(final Graphics2D g2) {
+	private void drawBackground(MazePanel panel) {
 		// color setting hard coded as white
-		g2.setColor(Color.white);
+		panel.setColor(P5PanelF21.white.getRGB());
 		// determine x,y coordinates for oval
 		final int x = centerX - size;
 		final int y = centerY - size;
 		// determine width and height of oval
 		// for a circle both are same, so one variable suffices
 		final int w = 2 * size;// - 2 * CIRCLE_BORDER;
-        g2.fillOval(x,y,w,w);
+        panel.addFilledOval(x,y,w,w);
 	}
 
 	/**
@@ -194,17 +171,17 @@ public class CompassRose {
 	 * @param x For the x coordinates of the triangle points, first entry given and fixed
 	 * @param y For the y coordinates of the triangle points, first entry given and fixed
 	 */
-	private void drawArmWest(Graphics2D g2, int length, int width, int[] x, int[] y) {
+	private void drawArmWest(MazePanel panel, int length, int width, int[] x, int[] y) {
 		// x[0] and y[0] are already set to the coordinates of the center point
 		// set coordinates for 2nd and 3rd point and draw filled triangle
 		x[1] = centerX - length;
         y[1] = centerY;
         x[2] = centerX - width;
         y[2] = centerY + width;
-        g2.fillPolygon(x, y, 3);
+        panel.addFilledPolygon(x, y, 3);
         // adjust coordinate for 2nd point and draw 2nd triangle
         y[2] = centerY - width;
-        g2.drawPolygon(x, y, 3);
+        panel.addPolygon(x, y, 3);
 	}
 	/**
 	 * Draw an arm in east direction.
@@ -214,11 +191,11 @@ public class CompassRose {
 	 * @param x For the x coordinates of the triangle points, first entry given and fixed
 	 * @param y For the y coordinates of the triangle points, first entry given and fixed
 	 */
-	private void drawArmEast(Graphics2D g2, int length, int width, int[] x, int[] y) {
+	private void drawArmEast(MazePanel panel, int length, int width, int[] x, int[] y) {
 		// observation: the 2 triangles to the right are drawn the same
 		// way as for the left if one inverts the sign for length and width
 		// i.e., exchanges addition and subtraction
-		drawArmWest(g2, -length, -width, x, y);
+		drawArmWest(panel, -length, -width, x, y);
 	}
 	/**
 	 * Draw an arm in south direction.
@@ -228,17 +205,17 @@ public class CompassRose {
 	 * @param x For the x coordinates of the triangle points, first entry given and fixed
 	 * @param y For the y coordinates of the triangle points, first entry given and fixed
 	 */
-	private void drawArmSouth(Graphics2D g2, int length, int width, int[] x, int[] y) {
+	private void drawArmSouth(MazePanel panel, int length, int width, int[] x, int[] y) {
 		// x[0] and y[0] are already set to the coordinates of the center point
 		// set coordinates for 2nd and 3rd point and draw filled triangle
 		x[1] = centerX;
         y[1] = centerY + length;
         x[2] = centerX + width;
         y[2] = centerY + width;
-        g2.fillPolygon(x, y, 3);
+        panel.addFilledPolygon(x, y, 3);
         // adjust coordinate for 2nd point and draw 2nd triangle
         x[2] = centerX - width;
-        g2.drawPolygon(x, y, 3);
+        panel.addPolygon(x, y, 3);
 	}
 	/**
 	 * Draw an arm in north direction.
@@ -248,11 +225,11 @@ public class CompassRose {
 	 * @param x For the x coordinates of the triangle points, first entry given and fixed
 	 * @param y For the y coordinates of the triangle points, first entry given and fixed
 	 */
-	private void drawArmNorth(Graphics2D g2, int length, int width, int[] x, int[] y) {
+	private void drawArmNorth(MazePanel panel, int length, int width, int[] x, int[] y) {
 		// observation: the 2 triangles to the top are drawn the same
 		// way as for the bottom if one inverts the sign for length and width
 		// i.e., exchanges addition and subtraction
-		drawArmSouth(g2, -length, -width, x, y);
+		drawArmSouth(panel, -length, -width, x, y);
 	}
 
 	/**
@@ -261,7 +238,7 @@ public class CompassRose {
 	 * @param g2 The graphics object to draw on
 	 * @param width
 	 */
-	private void drawBorderCircle(Graphics2D g2, int width) {
+	private void drawBorderCircle(MazePanel panel, int width) {
 		// determine x,y coordinates for arc
 		final int x = centerX - width / 2 + CIRCLE_BORDER;
 		final int y = centerY - width / 2 + CIRCLE_BORDER;
@@ -270,10 +247,10 @@ public class CompassRose {
 		// only one variable is needed
 		final int w = width - 2 * CIRCLE_BORDER;
 		// draw both arcs
-		g2.setColor(CIRCLE_SHADE);
-        g2.drawArc(x, y, w, w, 45, 180);
-        g2.setColor(CIRCLE_HIGHLIGHT);
-        g2.drawArc(x, y, w, w, 180 + 45, 180);
+		panel.setColor(P5PanelF21.highlight.getRGB());
+        panel.addArc(x, y, w, w, 45, 180);
+        panel.setColor(P5PanelF21.shade.getRGB());
+        panel.addArc(x, y, w, w, 180 + 45, 180);
 	}
 
 	/**
@@ -283,9 +260,9 @@ public class CompassRose {
 	 * @param g2 The graphics object to draw on
 	 * @param width Used to calculate the offset from the center for each letter
 	 */
-	private void drawDirectionMarker(Graphics2D g2, int width) {
+	private void drawDirectionMarker(MazePanel panel, int width) {
 		// catch special cases where drawing is not possible
-		if (Double.isNaN(markerRadius) || markerFont == null) 
+		if (Double.isNaN(markerRadius) || panel.getFont() == null) 
 			return;
 		
 		// determine offset from center for position of each string
@@ -300,39 +277,19 @@ public class CompassRose {
 		 */
 		// WARNING: north south confusion
 		// currendDir South is going upward on the map
-		g2.setColor((CardinalDirection.South == currentDir) ? MARKER_COLOR : goldWM);
-		drawMarker(g2, centerX, centerY - offset, "N");
+		panel.setColor((CardinalDirection.South == currentDir) ? P5PanelF21.black.getRGB() : P5PanelF21.goldWM.getRGB());
+		panel.addMarker(centerX, centerY - offset, "N");
 
-		g2.setColor((CardinalDirection.East == currentDir) ? MARKER_COLOR : goldWM);
-		drawMarker(g2, centerX + offset, centerY, "E");
+		panel.setColor((CardinalDirection.East == currentDir) ? P5PanelF21.black.getRGB() : P5PanelF21.goldWM.getRGB());
+		panel.addMarker(centerX + offset, centerY, "E");
 
 		// WARNING: north south confusion
 		// currendDir North is going downwards on the map
-		g2.setColor((CardinalDirection.North == currentDir) ? MARKER_COLOR : goldWM);
-		drawMarker(g2, centerX, centerY + offset, "S");
+		panel.setColor((CardinalDirection.North == currentDir) ? P5PanelF21.black.getRGB() : P5PanelF21.goldWM.getRGB());
+		panel.addMarker(centerX, centerY + offset, "S");
 
-		g2.setColor((CardinalDirection.West == currentDir) ? MARKER_COLOR : goldWM);
-		drawMarker(g2, centerX - offset, centerY, "W");
+		panel.setColor((CardinalDirection.West == currentDir) ? P5PanelF21.black.getRGB() : P5PanelF21.goldWM.getRGB());
+		panel.addMarker(centerX - offset, centerY, "W");
 
 	}
- 
-	/**
-	 * Draws the given string at the given coordinates.
-	 * It uses the field markerFont to determine the font.
-	 * @param g2 The graphics object to draw on
-	 * @param x The x coordinate where to draw
-	 * @param y The y coordinate where to draw
-	 * @param str The string to draw
-	 */
-    private void drawMarker(Graphics2D g2, float x, float y, String str) {
-        GlyphVector gv = markerFont.createGlyphVector(g2.getFontRenderContext(), str);
-        Rectangle2D rect = gv.getVisualBounds();
-        // need to update x, y by half of rectangle width, height
-        // to serve as x, y coordinates for drawing a GlyphVector
-        x -= rect.getWidth() / 2;
-        y += rect.getHeight() / 2;
-        
-        g2.drawGlyphVector(gv, x, y);
-        
-    }
 }
