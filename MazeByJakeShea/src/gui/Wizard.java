@@ -21,6 +21,7 @@ public class Wizard implements RobotDriver {
 	private ReliableRobot robot;
 	private Maze maze;
 	private boolean[][] hasBeenVisited;
+	private float energy;
 	
 	/**
 	 * Assigns a robot platform to the driver. 
@@ -29,8 +30,12 @@ public class Wizard implements RobotDriver {
 	 */
 	@Override
 	public void setRobot(Robot r) {
-		//Sets up the Wizard's instance variable using a Robot passed as a parameter.
+		// Sets up the Wizard's instance variable using a Robot passed as a parameter.
+		// Wizard should also always use a ReliableRobot so this is allowable
 		robot = (ReliableRobot) r;
+		
+		// Sets up how much energy the robot starts with
+		energy = robot.getBatteryLevel();
 	}
 
 	/**
@@ -40,12 +45,13 @@ public class Wizard implements RobotDriver {
 	 */
 	@Override
 	public void setMaze(Maze mazeParam) {
-		//Sets up the Wizard's maze instance variable using a Maze passed as a parameter.
+		// Sets up the Wizard's maze instance variable using a Maze passed as a parameter.
 		maze = mazeParam;
 		
-		//Sets counterpart array to allow for checking if algorithm loops.
+		// Sets counterpart array to allow for checking if algorithm loops.
 		hasBeenVisited = new boolean[maze.getWidth()][maze.getHeight()];
 		
+		// Sets up visiting matrix for easy determination of whether a cell has been visited
 		for(int x = 0; x < maze.getWidth(); x++)
 			for(int y = 0; y < maze.getHeight(); y++)
 				hasBeenVisited[x][y]= false; 
@@ -92,8 +98,6 @@ public class Wizard implements RobotDriver {
 				return false;
 			//Returns true otherwise, meaning it has completed the maze.
 		}
-		//Makes robot finish maze
-		robot.move(1);
 		return true;
 	}
 
@@ -117,10 +121,13 @@ public class Wizard implements RobotDriver {
 		//If Robot is at the exit, changes the Robot's direction to face the exit and returns false.
 		if(maze.getDistanceToExit(robot.getCurrentPosition()[0], robot.getCurrentPosition()[1]) == 1)
 		{
+			// Robot could see the exit through its left sensor
 			if(robot.canSeeThroughTheExitIntoEternity(Direction.LEFT))
 				robot.rotate(Turn.LEFT);
+			// Could see exit through its right sensor
 			else if (robot.canSeeThroughTheExitIntoEternity(Direction.RIGHT))
 				robot.rotate(Turn.RIGHT);
+			// Could see through its backwards sensor
 			else if(robot.canSeeThroughTheExitIntoEternity(Direction.BACKWARD))
 			{
 				//Should never be reached by wizard's algorithm
@@ -128,6 +135,7 @@ public class Wizard implements RobotDriver {
 				
 				robot.rotate(Turn.AROUND);
 			}
+			// Robot was already staring through the exit otherwise
 			else
 			{
 				//Assert that robot is already facing direction needed
@@ -138,6 +146,10 @@ public class Wizard implements RobotDriver {
 		}
 		
 		//Else, moves the Robot 1 step in whatever the best direction is.
+		
+		// Checks if robot is going to have to jump.
+		// The method call here also automatically turns the robot to the correct direction, so all it must do is
+		// either jump or move accordingly
 		boolean jumping = getNeighborClosestToExit(robot.getCurrentPosition()[0], robot.getCurrentPosition()[1]);
 		
 		// if the closest neighbor has a wall, we will jump
@@ -164,7 +176,7 @@ public class Wizard implements RobotDriver {
 	@Override
 	public float getEnergyConsumption() {
 		//Returns Robot's starting energy minus it's final energy
-		return 3500 - robot.getBatteryLevel();
+		return energy - robot.getBatteryLevel();
 	}
 
 	/**
