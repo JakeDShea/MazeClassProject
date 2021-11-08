@@ -111,7 +111,6 @@ public class MazeApplication extends JFrame {
 	        {
 	            msg = "MazeApplication: loading maze from file: " + argGen;
 	            result.setFileName(argGen);
-	            return result;
 	        }
 	        else {
 	            // None of the predefined strings and not a filename either: 
