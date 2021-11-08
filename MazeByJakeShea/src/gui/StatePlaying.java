@@ -139,7 +139,7 @@ public class StatePlaying extends DefaultState {
                 }
         		
         		// Still has to show an ending screen even if an exception happened where robot stops if it ran out of energy
-        		
+        		 
         		// Will not show an ending screen if we clicked "RETURNTOTITLE" key
         		if(!(control.currentState instanceof StateTitle))
         		{
