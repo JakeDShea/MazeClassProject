@@ -17,15 +17,15 @@ import gui.Robot.Direction;
 public class UnreliableSensor extends ReliableSensor implements Runnable
 {
 	// A boolean value to say whether the sensor is currently working or not
-	public boolean isFunctioning, inStartProcess;
+	private boolean isFunctioning, inStartProcess;
 	// A thread object that uses the runnable UnreliableSensor.
-	Thread sensorThread;
-	int uptime, downtime;
+	private Thread sensorThread;
+	private int uptime, downtime;
 	
 	// The robot that this sensor is on
-	public UnreliableRobot robot;
+	private UnreliableRobot robot;
 	// The direction it is facing as well
-	public Direction sensorDirection;
+	private Direction sensorDirection;
 	
 	/**
 	 * Constructor for an UnreliableSensor object
@@ -164,6 +164,7 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 		// Will run while the maze is still playing
 		while(inStartProcess)
 		{
+			// Makes the thread wait the necessary uptime
 			try {
 				Thread.sleep(uptime);
 			} catch (InterruptedException e) {
@@ -172,8 +173,10 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 				isFunctioning = true;
 			}
 			
+			// Breaks the unreliable sensor
 			isFunctioning = false;
 			
+			// Makes thread wait necessary downtime
 			try {
 				Thread.sleep(downtime);
 			} catch (InterruptedException e) {
@@ -183,8 +186,18 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 			}
 			
 			isFunctioning = true;
-			// Synchronizes uptime for all threads after the first run is done
+			// Synchronizes uptime for all threads after the first run is done to deal with possible offset
 			uptime = 4000;
 		}
+	}
+	
+	/**
+	 * States whether the sensor is currently functioning or not
+	 * 
+	 * @return true if the sensor is functioning currently, false otherwise.
+	 */
+	public boolean getFunctional()
+	{
+		return isFunctioning;
 	}
 }
