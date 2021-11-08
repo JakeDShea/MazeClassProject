@@ -176,7 +176,7 @@ public class Wizard implements RobotDriver {
 	@Override
 	public int getPathLength() {
 		//Returns Robot's odometer reading.
-		return robot.odometer;
+		return robot.getOdometerReading();
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
