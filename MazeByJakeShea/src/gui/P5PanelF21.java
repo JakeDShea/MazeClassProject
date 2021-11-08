@@ -36,6 +36,9 @@ public interface P5PanelF21 {
 	static final Color goldWM = Color.decode("#916f41");
 	static final Color yellowWM = Color.decode("#FFFF99");
 	static final Color white = Color.decode("#FFFFFF");
+	static final Color gray = Color.decode("#999999");
+	static final Color red = Color.decode("#FF0000");
+	static final Color yellow = Color.decode("#FFFF00");
 	
 	/**
      * Determines the color for a wall.
