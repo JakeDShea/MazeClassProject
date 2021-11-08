@@ -16,11 +16,11 @@ import generation.CardinalDirection;
 
 public class ReliableRobot implements Robot {
 	//Sets up instance variables for the ReliableRobot, namely the 4 distance sensors and others
-	ReliableSensor leftSensor = new ReliableSensor(), rightSensor = new ReliableSensor(), forwardSensor = new ReliableSensor(), backwardSensor = new ReliableSensor();
-	Controller robotController;
-	float[] energy;
-	int odometer = 0;
-	boolean crashed = false;
+	private ReliableSensor leftSensor = new ReliableSensor(), rightSensor = new ReliableSensor(), forwardSensor = new ReliableSensor(), backwardSensor = new ReliableSensor();
+	private Controller robotController;
+	private float[] energy;
+	private int odometer = 0;
+	private boolean crashed = false;
 	
 	/**
 	 * Creates the ReliableRobot object that will interact with the GUI along with
@@ -36,6 +36,7 @@ public class ReliableRobot implements Robot {
 		addDistanceSensor(forwardSensor, Direction.FORWARD);
 		addDistanceSensor(backwardSensor, Direction.BACKWARD);
 		
+		// Sets up needed fields for the robot
 		energy = new float[1];
 		setBatteryLevel(3500);
 	}
@@ -53,6 +54,7 @@ public class ReliableRobot implements Robot {
 	 */
 	@Override
 	public void setController(Controller controller) {
+		// Sets up controller field to the parameter given
 		robotController = controller;
 		
 		//Private method to give the sensors a maze from this new controller.
@@ -252,7 +254,10 @@ public class ReliableRobot implements Robot {
 	 */
 	@Override
 	public void move(int distance) {
+		// Creates a local variable for moves to decrement up to distance times
 		int moves = distance;
+		
+		// Keeps track of current position of robot only to assure we know whether the robot crashes or not.
 		int[] originalPos = robotController.getCurrentPosition();
 		
 		//Loops these lines as many times as Robot is set to move to know if he runs out of energy in the middle of the movement
