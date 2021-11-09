@@ -156,10 +156,10 @@ public class StatePlaying extends DefaultState {
             else
             {
             	// Sets up parameters for a new unreliable robot on these lines because it is so wordy
-            	int leftParam = ((UnreliableRobot) control.robot).leftSense;
-            	int rightParam = ((UnreliableRobot) control.robot).rightSense;
-            	int forwardParam = ((UnreliableRobot) control.robot).forwardSense;
-            	int backwardParam = ((UnreliableRobot) control.robot).backwardSense;
+            	int leftParam = ((UnreliableRobot) control.robot).getLeftSense();
+            	int rightParam = ((UnreliableRobot) control.robot).getRightSense();
+            	int forwardParam = ((UnreliableRobot) control.robot).getForwardSense();
+            	int backwardParam = ((UnreliableRobot) control.robot).getBackwardSense();
             	
             	// Creates the new robot
             	control.robot = new UnreliableRobot(forwardParam, leftParam, rightParam, backwardParam);
