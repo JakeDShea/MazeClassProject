@@ -38,6 +38,8 @@ public class ReliableRobot implements Robot {
 		
 		// Sets up needed fields for the robot
 		energy = new float[1];
+		
+		// A default value which can easily be overloaded.
 		setBatteryLevel(3500);
 	}
 	
