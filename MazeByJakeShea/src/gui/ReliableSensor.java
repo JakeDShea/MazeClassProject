@@ -143,7 +143,7 @@ public class ReliableSensor implements DistanceSensor {
 	 */
 	public boolean getFunctional()
 	{
-		return true;
+		return isFunctioning;
 	}
 	////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////DO NOT HAVE TO DO THESE YET////////////////////////////

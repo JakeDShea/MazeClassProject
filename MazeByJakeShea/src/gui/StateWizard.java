@@ -1,7 +1,6 @@
 package gui;
 
 import gui.Constants.UserInput;
-import gui.Robot.Direction;
 
 /**
  * Refactored from Dr. Peter Kemper's StateWinning.java

@@ -2,8 +2,6 @@ package gui;
 
 import java.awt.Color;
 
-import javax.swing.text.Highlighter.Highlight;
-
 /**
  * Provides an adapter for a graphics object for the first person view
  * and the map view to draw on. 

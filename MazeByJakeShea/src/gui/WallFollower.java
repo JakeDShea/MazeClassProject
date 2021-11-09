@@ -1,6 +1,5 @@
 package gui;
 
-import generation.CardinalDirection;
 import generation.Maze;
 import gui.Robot.Direction;
 import gui.Robot.Turn;
@@ -245,6 +244,8 @@ public class WallFollower implements RobotDriver
 			return forBackward();
 		}
 		// Checks best direction that can check in front of robot if right sensor is working
+		default:
+			break;
 		}
 		
 		// Should never hit this

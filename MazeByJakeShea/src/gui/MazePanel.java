@@ -10,8 +10,6 @@ import java.awt.RenderingHints;
 import java.awt.font.GlyphVector;
 import java.awt.geom.Rectangle2D;
 
-import gui.Constants;
-
 /**
  * Add functionality for double buffering to an AWT Panel class.
  * Used for drawing a maze.
