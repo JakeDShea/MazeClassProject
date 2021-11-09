@@ -77,14 +77,12 @@ public class WallFollower implements RobotDriver
 	@Override
 	public boolean drive2Exit() throws Exception {
 		boolean solved = false;
-		System.out.println("Drive");
 		// Sets the fields for escaping inner walls
 		countTable = new int[maze.getWidth()][maze.getHeight()];
 		
 		for(int i = 0; i < maze.getWidth(); i++)
 			for(int j = 0; j < maze.getWidth(); j++)
 			{
-				System.out.println("Drive" + i + " " + j);
 				countTable[i][j]= 0; 
 			}
 		// Starts by checking if the robot spawns in a room
