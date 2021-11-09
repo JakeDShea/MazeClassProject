@@ -126,6 +126,25 @@ public class ReliableSensor implements DistanceSensor {
 		return 1;
 	}
 
+	/**
+	 * Provides access to the sensors direction
+	 * 
+	 * @return the direction of the sensor
+	 */
+	public Direction getDirection()
+	{
+		return sensorDirection;
+	}
+	
+	/**
+	 * States whether the sensor is currently functioning or not
+	 * 
+	 * @return true if the sensor is functioning currently, false otherwise.
+	 */
+	public boolean getFunctional()
+	{
+		return true;
+	}
 	////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////DO NOT HAVE TO DO THESE YET////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////

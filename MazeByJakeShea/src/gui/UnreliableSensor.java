@@ -200,4 +200,14 @@ public class UnreliableSensor extends ReliableSensor implements Runnable
 	{
 		return isFunctioning;
 	}
+	
+	/**
+	 * Provides access to the sensors direction
+	 * 
+	 * @return the direction of the sensor
+	 */
+	public Direction getDirection()
+	{
+		return sensorDirection;
+	}
 }
