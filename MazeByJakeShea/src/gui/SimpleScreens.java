@@ -144,20 +144,20 @@ public class SimpleScreens {
      * Draws the finish screen, screen content is hard coded
      * @param panel holds the graphics for the off-screen image
      */
-	void redrawFinishLost(MazePanel panel, RobotDriver driver) {
+	void redrawFinishLost(MazePanel panel, int pathLength, float energyConsumed) {
 		Graphics g = panel.getBufferGraphics() ;
         if (null == g) {
             System.out.println(errorMsg) ;
         }
         else {
-            redrawFinishLost(g, driver);
+            redrawFinishLost(g, pathLength, energyConsumed);
         }
 	}
 	/**
 	 * Helper method for redraw to draw final screen, screen is hard coded
 	 * @param gc graphics is the off-screen image
 	 */
-	private void redrawFinishLost(Graphics gc, RobotDriver driver) {
+	private void redrawFinishLost(Graphics gc, int pathLength, float energyConsumed) {
 		// produce blue background
 		drawBackground(gc);
 		// write the title 
@@ -166,27 +166,27 @@ public class SimpleScreens {
 		// write some extra blurb
 		updateFontAndColor(gc, smallBannerFont, greenWM);
 		centerString(gc, "Failure!", 160);
-		centerString(gc, "Steps walked: " + driver.getPathLength(), 200);
-		centerString(gc, "Energy used: " + driver.getEnergyConsumption(), 240);
+		centerString(gc, "Steps walked: " + pathLength, 200);
+		centerString(gc, "Energy used: " + energyConsumed, 240);
 		// write the instructions
 		gc.setColor(blackWM);
 		centerString(gc, "Hit any key to restart", 300);
 	}
-	public void redrawFinishWon(MazePanel panel, RobotDriver driver)
+	public void redrawFinishWon(MazePanel panel, int pathLength, float energyConsumed)
 	{
 		Graphics g = panel.getBufferGraphics() ;
         if (null == g) {
             System.out.println(errorMsg) ;
         }
         else {
-            redrawFinishWon(g, driver);
+            redrawFinishWon(g, pathLength, energyConsumed);
         }
 	}
 	/**
 	 * Helper method for redraw to draw final screen, screen is hard coded
 	 * @param gc graphics is the off-screen image
 	 */
-	private void redrawFinishWon(Graphics gc, RobotDriver driver) {
+	private void redrawFinishWon(Graphics gc, int pathLength, float energyConsumed) {
 		// produce blue background
 		drawBackground(gc);
 		// write the title 
@@ -194,8 +194,8 @@ public class SimpleScreens {
 		centerString(gc, "Congratulations!", 100);
 		// write some extra blurb
 		updateFontAndColor(gc, smallBannerFont, greenWM);
-		centerString(gc, "Steps walked: " + driver.getPathLength(), 160);
-		centerString(gc, "Energy used: " + driver.getEnergyConsumption(), 200);
+		centerString(gc, "Steps walked: " + pathLength, 160);
+		centerString(gc, "Energy used: " + energyConsumed, 200);
 		// write the instructions
 		gc.setColor(blackWM);
 		centerString(gc, "Hit any key to restart", 300);

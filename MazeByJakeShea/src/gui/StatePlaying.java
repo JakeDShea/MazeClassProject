@@ -43,7 +43,11 @@ public class StatePlaying extends DefaultState {
     private boolean showSolution;       // toggle switch to show solution in overall maze on screen
     private boolean mapMode; // true: display map of maze, false: do not display map of maze
     // mapMode is toggled by user keyboard input, causes a call to drawMap during play mode
-
+    
+    // keeps track of path length of and used energy of robot
+    private int pathLength = 0;
+    private float energyUsed = 0;
+    
     // current position and direction with regard to MazeConfiguration
     int px, py ; // current position on maze grid (x,y)
     int dx, dy;  // current direction
@@ -117,33 +121,49 @@ public class StatePlaying extends DefaultState {
         		showSolution = true;
         		mapMode = true;
         		control.driver.drive2Exit();
+        		
+        		System.out.println("Energy: " + control.robot.getBatteryLevel());
+        		
+        		// Controller and States have been made to have access to Robot's energy level and path length
+        		if(!control.robot.hasStopped())
+        		{
+        			// Remembers path length and used energy
+        			pathLength = control.robot.getOdometerReading();
+        			energyUsed = control.driver.getEnergyConsumption();
+        			
+        			// Should be facing correct direction by end of drive2Exit method
+        			control.robot.move(1);
+        		}
+        		
         	} catch (Exception e) {
         		// Cleans up threads that may exist
-        		if(!control.reliability.equals("1111"))
+        		if(!control.getReliability().equals("1111"))
                 {
                 	// Interrupts the left sensor threads if it exists
-                	if(control.reliability.charAt(1) == '0')
+                	if(control.getReliability().charAt(1) == '0')
                 		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.LEFT);
                 	
                 	// Interrupts the forward sensor threads if it exists
-                	if(control.reliability.charAt(0) == '0')
+                	if(control.getReliability().charAt(0) == '0')
                 		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.FORWARD);
                 	
                 	// Interrupts the backward sensor threads if it exists
-                	if(control.reliability.charAt(3) == '0')
+                	if(control.getReliability().charAt(3) == '0')
                 		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.BACKWARD);
                 	
                 	// Interrupts the right sensor threads if it exists
-                	if(control.reliability.charAt(2) == '0')
+                	if(control.getReliability().charAt(2) == '0')
                 		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.RIGHT);
                 }
         		
         		// Still has to show an ending screen even if an exception happened where robot stops if it ran out of energy
-        		 
+        		pathLength = control.robot.getOdometerReading();
+    			energyUsed = control.driver.getEnergyConsumption(); 
+        		
         		// Will not show an ending screen if we clicked "RETURNTOTITLE" key
         		if(!(control.currentState instanceof StateTitle))
         		{
-        			control.switchFromPlayingToWizard(0);
+        			control.switchFromPlayingToWizard(pathLength, energyUsed);
         		}
         		else {
         			control.switchToTitle();
@@ -151,7 +171,7 @@ public class StatePlaying extends DefaultState {
         	}
             
             // Must reset the robot to allow for more plays in a single run of the program.
-            if(control.reliability.equals("1111"))
+            if(control.getReliability().equals("1111"))
             	control.robot = new ReliableRobot();
             else
             {
@@ -166,7 +186,7 @@ public class StatePlaying extends DefaultState {
             }
             
         	control.robot.resetOdometer();
-        	control.robot.setBatteryLevel(3500);
+        	control.robot.setBatteryLevel(control.getEnergyMax());
             
         	// Sets up the driver based on whether it is a wizard or wallfollower
         	if(control.driver instanceof Wizard)
@@ -239,7 +259,7 @@ public class StatePlaying extends DefaultState {
             	if(control.driver == null)
             		control.switchFromPlayingToWinning(0);
             	else
-					control.switchFromPlayingToWizard(0);
+					control.switchFromPlayingToWizard(pathLength, energyUsed);
             }
             break;
         case LEFT: // turn left
@@ -256,7 +276,7 @@ public class StatePlaying extends DefaultState {
             	if(control.driver == null)
             		control.switchFromPlayingToWinning(0);
             	else
-					control.switchFromPlayingToWizard(0);
+					control.switchFromPlayingToWizard(pathLength, energyUsed);
             }
             break;
         case RETURNTOTITLE: // escape to title screen

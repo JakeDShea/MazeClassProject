@@ -20,9 +20,11 @@ public class StateWizard extends DefaultState {
     
     boolean started;
     int pathLength;
+    float battery;
     
     public StateWizard() {
         pathLength = 0;
+        battery = 0;
         started = false;
     }
     
@@ -48,58 +50,10 @@ public class StateWizard extends DefaultState {
         // draw content on panel
         // Check specifically if robot stopped
         
-        if(controller.getRobot().hasStopped())
-        	view.redrawFinishLost(panel, control.driver);
+        if(control.getRobot().hasStopped())
+        	view.redrawFinishLost(panel, pathLength, battery);
         else
-        	view.redrawFinishWon(panel, control.driver);
-        
-        // This checks if there are any background threads to ask to kill after the maze ends
-        if(!control.reliability.equals("1111"))
-        {
-        	// Interrupts the left sensor threads if it exists
-        	if(control.reliability.charAt(1) == '0')
-        		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.LEFT);
-        	
-        	// Interrupts the forward sensor threads if it exists
-        	if(control.reliability.charAt(0) == '0')
-        		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.FORWARD);
-        	
-        	// Interrupts the backward sensor threads if it exists
-        	if(control.reliability.charAt(3) == '0')
-        		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.BACKWARD);
-        	
-        	// Interrupts the right sensor threads if it exists
-        	if(control.reliability.charAt(2) == '0')
-        		((UnreliableRobot) control.robot).stopFailureAndRepairProcess(Direction.RIGHT);
-        }
-        
-        // Must reset the robot to allow for more plays in a single run of the program.
-        if(control.reliability.equals("1111"))
-        	control.robot = new ReliableRobot();
-        else
-        {
-        	// Sets up parameters for a new unreliable robot on these lines because it is so wordy
-        	int leftParam = ((UnreliableRobot) control.robot).getLeftSense();
-        	int rightParam = ((UnreliableRobot) control.robot).getRightSense();
-        	int forwardParam = ((UnreliableRobot) control.robot).getForwardSense();
-        	int backwardParam = ((UnreliableRobot) control.robot).getBackwardSense();
-        	
-        	// Creates the new robot
-        	control.robot = new UnreliableRobot(forwardParam, leftParam, rightParam, backwardParam);
-        }
-        
-    	control.robot.resetOdometer();
-    	control.robot.setBatteryLevel(3500);
-        
-    	// Sets up the driver based on whether it is a wizard or wallfollower
-    	if(control.driver instanceof Wizard)
-    		control.driver = new Wizard();
-    	else
-    		control.driver = new WallFollower();
-    	
-    	control.driver.setRobot(control.robot);
-    	
-    	control.setRobotAndDriver(control.robot, control.driver);
+        	view.redrawFinishWon(panel, pathLength, battery);
         
         // update screen with panel content
         panel.update();
@@ -125,6 +79,16 @@ public class StateWizard extends DefaultState {
     @Override
     public void setPathLength(int pathLength) {
         this.pathLength = pathLength;
+    }
+    
+    /**
+     * Sets up the battery for the end screen
+     * 
+     * @param batteryUsage the amount of battery used by the robot driver
+     */
+    public void setBatteryLevel(float batteryUsage)
+    {
+    	battery = batteryUsage;
     }
 }
 
