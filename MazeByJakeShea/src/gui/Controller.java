@@ -114,7 +114,7 @@ public class Controller {
         states[1] = new StateGenerating();
         states[2] = new StatePlaying();
         states[3] = new StateWinning();
-        states[4] = new StateWizard();
+        states[4] = new StateDriver();
         currentState = states[0];
         panel = new MazePanel(); 
         fileName = null;
@@ -349,10 +349,10 @@ public class Controller {
      * Switches the controller to the final screen
      * @param pathLength gives the length of the path
      */
-    public void switchFromPlayingToWizard(int pathLength, float batteryUsed) {
+    public void switchFromPlayingToDriving(int pathLength, float batteryUsed) {
         currentState = states[4];
         currentState.setPathLength(pathLength);
-        ((StateWizard) currentState).setBatteryLevel(batteryUsed);
-        ((StateWizard) currentState).start(this, panel);
+        ((StateDriver) currentState).setBatteryLevel(batteryUsed);
+        ((StateDriver) currentState).start(this, panel);
     }
 }

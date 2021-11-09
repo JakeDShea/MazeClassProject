@@ -161,7 +161,7 @@ public class StatePlaying extends DefaultState {
         		// Will not show an ending screen if we clicked "RETURNTOTITLE" key
         		if(!(control.currentState instanceof StateTitle))
         		{
-        			control.switchFromPlayingToWizard(pathLength, energyUsed);
+        			control.switchFromPlayingToDriving(pathLength, energyUsed);
         		}
         		else {
         			control.switchToTitle();
@@ -257,7 +257,7 @@ public class StatePlaying extends DefaultState {
             	if(control.driver == null)
             		control.switchFromPlayingToWinning(0);
             	else
-					control.switchFromPlayingToWizard(pathLength, energyUsed);
+					control.switchFromPlayingToDriving(pathLength, energyUsed);
             }
             break;
         case LEFT: // turn left
@@ -274,7 +274,7 @@ public class StatePlaying extends DefaultState {
             	if(control.driver == null)
             		control.switchFromPlayingToWinning(0);
             	else
-					control.switchFromPlayingToWizard(pathLength, energyUsed);
+					control.switchFromPlayingToDriving(pathLength, energyUsed);
             }
             break;
         case RETURNTOTITLE: // escape to title screen

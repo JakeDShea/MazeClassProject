@@ -11,7 +11,7 @@ import gui.Constants.UserInput;
  * 
  * @author Jake Shea
  */
-public class StateWizard extends DefaultState {
+public class StateDriver extends DefaultState {
     SimpleScreens view;
     MazePanel panel;
     Controller control;
@@ -21,7 +21,7 @@ public class StateWizard extends DefaultState {
     int pathLength;
     float battery;
     
-    public StateWizard() {
+    public StateDriver() {
         pathLength = 0;
         battery = 0;
         started = false;
