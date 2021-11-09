@@ -156,6 +156,9 @@ public class MazeApplication extends JFrame {
 			robot = new UnreliableRobot(forward, left, right, back);
 			robotMsg = " with an unreliable robot.";
 		}
+
+    	// Sets robot Energy to a constant
+    	robot.setBatteryLevel(result.energyCapacity);
 	    
 	    // Finally creates the driver for the maze
 	    // Case 0: A wizard is used
@@ -185,6 +188,7 @@ public class MazeApplication extends JFrame {
 	    // controller instantiated and attributes set according to given input parameter
 	    // output message and return controller
 	    System.out.println(msg);
+	    
 	    return result;
 	}
 
@@ -199,9 +203,6 @@ public class MazeApplication extends JFrame {
 	    
 	    // Saves the command-line argument
 	    controller.setReliability(argSensors);
-	    
-	    // Sets robot Energy to a constant
-	    controller.robot.setBatteryLevel(controller.getEnergyMax());
 	    
 		add(controller.getPanel()) ;
 		// instantiate a key listener that feeds keyboard input into the controller

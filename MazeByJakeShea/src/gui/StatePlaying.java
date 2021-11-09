@@ -122,8 +122,6 @@ public class StatePlaying extends DefaultState {
         		mapMode = true;
         		control.driver.drive2Exit();
         		
-        		System.out.println("Energy: " + control.robot.getBatteryLevel());
-        		
         		// Controller and States have been made to have access to Robot's energy level and path length
         		if(!control.robot.hasStopped())
         		{
