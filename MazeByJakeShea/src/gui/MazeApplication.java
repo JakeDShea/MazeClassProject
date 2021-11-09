@@ -198,7 +198,10 @@ public class MazeApplication extends JFrame {
 	    Controller controller = createController();
 	    
 	    // Saves the command-line argument
-	    controller.reliability = argSensors;
+	    controller.setReliability(argSensors);
+	    
+	    // Sets robot Energy to a constant
+	    controller.robot.setBatteryLevel(controller.getEnergyMax());
 	    
 		add(controller.getPanel()) ;
 		// instantiate a key listener that feeds keyboard input into the controller

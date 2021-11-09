@@ -101,6 +101,12 @@ public class Controller {
      * or not since instanceof will fail here.
      */
     String reliability = "1111";
+    /**
+     * Used to set how much energy the robot should have
+     * You can use this to set how much energy you want the robot to have.
+     * It defaults to 3500
+     */
+    final float energyCapacity = 3500;
     
     public Controller() {
     	states = new State[5];
@@ -133,6 +139,9 @@ public class Controller {
     public void setDeterministic(boolean deterministic) {
     	this.deterministic = deterministic;
     }
+    public void setReliability(String reliability) {
+    	this.reliability = reliability;
+    }
     
     
     public MazePanel getPanel() {
@@ -158,7 +167,7 @@ public class Controller {
     public void switchFromTitleToGenerating(int skillLevel) {
         currentState = states[1];
         currentState.setSkillLevel(skillLevel);
-        currentState.setBuilder(builder); 
+        currentState.setBuilder(builder);
         currentState.setPerfect(perfect);
         if (!deterministic) {
         	// TODO: implement code that makes sure we generate different random mazes
@@ -304,6 +313,25 @@ public class Controller {
         return ((StatePlaying)states[2]).getCurrentPosition();
     }
     /**
+     * Provides access to the reliability string passed to controller through command-line arguments
+     * 
+     * @return the reliability string from command-line for sensors
+     */
+    public String getReliability()
+    {
+    	return this.reliability;
+    }
+    /**
+     * Provides access to constant for amount of energy
+     * robot starts with
+     * 
+     * @return maximum energy for robot to start with
+     */
+    public float getEnergyMax()
+    {
+    	return energyCapacity;
+    }
+    /**
      * Provides access to the current direction.
      * The controller keeps track of the current position
      * and direction while the maze holds information about walls.
@@ -321,9 +349,10 @@ public class Controller {
      * Switches the controller to the final screen
      * @param pathLength gives the length of the path
      */
-    public void switchFromPlayingToWizard(int pathLength) {
+    public void switchFromPlayingToWizard(int pathLength, float batteryUsed) {
         currentState = states[4];
         currentState.setPathLength(pathLength);
+        ((StateWizard) currentState).setBatteryLevel(batteryUsed);
         ((StateWizard) currentState).start(this, panel);
     }
 }
