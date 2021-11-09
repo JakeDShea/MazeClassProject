@@ -54,7 +54,7 @@ public class WizardTest extends DriverTest
 		assertTrue(testWizard.drive2Exit());
 		
 		//Asserts that wizard took shortest path
-		assertEquals(2, testWizard.getPathLength());
+		assertEquals(1, testWizard.getPathLength());
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public class WizardTest extends DriverTest
 		
 		//Asserts that wizard took shortest path via energy
 		//97 moves, 50 90-degree turns, and senses for the exit twice based off my algorithm gets me 734 energy used.
-		assertEquals(51, testWizard.getEnergyConsumption());
+		assertEquals(45, testWizard.getEnergyConsumption());
 	}
 	
 	/**

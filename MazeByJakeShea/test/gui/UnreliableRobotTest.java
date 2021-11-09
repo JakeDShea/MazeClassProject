@@ -595,28 +595,28 @@ public class UnreliableRobotTest
 			}
 			
 			// Check when left sensor is failing, the forward and backward sensors should always be up
-			if(!((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.LEFT)).isFunctioning)
+			if(!((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.LEFT)).getFunctional())
 			{
-				assertTrue(((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.BACKWARD)).isFunctioning);
-				assertTrue(((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.RIGHT)).isFunctioning);
+				assertTrue(((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.BACKWARD)).getFunctional());
+				assertTrue(((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.RIGHT)).getFunctional());
 			}
 			
 			// Check when forward sensor is failing, the backward and right sensors should always be up
-			if(!((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.FORWARD)).isFunctioning)
+			if(!((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.FORWARD)).getFunctional())
 			{
-				assertTrue(((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.RIGHT)).isFunctioning);
+				assertTrue(((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.RIGHT)).getFunctional());
 			}
 			
 			// Check when backward sensor is failing, the right and left sensors should always be up
-			if(!((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.BACKWARD)).isFunctioning)
+			if(!((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.BACKWARD)).getFunctional())
 			{
-				assertTrue(((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.LEFT)).isFunctioning);
+				assertTrue(((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.LEFT)).getFunctional());
 			}
 			
 			// Check when right sensor is failing, the left and forward sensors should always be up
-			if(!((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.RIGHT)).isFunctioning)
+			if(!((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.RIGHT)).getFunctional())
 			{
-				assertTrue(((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.FORWARD)).isFunctioning);
+				assertTrue(((UnreliableSensor)((UnreliableRobot) robot).getSensor(Direction.FORWARD)).getFunctional());
 			}
 			
 			endTime = System.nanoTime();
@@ -670,10 +670,10 @@ public class UnreliableRobotTest
 			
 			// Assert that the sensors are always operational as they should be reliable
 			
-			assertTrue(((ReliableSensor)((UnreliableRobot) robot).getSensor(Direction.LEFT)).isFunctioning);
-			assertTrue(((ReliableSensor)((UnreliableRobot) robot).getSensor(Direction.FORWARD)).isFunctioning);
-			assertTrue(((ReliableSensor)((UnreliableRobot) robot).getSensor(Direction.BACKWARD)).isFunctioning);
-			assertTrue(((ReliableSensor)((UnreliableRobot) robot).getSensor(Direction.RIGHT)).isFunctioning);
+			assertTrue(((ReliableSensor)((UnreliableRobot) robot).getSensor(Direction.LEFT)).getFunctional());
+			assertTrue(((ReliableSensor)((UnreliableRobot) robot).getSensor(Direction.FORWARD)).getFunctional());
+			assertTrue(((ReliableSensor)((UnreliableRobot) robot).getSensor(Direction.BACKWARD)).getFunctional());
+			assertTrue(((ReliableSensor)((UnreliableRobot) robot).getSensor(Direction.RIGHT)).getFunctional());
 			
 			endTime = System.nanoTime();
 		// has the background threads run for 9 seconds, which should be enough time for two cycles

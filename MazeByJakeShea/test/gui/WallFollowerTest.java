@@ -1,12 +1,9 @@
 package gui;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.Test;
-
-import gui.Robot.Direction;
 
 /**
  * Class: WallFollowerTest
@@ -54,7 +51,7 @@ public class WallFollowerTest extends DriverTest
 		// Assert that the WallFollower finishes the maze with
 		// the expected number of steps
 		testFollower.drive2Exit();
-		assertEquals(16, testFollower.getPathLength());
+		assertEquals(15, testFollower.getPathLength());
 	}
 	
 	/**
@@ -89,7 +86,7 @@ public class WallFollowerTest extends DriverTest
 		// the expected amount of energy used
 		testFollower.drive2Exit();
 		
-		assertEquals(174, testFollower.getEnergyConsumption());
+		assertEquals(168, testFollower.getEnergyConsumption());
 	}
 	
 	/**

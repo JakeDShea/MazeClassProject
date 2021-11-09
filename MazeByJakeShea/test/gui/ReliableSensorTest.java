@@ -1,12 +1,10 @@
 package gui;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import generation.CardinalDirection;
 import generation.Maze;
 import generation.MazeFactory;
 import generation.StubOrder;

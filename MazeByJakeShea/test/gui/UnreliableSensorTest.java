@@ -12,7 +12,6 @@ import generation.MazeFactory;
 import generation.StubOrder;
 import generation.Order.Builder;
 import gui.Robot.Direction;
-import gui.Robot.Turn;
 
 public class UnreliableSensorTest
 {
@@ -311,10 +310,10 @@ public class UnreliableSensorTest
 		((UnreliableRobot) controller.robot).start();
 		
 		// Asserts the robot works in tandem with the sensors correctly
-		assertTrue(robot.getSensor(Direction.LEFT) != null  && ((UnreliableSensor)robot.getSensor(Direction.LEFT)).sensorDirection == Direction.LEFT);
-		assertTrue(robot.getSensor(Direction.FORWARD) != null && ((UnreliableSensor)robot.getSensor(Direction.FORWARD)).sensorDirection == Direction.FORWARD);
-		assertTrue(robot.getSensor(Direction.BACKWARD) != null && ((UnreliableSensor)robot.getSensor(Direction.BACKWARD)).sensorDirection == Direction.BACKWARD);
-		assertTrue(robot.getSensor(Direction.RIGHT) != null && ((UnreliableSensor)robot.getSensor(Direction.RIGHT)).sensorDirection == Direction.RIGHT);
+		assertTrue(robot.getSensor(Direction.LEFT) != null  && ((UnreliableSensor)robot.getSensor(Direction.LEFT)).getDirection() == Direction.LEFT);
+		assertTrue(robot.getSensor(Direction.FORWARD) != null && ((UnreliableSensor)robot.getSensor(Direction.FORWARD)).getDirection() == Direction.FORWARD);
+		assertTrue(robot.getSensor(Direction.BACKWARD) != null && ((UnreliableSensor)robot.getSensor(Direction.BACKWARD)).getDirection() == Direction.BACKWARD);
+		assertTrue(robot.getSensor(Direction.RIGHT) != null && ((UnreliableSensor)robot.getSensor(Direction.RIGHT)).getDirection() == Direction.RIGHT);
 		
 		// Cleans up threads
 		controller.getRobot().stopFailureAndRepairProcess(Direction.LEFT);
