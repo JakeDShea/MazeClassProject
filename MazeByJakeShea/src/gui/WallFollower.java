@@ -19,21 +19,20 @@ import gui.Robot.Turn;
 public class WallFollower implements RobotDriver
 {
 	// A robot field to interact with the maze
-	Robot robot;
+	private Robot robot;
 	// A maze field to know what the game looks like
-	Maze maze;
+	private Maze maze;
 	
 	// A boolean value for finding the exit
 	private boolean foundExit = false;
 	
+	// A float value to determine how much energy the robot has used
+	private float energy;
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 	/////////////INSTANCE VARIABLES TO ALLOW FOR A WALLFOLLOWER TO LEAVE INNER WALLS///////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////
-	int[][] countTable;
-	
-	// A variable that will be set to true when a variable has escaped a loop
-	boolean escaped = false;
-	
+	private int[][] countTable;
 	
 	/**
 	 * Assigns a robot platform to the driver. 
@@ -44,6 +43,9 @@ public class WallFollower implements RobotDriver
 	public void setRobot(Robot r) {
 		// Sets the robot field to the paramter r
 		robot = r;
+		
+		// Sets up the starting energy to how much energy the robot spawns in with
+		energy = robot.getBatteryLevel();
 	}
 
 	/**
@@ -105,7 +107,6 @@ public class WallFollower implements RobotDriver
 		
 			// Otherwise, return false
 		}
-		robot.move(1);
 		
 		return solved;
 	}
@@ -262,7 +263,7 @@ public class WallFollower implements RobotDriver
 	@Override
 	public float getEnergyConsumption() {
 		// Return how much energy the robot has used
-		return 3500 - robot.getBatteryLevel();
+		return energy - robot.getBatteryLevel();
 	}
 
 	/**
@@ -290,9 +291,13 @@ public class WallFollower implements RobotDriver
 	{
 		if(robot instanceof UnreliableRobot)
 		{
+			// The naming here seems a little messed up, but it happened to be the exact same code
+			// as finding which sensor works best to check the front of the robot if the robot is
+			// using its back sensor to check the left, so I simply call the method for that here.
 			return forBackward();
 		}
 		
+		// If not an unreliable robot then the left should work fine.
 		return Direction.LEFT;
 	}
 	
@@ -336,11 +341,11 @@ public class WallFollower implements RobotDriver
 			robot.rotate(Turn.RIGHT);
 		
 		// Checks if dir is backward, then turns the robot left once.
-		if(dir == Direction.BACKWARD)
+		else if(dir == Direction.BACKWARD)
 			robot.rotate(Turn.LEFT);
 		
 		//Checks if dir is right, then turns the robot around.
-		if(dir == Direction.RIGHT)
+		else if(dir == Direction.RIGHT)
 			robot.rotate(Turn.AROUND);
 	}
 	
@@ -398,21 +403,19 @@ public class WallFollower implements RobotDriver
 	 */
 	private void makeThisFaceForward(Direction leftward, Direction forwardward)
 	{
-		// The case where the robot is already in the correct orientation
-		if((leftward == Direction.LEFT && forwardward == Direction.FORWARD) || (leftward == Direction.FORWARD && forwardward == Direction.RIGHT) ||
-				(leftward == Direction.RIGHT && forwardward == Direction.BACKWARD) || (leftward == Direction.BACKWARD && forwardward == Direction.LEFT))
-			// Placeholder
-			System.out.print("");
+		// There is a case where the robot is already in the correct orientation, so we only need to hit these 12 out of 16 possible cases
+		
 		// The case where robot must turn to the left once
-		else if ((leftward == Direction.LEFT && forwardward == Direction.RIGHT) || (leftward == Direction.FORWARD && forwardward == Direction.BACKWARD) ||
+		if ((leftward == Direction.LEFT && forwardward == Direction.RIGHT) || (leftward == Direction.FORWARD && forwardward == Direction.BACKWARD) ||
 				(leftward == Direction.RIGHT && forwardward == Direction.LEFT) || (leftward == Direction.BACKWARD && forwardward == Direction.FORWARD))
 			robot.rotate(Turn.LEFT);
 		// The case where robot must turn to the right once
 		else if ((leftward == Direction.LEFT && forwardward == Direction.LEFT) || (leftward == Direction.FORWARD && forwardward == Direction.FORWARD) ||
 				(leftward == Direction.RIGHT && forwardward == Direction.RIGHT) || (leftward == Direction.BACKWARD && forwardward == Direction.BACKWARD))
 			robot.rotate(Turn.RIGHT);
-		// Must be the final case where robot has to turn around
-		else
+		// May be the final case where robot has to turn around
+		else if((leftward == Direction.LEFT && forwardward == Direction.BACKWARD) || (leftward == Direction.FORWARD && forwardward == Direction.LEFT) ||
+				(leftward == Direction.RIGHT && forwardward == Direction.FORWARD) || (leftward == Direction.BACKWARD && forwardward == Direction.RIGHT))
 			robot.rotate(Turn.AROUND);
 	}
 	
@@ -425,21 +428,19 @@ public class WallFollower implements RobotDriver
 	 */
 	private void turnRobotBackAgain(Direction leftward, Direction forwardward)
 	{
-		// The case where the robot is already in the correct orientation
-		if((leftward == Direction.LEFT && forwardward == Direction.FORWARD) || (leftward == Direction.FORWARD && forwardward == Direction.RIGHT) ||
-				(leftward == Direction.RIGHT && forwardward == Direction.BACKWARD) || (leftward == Direction.BACKWARD && forwardward == Direction.LEFT))
-			// Placeholder
-			System.out.print("");
+		// There is a case where the robot is already in the correct orientation, so we only need to hit these 12 out of 16 possible cases
+		
 		// The case where robot must turn to the right once
-		else if ((leftward == Direction.LEFT && forwardward == Direction.RIGHT) || (leftward == Direction.FORWARD && forwardward == Direction.BACKWARD) ||
+		if ((leftward == Direction.LEFT && forwardward == Direction.RIGHT) || (leftward == Direction.FORWARD && forwardward == Direction.BACKWARD) ||
 				(leftward == Direction.RIGHT && forwardward == Direction.LEFT) || (leftward == Direction.BACKWARD && forwardward == Direction.FORWARD))
 			robot.rotate(Turn.RIGHT);
 		// The case where robot must turn to the left once
 		else if ((leftward == Direction.LEFT && forwardward == Direction.LEFT) || (leftward == Direction.FORWARD && forwardward == Direction.FORWARD) ||
 				(leftward == Direction.RIGHT && forwardward == Direction.RIGHT) || (leftward == Direction.BACKWARD && forwardward == Direction.BACKWARD))
 			robot.rotate(Turn.LEFT);
-		// Must be the final case where robot has to turn around
-		else
+		// May be the final case where robot has to turn around
+		else if((leftward == Direction.LEFT && forwardward == Direction.BACKWARD) || (leftward == Direction.FORWARD && forwardward == Direction.LEFT) ||
+				(leftward == Direction.RIGHT && forwardward == Direction.FORWARD) || (leftward == Direction.BACKWARD && forwardward == Direction.RIGHT))
 			robot.rotate(Turn.AROUND);
 	}
 	
@@ -479,31 +480,35 @@ public class WallFollower implements RobotDriver
 	////////SOME HELPER METHODS FOR CHOOSING DIRECTIONS EASILY//////////
 	////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Chooses which direction can be used to check the front
+	 * of the robot if it is able to use its left sensor to check the left wall
+	 * 
+	 * @return the optimal direction in terms of energy consumption
+	 */
 	private Direction forLeft()
 	{
+		// Checks if this sensor is first unreliable
 		if(((UnreliableRobot) robot).getSensor(Direction.FORWARD) instanceof UnreliableSensor)
 		{
-			if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.FORWARD)).isFunctioning)
+			// If so, checks that it functioninh
+			if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.FORWARD)).getFunctional())
 				return Direction.FORWARD;
+			// If not, check the next most optimal sensor to use
 			else
 			{
 				// Checks if right sensor is working. If so, return right
 				if(((UnreliableRobot) robot).getSensor(Direction.RIGHT) instanceof UnreliableSensor)
 				{
-					if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.RIGHT)).isFunctioning)
+					if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.RIGHT)).getFunctional())
 						return Direction.RIGHT;
 					else
 					{
 						// Checks if left sensor is working. If so, return left
 						if(((UnreliableRobot) robot).getSensor(Direction.LEFT) instanceof UnreliableSensor)
 						{
-							if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.LEFT)).isFunctioning)
+							if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.LEFT)).getFunctional())
 								return Direction.LEFT;
-							/*else
-							{
-								// Otherwise backwards is our best bet
-								return Direction.BACKWARD;
-							}*/
 						}
 						// Left has to work because it is reliable
 						else
@@ -519,35 +524,39 @@ public class WallFollower implements RobotDriver
 		else
 			return Direction.FORWARD;
 		
+		// Just a placeholder, logically never hits this return
 		return null;
 	}
 	
+	/**
+	 * Chooses which direction can be used to check the front
+	 * of the robot if it must use its forward sensor to check the left wall
+	 * 
+	 * @return the optimal direction in terms of energy consumption
+	 */
 	private Direction forForward()
 	{
 		// Will check if the right sensor is working
 		if(((UnreliableRobot) robot).getSensor(Direction.RIGHT) instanceof UnreliableSensor)
 		{
-			if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.RIGHT)).isFunctioning)
+			// Checks if it is currently functional, if so it returns it
+			if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.RIGHT)).getFunctional())
 				return Direction.RIGHT;
+			// Checks the next most optimal sensor to use if right sensor is down.
 			else
 			{
 				// Checks if backward sensor is working. If so, return backward
 				if(((UnreliableRobot) robot).getSensor(Direction.BACKWARD) instanceof UnreliableSensor)
 				{
-					if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.BACKWARD)).isFunctioning)
+					if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.BACKWARD)).getFunctional())
 						return Direction.BACKWARD;
 					else
 					{
 						// Checks if forward sensor is working. If so, return forward
 						if(((UnreliableRobot) robot).getSensor(Direction.FORWARD) instanceof UnreliableSensor)
 						{
-							if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.FORWARD)).isFunctioning)
+							if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.FORWARD)).getFunctional())
 								return Direction.FORWARD;
-							/*else
-							{
-								// Otherwise Left is the best bet
-								return Direction.LEFT;
-							}*/
 						}
 						// Forward has to work because it is reliable
 						else
@@ -566,32 +575,35 @@ public class WallFollower implements RobotDriver
 		return null;
 	}
 	
+	/**
+	 * Chooses which direction can be used to check the front
+	 * of the robot if it must use its backwards sensor to check the left wall
+	 * 
+	 * @return the optimal direction in terms of energy consumption
+	 */
 	private Direction forBackward()
 	{
 		// Will check if the left sensor is working
 		if(((UnreliableRobot) robot).getSensor(Direction.LEFT) instanceof UnreliableSensor)
 		{
-			if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.LEFT)).isFunctioning)
+			// Checks if it is currently functional, if so it returns it
+			if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.LEFT)).getFunctional())
 				return Direction.LEFT;
+			// Checks the next most optimal sensor to use if left sensor is down
 			else
 			{
 				// Checks if forward sensor is working. If so, return backward
 				if(((UnreliableRobot) robot).getSensor(Direction.FORWARD) instanceof UnreliableSensor)
 				{
-					if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.FORWARD)).isFunctioning)
+					if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.FORWARD)).getFunctional())
 						return Direction.FORWARD;
 					else
 					{
 						// Checks if backward sensor is working. If so, return forward
 						if(((UnreliableRobot) robot).getSensor(Direction.BACKWARD) instanceof UnreliableSensor)
 						{
-							if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.BACKWARD)).isFunctioning)
+							if(((UnreliableSensor) ((UnreliableRobot) robot).getSensor(Direction.BACKWARD)).getFunctional())
 								return Direction.BACKWARD;
-							/*else
-							{
-								// Otherwise Right is the best bet
-								return Direction.RIGHT;
-							}*/
 						}
 						// Backward has to work because it is reliable
 						else
