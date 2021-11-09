@@ -17,7 +17,7 @@ public class UnreliableRobot extends ReliableRobot
 	private DistanceSensor leftSensor, forwardSensor, backwardSensor, rightSensor;
 	
 	// Four int fields to set up sensors again after games are made
-	public int leftSense, forwardSense, backwardSense, rightSense; 
+	private int leftSense, forwardSense, backwardSense, rightSense; 
 	// All other necessary fields are to be inherited
 	
 	/**
@@ -158,6 +158,7 @@ public class UnreliableRobot extends ReliableRobot
     	// Checks left sensor and starts as needed
     	if(getSensor(Direction.LEFT) instanceof UnreliableSensor)
     	{
+    		// Sets the robot to its sensor and the sensor to this robot
     		((UnreliableSensor) getSensor(Direction.LEFT)).setRobot(this);
     		((UnreliableSensor) getSensor(Direction.LEFT)).setDirection(Direction.LEFT);
     		startFailureAndRepairProcess(Direction.LEFT, 4000 + count * 1300, 2000);
@@ -167,6 +168,7 @@ public class UnreliableRobot extends ReliableRobot
     	// Checks forward sensor and starts as needed
     	if(getSensor(Direction.FORWARD) instanceof UnreliableSensor)
     	{
+    		// Sets the robot to its sensor and the sensor to this robot
     		((UnreliableSensor) getSensor(Direction.FORWARD)).setRobot(this);
     		((UnreliableSensor) getSensor(Direction.FORWARD)).setDirection(Direction.FORWARD);
     		startFailureAndRepairProcess(Direction.FORWARD, 4000 + count * 1300, 2000);
@@ -176,6 +178,7 @@ public class UnreliableRobot extends ReliableRobot
     	// Checks backward sensor and starts as needed
     	if(getSensor(Direction.BACKWARD) instanceof UnreliableSensor)
     	{
+    		// Sets the robot to its sensor and the sensor to this robot
     		((UnreliableSensor) getSensor(Direction.BACKWARD)).setRobot(this);
     		((UnreliableSensor) getSensor(Direction.BACKWARD)).setDirection(Direction.BACKWARD);
     		startFailureAndRepairProcess(Direction.BACKWARD, 4000 + count * 1300, 2000);
@@ -185,9 +188,50 @@ public class UnreliableRobot extends ReliableRobot
     	// Checks right sensor and starts as needed
     	if(getSensor(Direction.RIGHT) instanceof UnreliableSensor)
     	{
+    		// Sets the robot to its sensor and the sensor to this robot
     		((UnreliableSensor) getSensor(Direction.RIGHT)).setRobot(this);
     		((UnreliableSensor) getSensor(Direction.RIGHT)).setDirection(Direction.RIGHT);
     		startFailureAndRepairProcess(Direction.RIGHT, 4000 + count * 1300, 2000);
     	}
+	}
+	
+	/**
+	 * A get method to retrieve what the original parameters of the robot constructor was
+	 * 
+	 * @return the leftSense field which will be a 1 for reliable and a 0 for unreliable
+	 */
+	public int getLeftSense()
+	{
+		return leftSense;
+	}
+	
+	/**
+	 * A get method to retrieve what the original parameters of the robot constructor was
+	 * 
+	 * @return the rightSense field which will be a 1 for reliable and a 0 for unreliable
+	 */
+	public int getRightSense()
+	{
+		return rightSense;
+	}
+	
+	/**
+	 * A get method to retrieve what the original parameters of the robot constructor was
+	 * 
+	 * @return the backwardSense field which will be a 1 for reliable and a 0 for unreliable
+	 */
+	public int getBackwardSense()
+	{
+		return backwardSense;
+	}
+	
+	/**
+	 * A get method to retrieve what the original parameters of the robot constructor was
+	 * 
+	 * @return the forwardSense field which will be a 1 for reliable and a 0 for unreliable
+	 */
+	public int getForwardSense()
+	{
+		return forwardSense;
 	}
 }
